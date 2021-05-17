@@ -1,5 +1,5 @@
 {
-  "name": "routefinder-client",
+  "name": "openpoifinder-client",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
