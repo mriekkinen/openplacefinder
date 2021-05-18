@@ -1,8 +1,7 @@
 const express = require('express')
-const sqlite3 = require('sqlite3').verbose()
 const cors = require('cors')
-const db = require('./db')
-const { beginsWith, split } = require('./search-util')
+const DAO = require('./dao')
+const { split } = require('./utils/search-util')
 const { getIconPath } = require('./enumerate-icons')
 
 const PORT = 3001
@@ -17,12 +16,11 @@ const app = express()
 app.use(cors())
 app.use(express.json());
 
+const dao = new DAO(SEARCH_LIMIT)
+
 try {
   (async () => {
-    await db.open(DB_PATH, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE)
-    await db.run('ATTACH DATABASE ? AS master', DB_MASTER_PATH)
-    await db.run('ATTACH DATABASE ? AS wiki', DB_WIKI_PATH)
-
+    await dao.open(DB_PATH, DB_MASTER_PATH, DB_WIKI_PATH)
     console.log('Opened all databases')
   })()
 } catch (err) {
@@ -30,84 +28,14 @@ try {
   console.error(err)
 }
 
-const DROP_SEARCH = `
-  DROP TABLE IF EXISTS suggestions2
-`
-
-const CREATE_SEARCH = `
-  CREATE TABLE suggestions2 (
-    key         TEXT COLLATE NOCASE,
-    value       TEXT COLLATE NOCASE,
-    description TEXT COLLATE NOCASE,
-    icon        TEXT,
-    has_icon    INTEGER AS (icon IS NOT NULL) STORED
-  )
-`
-
-const POPULATE_SEARCH = `
-  INSERT INTO suggestions2 (key, value, description)
-  SELECT key, value, description
-    FROM wikipages
-   WHERE lang='en'
-     AND description IS NOT NULL
-     AND key NOT LIKE '%:%'
-`
-
-const SEARCH_BY_KEY_OR_VALUE = `
-    SELECT key, value, description, icon
-      FROM suggestions2
-     WHERE key LIKE ?
-        OR value LIKE ?
-  ORDER BY has_icon DESC, key ASC, value ASC
-     LIMIT ?
-`
-
-const SEARCH_BY_VALUE = `
-    SELECT key, value, description, icon
-      FROM suggestions2
-     WHERE value LIKE ?
-  ORDER BY has_icon DESC, key ASC, value ASC
-     LIMIT ?
-`
-
-const SEARCH_BY_KEY_AND_VALUE = `
-    SELECT key, value, description, icon
-      FROM suggestions2
-     WHERE key = ?
-       AND value LIKE ?
-  ORDER BY has_icon DESC, key ASC, value ASC
-     LIMIT ?
-`
-
-const SELECT_TAGS = `
-  SELECT key, value
-    FROM suggestions2
-   WHERE value IS NOT NULL
-`
-
-const UPDATE_ICONS = `
-  UPDATE suggestions2
-     SET icon = ?
-   WHERE key = ?
-     AND value = ?
-`;
-
 (async () => {
-  await db.run(DROP_SEARCH)
-  await db.run(CREATE_SEARCH)
-  await db.run(POPULATE_SEARCH)
-
+  await dao.populate()
   console.log('Populated tables for suggestions')
 
-  const tags = await db.all(SELECT_TAGS)
+  const tags = await dao.getTags()
   for (const tag of tags) {
     const iconPath = await getIconPath(PUBLIC_DIR, tag)
-    await db.run(
-      UPDATE_ICONS,
-      iconPath,
-      tag.key,
-      tag.value
-    )
+    await dao.updateIcons(iconPath, tag)
   }
 
   console.log('Enumerated map icons')
@@ -123,28 +51,7 @@ app.get('/api/search', async (req, res) => {
     let { key, value } = split(query)
     if (value === '*') value = null
 
-    let rows
-    if (!value) {
-      rows = await db.all(
-        SEARCH_BY_KEY_OR_VALUE,
-        beginsWith(key),
-        beginsWith(key),
-        SEARCH_LIMIT
-      )
-    } else if (!key) {
-      rows = await db.all(
-        SEARCH_BY_VALUE,
-        beginsWith(value),
-        SEARCH_LIMIT
-      )
-    } else {
-      rows = await db.all(
-        SEARCH_BY_KEY_AND_VALUE,
-        key,
-        beginsWith(value),
-        SEARCH_LIMIT
-      )
-    }
+    const rows = await dao.search(key, value)
 
     res.json(rows)
   } catch (err) {
