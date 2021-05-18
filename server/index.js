@@ -39,7 +39,8 @@ const CREATE_SEARCH = `
     key         TEXT COLLATE NOCASE,
     value       TEXT COLLATE NOCASE,
     description TEXT COLLATE NOCASE,
-    icon        TEXT
+    icon        TEXT,
+    has_icon    INTEGER AS (icon IS NOT NULL) STORED
   )
 `
 
@@ -53,28 +54,28 @@ const POPULATE_SEARCH = `
 `
 
 const SEARCH_BY_KEY_OR_VALUE = `
-    SELECT *
+    SELECT key, value, description, icon
       FROM suggestions2
      WHERE key LIKE ?
         OR value LIKE ?
-  ORDER BY key ASC, value ASC
+  ORDER BY has_icon DESC, key ASC, value ASC
      LIMIT ?
 `
 
 const SEARCH_BY_VALUE = `
-    SELECT *
+    SELECT key, value, description, icon
       FROM suggestions2
      WHERE value LIKE ?
-  ORDER BY key ASC, value ASC
+  ORDER BY has_icon DESC, key ASC, value ASC
      LIMIT ?
 `
 
 const SEARCH_BY_KEY_AND_VALUE = `
-    SELECT *
+    SELECT key, value, description, icon
       FROM suggestions2
      WHERE key = ?
        AND value LIKE ?
-  ORDER BY key ASC, value ASC
+  ORDER BY has_icon DESC, key ASC, value ASC
      LIMIT ?
 `
 
