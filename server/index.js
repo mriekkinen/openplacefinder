@@ -35,7 +35,7 @@ try {
   const tags = await dao.getTags()
   for (const tag of tags) {
     const iconPath = await getIconPath(PUBLIC_DIR, tag)
-    await dao.updateIcons(iconPath, tag)
+    await dao.updateIcon(tag, iconPath)
   }
 
   console.log('Enumerated map icons')

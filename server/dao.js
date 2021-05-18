@@ -59,7 +59,7 @@ const SELECT_TAGS = `
    WHERE value IS NOT NULL
 `
 
-const UPDATE_ICONS = `
+const UPDATE_ICON = `
   UPDATE suggestions2
      SET icon = ?
    WHERE key = ?
@@ -87,9 +87,9 @@ class DAO {
     return await db.all(SELECT_TAGS)
   }
 
-  async updateIcons(iconPath, tag) {
+  async updateIcon(tag, iconPath) {
     await db.run(
-      UPDATE_ICONS,
+      UPDATE_ICON,
       iconPath,
       tag.key,
       tag.value
