@@ -9,6 +9,7 @@ const App = () => {
     return tagObjects.map(tag => {
       const value = tag.key + '=' + (tag.value ? tag.value : '*')
       return {
+        tag,
         value,
         label: value
       }

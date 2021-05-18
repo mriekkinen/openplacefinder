@@ -3,13 +3,15 @@ const sqlite3 = require('sqlite3').verbose()
 const cors = require('cors')
 const db = require('./db')
 const { beginsWith, split } = require('./search-util')
+const { getIconPath } = require('./enumerate-icons')
 
 const PORT = 3001
 const DB_PATH = './data/server.db'
 const DB_MASTER_PATH = './data/taginfo/taginfo-master.db'
 const DB_WIKI_PATH = './data/taginfo/taginfo-wiki.db'
 
-const SEARCH_LIMIT = 50
+const SEARCH_LIMIT = 25
+const PUBLIC_DIR = '../client/public'
 
 const app = express()
 app.use(cors())
@@ -36,7 +38,8 @@ const CREATE_SEARCH = `
   CREATE TABLE suggestions2 (
     key         TEXT COLLATE NOCASE,
     value       TEXT COLLATE NOCASE,
-    description TEXT COLLATE NOCASE
+    description TEXT COLLATE NOCASE,
+    icon        TEXT
   )
 `
 
@@ -50,29 +53,42 @@ const POPULATE_SEARCH = `
 `
 
 const SEARCH_BY_KEY_OR_VALUE = `
-    SELECT key, value
+    SELECT *
       FROM suggestions2
      WHERE key LIKE ?
         OR value LIKE ?
   ORDER BY key ASC, value ASC
      LIMIT ?
-`;
+`
 
 const SEARCH_BY_VALUE = `
-    SELECT key, value
+    SELECT *
       FROM suggestions2
      WHERE value LIKE ?
   ORDER BY key ASC, value ASC
      LIMIT ?
-`;
+`
 
 const SEARCH_BY_KEY_AND_VALUE = `
-    SELECT key, value
+    SELECT *
       FROM suggestions2
      WHERE key = ?
        AND value LIKE ?
   ORDER BY key ASC, value ASC
      LIMIT ?
+`
+
+const SELECT_TAGS = `
+  SELECT key, value
+    FROM suggestions2
+   WHERE value IS NOT NULL
+`
+
+const UPDATE_ICONS = `
+  UPDATE suggestions2
+     SET icon = ?
+   WHERE key = ?
+     AND value = ?
 `;
 
 (async () => {
@@ -81,6 +97,20 @@ const SEARCH_BY_KEY_AND_VALUE = `
   await db.run(POPULATE_SEARCH)
 
   console.log('Populated tables for suggestions')
+
+  const tags = await db.all(SELECT_TAGS)
+  for (const tag of tags) {
+    const iconPath = await getIconPath(PUBLIC_DIR, tag)
+    await db.run(
+      UPDATE_ICONS,
+      iconPath,
+      tag.key,
+      tag.value
+    )
+  }
+
+  console.log('Enumerated map icons')
+  console.log('OK: Completed preprocessing')
 })()
 
 app.get('/api/search', async (req, res) => {
