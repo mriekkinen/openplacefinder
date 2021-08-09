@@ -10,7 +10,7 @@ const DB_MASTER_PATH = './data/taginfo/taginfo-master.db'
 const DB_WIKI_PATH = './data/taginfo/taginfo-wiki.db'
 
 const SEARCH_LIMIT = 25
-const PUBLIC_DIR = '../client/public'
+const PUBLIC_DIR = '../tagselector-client/public'
 
 const app = express()
 app.use(cors())
