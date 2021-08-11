@@ -7,7 +7,8 @@ import {
 } from 'overpass-ts';
 import { GoLocation } from 'react-icons/go';
 
-import { fetchOverpass } from './services/overpassService';
+//import { fetchOverpass } from './services/overpassService';
+import { fetchOverpass } from './services/overpassServiceMock';
 
 import './App.css';
 
