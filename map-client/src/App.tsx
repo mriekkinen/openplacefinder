@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import './App.css';
-
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
-import { fetchOverpass } from './services/overpassService';
+import { Map } from 'leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
 import {
   OverpassJson,
-  OverpassElement, OverpassNode, OverpassWay
+  OverpassElement, OverpassNode, OverpassWay, OverpassPointGeom
 } from 'overpass-ts';
+import { GoLocation } from 'react-icons/go';
+
+import { fetchOverpass } from './services/overpassService';
+
+import './App.css';
+
+let mapRef: Map;
 
 const App = () => {
   const [data, setData] = useState<OverpassJson | null>(null);
@@ -21,13 +26,22 @@ const App = () => {
     fetchOverpass(query)
       .then(response => {
         setData(response);
-      })
+      });
   }, []);
+
+  const n = data ? data.elements.length : 0;
+  const status = data
+    ? <p>Found <b>{n}</b> elements matching the query</p>
+    : <p>Loading...</p>;
 
   return (
     <div>
-      <p>An example query: listing all tea shops in London</p>
-      <Map data={data} />
+      <div className='header'>
+        <p>An example query: listing all tea shops in London</p>
+        {status}
+      </div>
+      <MapView data={data} />
+      <ListView data={data} />
     </div>
   );
 }
@@ -44,13 +58,11 @@ interface MapProps {
   data: OverpassJson | null;
 }
 
-const Map = ({ data }: MapProps) => {
-  const n = data ? data.elements.length : 0;
+const MapView = ({ data }: MapProps) => {
   return (
     <div>
-      <p>Found <b>{n}</b> elements matching the query</p>
-
       <MapContainer id='map' center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
+        <SaveMapRef />
         <TileLayer
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -78,5 +90,39 @@ const Map = ({ data }: MapProps) => {
     </div>
   );
 }
+
+const SaveMapRef = () => {
+  mapRef = useMap();
+  return null;
+}
+
+const ListView = ({ data }: MapProps) => {
+  return (
+    <div className='list-container'>
+      {data && data.elements.filter(isNode).map(node =>
+        <div key={node.id} className='list-elem'>
+          <b>{node.tags && node.tags['name']} </b>
+          <GoToLocation map={mapRef} lat={node.lat} lon={node.lon} /> <br/>
+          {node.tags && `${node.tags['addr:street']} ${node.tags['addr:housenumber']}`} <br />
+          {node.tags && node.tags['website']}
+        </div>
+      )}
+    </div>
+  );
+}
+
+interface GoToLocationProps extends OverpassPointGeom {
+  map: Map;
+}
+
+const GoToLocation = ({ map, lat, lon }: GoToLocationProps) => (
+  <GoLocation onClick={() => {
+    //console.log('go to location:', lat, lon);
+    map.panTo([lat, lon], {
+      animate: true,
+      duration: 0.5
+    });
+  }} />
+);
 
 export default App;
