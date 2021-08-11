@@ -36,13 +36,15 @@ const App = () => {
     : <p>Loading...</p>;
 
   return (
-    <div>
+    <div id='App'>
       <div className='header'>
         <p>An example query: listing all tea shops in London</p>
         {status}
       </div>
-      <MapView data={data} />
-      <ListView data={data} />
+      <div className='content'>
+        <ListView data={data} />
+        <MapView data={data} />
+      </div>
     </div>
   );
 }
@@ -61,34 +63,32 @@ interface MapProps {
 
 const MapView = ({ data }: MapProps) => {
   return (
-    <div>
-      <MapContainer id='map' center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
-        <SaveMapRef />
-        <TileLayer
-          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+    <MapContainer id='map-container' center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
+      <SaveMapRef />
+      <TileLayer
+        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
 
-        {data && data.elements.filter(isNode).map(node =>
-          <Marker key={node.id} position={[node.lat, node.lon]}>
+      {data && data.elements.filter(isNode).map(node =>
+        <Marker key={node.id} position={[node.lat, node.lon]}>
+          <Popup>
+            <b>{node.tags && node.tags['name']}</b>
+          </Popup>
+        </Marker>
+      )}
+
+      {data && data.elements.filter(isWay).map(way => {
+        if (way.center === undefined) return null;
+        return (
+          <Marker key={way.id} position={[way.center.lat, way.center.lon]}>
             <Popup>
-              <b>{node.tags && node.tags['name']}</b>
+              <b>{way.tags && way.tags['name']}</b>
             </Popup>
           </Marker>
-        )}
-
-        {data && data.elements.filter(isWay).map(way => {
-          if (way.center === undefined) return null;
-          return (
-            <Marker key={way.id} position={[way.center.lat, way.center.lon]}>
-              <Popup>
-                <b>{way.tags && way.tags['name']}</b>
-              </Popup>
-            </Marker>
-          )
-        })}
-      </MapContainer>
-    </div>
+        )
+      })}
+    </MapContainer>
   );
 }
 
