@@ -3,7 +3,7 @@ import { Map } from 'leaflet';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
 import {
   OverpassJson,
-  OverpassElement, OverpassNode, OverpassWay, OverpassPointGeom
+  OverpassElement, OverpassNode, OverpassWay, OverpassRelation
 } from 'overpass-ts';
 import { GoLocation } from 'react-icons/go';
 
@@ -14,8 +14,53 @@ import './App.css';
 
 let mapRef: Map;
 
+type Tags = { [key: string]: string };
+
+interface Poi {
+  type: 'node' | 'way' | 'relation';
+  id: number;
+  lat?: number;
+  lon?: number;
+  tags: Tags;
+}
+
+type Nwr = OverpassNode | OverpassWay | OverpassRelation;
+
+const isNwr = (e: OverpassElement): e is Nwr => {
+  return e.type === 'node' || e.type === 'way' || e.type === 'relation';
+}
+
+const isNode = (e: OverpassElement): e is OverpassNode => {
+  return e.type === 'node';
+}
+
+// const hasLatLon = (e: Nwr): boolean => {
+//   return isNode(e) || e.center !== undefined;
+// };
+
+const hasLatLon = (e: Poi): boolean => {
+  return e.lat !== undefined && e.lon !== undefined;
+};
+
+const overpass2Poi = (data: OverpassJson | null): Poi[] => {
+  if (!data) return [];
+  return data.elements
+    .filter(isNwr)
+    .map(e => ({
+      type: e.type,
+      id: e.id,
+      lat: isNode(e)
+        ? e.lat
+        : e.center?.lat,
+      lon: isNode(e)
+        ? e.lon
+        : e.center?.lon,
+      tags: e.tags ? e.tags : {}
+    }));
+};
+
 const App = () => {
-  const [data, setData] = useState<OverpassJson | null>(null);
+  const [data, setData] = useState<Poi[] | null>(null);
 
   useEffect(() => {
     const query = `
@@ -25,12 +70,13 @@ const App = () => {
       out center;
     `;
     fetchOverpass(query)
-      .then(response => {
-        setData(response);
+      .then(overpassJson => {
+        const poiArray = overpass2Poi(overpassJson)
+        setData(poiArray);
       });
   }, []);
 
-  const n = data ? data.elements.length : 0;
+  const n = data ? data.length : 0;
   const status = data
     ? <p>Found <b>{n}</b> elements matching the query</p>
     : <p>Loading...</p>;
@@ -49,16 +95,8 @@ const App = () => {
   );
 }
 
-const isNode = (elem: OverpassElement): elem is OverpassNode => {
-  return elem.type === 'node';
-}
-
-const isWay = (elem: OverpassElement): elem is OverpassWay => {
-  return elem.type === 'way';
-}
-
 interface MapProps {
-  data: OverpassJson | null;
+  data: Poi[] | null;
 }
 
 const MapView = ({ data }: MapProps) => {
@@ -70,24 +108,13 @@ const MapView = ({ data }: MapProps) => {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      {data && data.elements.filter(isNode).map(node =>
-        <Marker key={node.id} position={[node.lat, node.lon]}>
+      {data && data.filter(hasLatLon).map(e =>
+        <Marker key={e.id} position={[e.lat ?? 0, e.lon ?? 0]}>
           <Popup>
-            <b>{node.tags && node.tags['name']}</b>
+            <b>{e.tags['name']}</b>
           </Popup>
         </Marker>
       )}
-
-      {data && data.elements.filter(isWay).map(way => {
-        if (way.center === undefined) return null;
-        return (
-          <Marker key={way.id} position={[way.center.lat, way.center.lon]}>
-            <Popup>
-              <b>{way.tags && way.tags['name']}</b>
-            </Popup>
-          </Marker>
-        )
-      })}
     </MapContainer>
   );
 }
@@ -100,30 +127,36 @@ const SaveMapRef = () => {
 const ListView = ({ data }: MapProps) => {
   return (
     <div className='list-container'>
-      {data && data.elements.filter(isNode).map(node =>
-        <div key={node.id} className='list-elem'>
-          <b>{node.tags && node.tags['name']} </b>
-          <GoToLocation map={mapRef} lat={node.lat} lon={node.lon} /> <br/>
-          {node.tags && `${node.tags['addr:street']} ${node.tags['addr:housenumber']}`} <br />
-          {node.tags && node.tags['website']}
+      {data && data.map(e =>
+        <div key={e.id} className='list-elem'>
+          <b>{e.tags['name']} </b>
+          <GoToLocation map={mapRef} poi={e} /> <br/>
+          {`${e.tags['addr:street']} ${e.tags['addr:housenumber']}`} <br />
+          {e.tags['website']}
         </div>
       )}
     </div>
   );
 }
 
-interface GoToLocationProps extends OverpassPointGeom {
+interface GoToLocationProps {
   map: Map;
+  poi: Poi;
 }
 
-const GoToLocation = ({ map, lat, lon }: GoToLocationProps) => (
-  <GoLocation onClick={() => {
-    //console.log('go to location:', lat, lon);
-    map.panTo([lat, lon], {
-      animate: true,
-      duration: 0.5
-    });
-  }} />
-);
+const GoToLocation = ({ map, poi }: GoToLocationProps) => {
+  if (!hasLatLon(poi)) {
+    return null;
+  }
+
+  return (
+    <GoLocation onClick={() => {
+      map.panTo([poi.lat ?? 0, poi.lon ?? 0], {
+        animate: true,
+        duration: 0.5
+      });
+    }} />
+  );
+};
 
 export default App;
