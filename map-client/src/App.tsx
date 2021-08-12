@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Map } from 'leaflet';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Tooltip, useMap } from 'react-leaflet'
 import {
   OverpassJson,
   OverpassElement, OverpassNode, OverpassWay, OverpassRelation
@@ -95,13 +95,21 @@ const App = () => {
   );
 }
 
+const getAddress = (e: Poi) => {
+  if (!e.tags['addr:street']) {
+    return null;
+  }
+
+  return <span>{e.tags['addr:street']} {e.tags['addr:housenumber']}</span>
+};
+
 interface MapProps {
   data: Poi[] | null;
 }
 
 const MapView = ({ data }: MapProps) => {
   return (
-    <MapContainer id='map-container' center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
+    <MapContainer id='map-container' center={[51.505, -0.09]} zoom={13} scrollWheelZoom={true}>
       <SaveMapRef />
       <TileLayer
         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -110,9 +118,10 @@ const MapView = ({ data }: MapProps) => {
 
       {data && data.filter(hasLatLon).map(e =>
         <Marker key={e.id} position={[e.lat ?? 0, e.lon ?? 0]}>
-          <Popup>
-            <b>{e.tags['name']}</b>
-          </Popup>
+          <Tooltip direction='auto'>
+            <b>{e.tags['name']}</b> <br />
+            {getAddress(e)}
+          </Tooltip>
         </Marker>
       )}
     </MapContainer>
@@ -131,7 +140,7 @@ const ListView = ({ data }: MapProps) => {
         <div key={e.id} className='list-elem'>
           <b>{e.tags['name']} </b>
           <GoToLocation map={mapRef} poi={e} /> <br/>
-          {`${e.tags['addr:street']} ${e.tags['addr:housenumber']}`} <br />
+          {getAddress(e)} <br />
           {e.tags['website']}
         </div>
       )}
