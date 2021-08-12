@@ -14,6 +14,11 @@
   display: flex;
   margin: 0;
   padding: 0;
+  /**
+   * Setting the height of this box to < 100% seems to fix the layout
+   * (but I don't know why this works...)
+   */
+  height: 80%;
 }
 
 #map-container {
@@ -25,7 +30,7 @@
 .list-container {
   flex: none;
   overflow-y: scroll;
-  height: 400px;
+  /*height: 400px;*/
   margin: 5px 5px;
   max-width: 300px;
 }
