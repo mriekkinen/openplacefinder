@@ -7,6 +7,10 @@ import {
 } from 'overpass-ts';
 import { GoLocation } from 'react-icons/go';
 
+// Import Leaflet.awesome-markers plugin
+import L from 'leaflet';
+import 'leaflet.awesome-markers';
+
 //import { fetchOverpass } from './services/overpassService';
 import { fetchOverpass } from './services/overpassServiceMock';
 
@@ -108,6 +112,19 @@ interface MapProps {
 }
 
 const MapView = ({ data }: MapProps) => {
+  const defaultIcon = new L.Icon.Default();
+  const coffeeIcon = L.AwesomeMarkers.icon({
+    prefix: 'fa',
+    icon: 'coffee',
+    markerColor: 'red'
+  });
+  const coffeeIconSq = L.AwesomeMarkers.icon({
+    prefix: 'fa',
+    icon: 'coffee',
+    markerColor: 'darkred',
+    className: 'awesome-marker awesome-marker-square'
+  });
+
   return (
     <MapContainer id='map-container' center={[51.505, -0.09]} zoom={13} scrollWheelZoom={true}>
       <SaveMapRef />
@@ -117,7 +134,8 @@ const MapView = ({ data }: MapProps) => {
       />
 
       {data && data.filter(hasLatLon).map(e =>
-        <Marker key={e.id} position={[e.lat ?? 0, e.lon ?? 0]}>
+        <Marker key={e.id} position={[e.lat ?? 0, e.lon ?? 0]}
+          icon={Math.random() < 0.5 ? defaultIcon : (Math.random() < 0.5 ? coffeeIcon : coffeeIconSq)}>
           <Tooltip direction='auto'>
             <b>{e.tags['name']}</b> <br />
             {getAddress(e)}
