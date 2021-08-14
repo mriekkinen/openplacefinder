@@ -9,6 +9,7 @@ import {
   OverpassElement, OverpassNode, OverpassWay, OverpassRelation
 } from 'overpass-ts';
 import { GoLocation } from 'react-icons/go';
+import { MdArrowBack } from 'react-icons/md';
 
 // Import Leaflet.awesome-markers plugin
 import L from 'leaflet';
@@ -68,7 +69,7 @@ const overpass2Poi = (data: OverpassJson | null): Poi[] => {
 
 const App = () => {
   const [data, setData] = useState<Poi[] | null>(null);
-  const [selected, setSelected] = useState<number | null>(null);
+  const [selected, setSelected] = useState<Poi | null>(null);
 
   useEffect(() => {
     const query = `
@@ -96,10 +97,16 @@ const App = () => {
         {status}
       </div>
       <div className='content'>
-        <ListView
-          data={data}
-          selected={selected}
-          setSelected={setSelected} />
+        {selected === null
+          ? <ListView
+              data={data}
+              selected={selected}
+              setSelected={setSelected} />
+          : <InfoView
+              map={mapRef}
+              poi={selected}
+              setSelected={setSelected} />
+        }
         <MapView
           data={data}
           selected={selected}
@@ -119,8 +126,8 @@ const getAddress = (e: Poi) => {
 
 interface MapProps {
   data: Poi[] | null;
-  selected: number | null;
-  setSelected: Dispatch<SetStateAction<number | null>>;
+  selected: Poi | null;
+  setSelected: Dispatch<SetStateAction<Poi | null>>;
 }
 
 const MapView = ({ data, selected, setSelected }: MapProps) => {
@@ -157,10 +164,10 @@ const MapView = ({ data, selected, setSelected }: MapProps) => {
         <Marker
           key={e.id}
           position={[e.lat ?? 0, e.lon ?? 0]}
-          icon={e.id !== selected ? coffeeIconDefault : coffeeIconSelected}
+          icon={e !== selected ? coffeeIconDefault : coffeeIconSelected}
           eventHandlers={{
             click: () => {
-              setSelected(e.id);
+              setSelected(e);
             }
           }}
         >
@@ -180,7 +187,7 @@ const SaveMapRef = () => {
 }
 
 interface UnselectOnMapClickProps {
-  setSelected: Dispatch<SetStateAction<number | null>>;
+  setSelected: Dispatch<SetStateAction<Poi | null>>;
 }
 
 const UnselectOnMapClick = ({ setSelected }: UnselectOnMapClickProps) => {
@@ -209,13 +216,13 @@ const ListView = ({ data, selected, setSelected }: MapProps) => {
 interface ListElementProps {
   map: Map;
   e: Poi;
-  selected: number | null;
-  setSelected: Dispatch<SetStateAction<number | null>>;
+  selected: Poi | null;
+  setSelected: Dispatch<SetStateAction<Poi | null>>;
 }
 
 const ListElement = ({ map, e, selected, setSelected}: ListElementProps) => {
   const className = 'list-elem' + (
-    e.id !== selected ? '' : ' list-elem-selected'
+    e !== selected ? '' : ' list-elem-selected'
   );
   return (
     <div className={className}>
@@ -226,8 +233,7 @@ const ListElement = ({ map, e, selected, setSelected}: ListElementProps) => {
         selected={selected}
         setSelected={setSelected}
       /> <br/>
-      {getAddress(e)} <br />
-      {e.tags['website']}
+      {getAddress(e)}
     </div>
   );
 };
@@ -243,9 +249,55 @@ const GoToLocation = ({ map, e, selected, setSelected }: ListElementProps) => {
         animate: true,
         duration: 0.5
       });
-      setSelected(e.id);
+      setSelected(e);
     }} />
   );
 };
+
+interface InfoViewProps {
+  map: Map;
+  poi: Poi;
+  setSelected: Dispatch<SetStateAction<Poi | null>>;
+}
+
+const InfoView = ({ map, poi, setSelected }: InfoViewProps) => {
+  return (
+    <div className='info-container'>
+      <div className='info-item'>
+        <b>{poi.tags['name']} </b>
+        <GoToLocation
+          map={map}
+          e={poi}
+          selected={poi}
+          setSelected={setSelected}
+        /> <br />
+        {getAddress(poi)}
+      </div>
+      <div className='info-item'>
+        <ReturnBtn setSelected={setSelected} />
+      </div>
+      <div className='info-item'>
+        <a
+          target='_blank'
+          rel='noopener noreferrer'
+          href={poi.tags['website']}>
+          {poi.tags['website']}
+        </a>
+      </div>
+    </div>
+  );
+};
+
+interface ReturnBtnProps {
+  setSelected: Dispatch<SetStateAction<Poi | null>>;
+}
+
+const ReturnBtn = ({ setSelected }: ReturnBtnProps) => (
+  <button
+    className='return-to-results-btn'
+    onClick={() => setSelected(null)}>
+    <MdArrowBack /> Return to results
+  </button>
+);
 
 export default App;

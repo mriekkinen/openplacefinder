@@ -27,20 +27,32 @@
   min-height: 400px;
 }
 
-.list-container {
+.list-container,
+.info-container {
   flex: none;
-  overflow-y: scroll;
-  /*height: 400px;*/
-  margin: 5px 5px;
-  max-width: 300px;
+  overflow-y: auto;
+  margin: 0 5px 5px 5px;
+  width: 300px;
 }
 
 .list-elem {
   border: 1px solid lightgray;
-  border-width: 1px 0px;
+  border-width: 1px 0;
   padding: 2px;
 }
 
 .list-elem-selected {
   background-color: lightgray;
 }
+
+.info-container {
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.info-item {
+  margin: 10px 0;
+}
+
+.return-to-results-btn {}
