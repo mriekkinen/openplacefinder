@@ -1,6 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Map } from 'leaflet';
-import { MapContainer, TileLayer, Marker, Tooltip, useMap } from 'react-leaflet'
+import {
+  MapContainer, TileLayer, Marker, Tooltip,
+  useMap, useMapEvent
+} from 'react-leaflet'
 import {
   OverpassJson,
   OverpassElement, OverpassNode, OverpassWay, OverpassRelation
@@ -65,6 +68,7 @@ const overpass2Poi = (data: OverpassJson | null): Poi[] => {
 
 const App = () => {
   const [data, setData] = useState<Poi[] | null>(null);
+  const [selected, setSelected] = useState<number | null>(null);
 
   useEffect(() => {
     const query = `
@@ -92,8 +96,14 @@ const App = () => {
         {status}
       </div>
       <div className='content'>
-        <ListView data={data} />
-        <MapView data={data} />
+        <ListView
+          data={data}
+          selected={selected}
+          setSelected={setSelected} />
+        <MapView
+          data={data}
+          selected={selected}
+          setSelected={setSelected} />
       </div>
     </div>
   );
@@ -109,33 +119,51 @@ const getAddress = (e: Poi) => {
 
 interface MapProps {
   data: Poi[] | null;
+  selected: number | null;
+  setSelected: Dispatch<SetStateAction<number | null>>;
 }
 
-const MapView = ({ data }: MapProps) => {
-  const defaultIcon = new L.Icon.Default();
-  const coffeeIcon = L.AwesomeMarkers.icon({
+const MapView = ({ data, selected, setSelected }: MapProps) => {
+  const coffeeIconDefault = L.AwesomeMarkers.icon({
     prefix: 'fa',
     icon: 'coffee',
-    markerColor: 'red'
+    markerColor: 'red',
+    //className: 'awesome-marker awesome-marker-square'
   });
-  const coffeeIconSq = L.AwesomeMarkers.icon({
+  const coffeeIconSelected = L.AwesomeMarkers.icon({
     prefix: 'fa',
     icon: 'coffee',
-    markerColor: 'darkred',
-    className: 'awesome-marker awesome-marker-square'
+    markerColor: 'cadetblue',
+    //className: 'awesome-marker awesome-marker-square'
   });
+
+  const tileProps = {
+    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+  };
 
   return (
-    <MapContainer id='map-container' center={[51.505, -0.09]} zoom={13} scrollWheelZoom={true}>
+    <MapContainer
+      id='map-container'
+      center={[51.505, -0.09]}
+      zoom={13}
+      scrollWheelZoom={true}
+    >
       <SaveMapRef />
-      <TileLayer
-        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
+      <UnselectOnMapClick setSelected={setSelected} />
+      <TileLayer {...tileProps} />
 
       {data && data.filter(hasLatLon).map(e =>
-        <Marker key={e.id} position={[e.lat ?? 0, e.lon ?? 0]}
-          icon={Math.random() < 0.5 ? defaultIcon : (Math.random() < 0.5 ? coffeeIcon : coffeeIconSq)}>
+        <Marker
+          key={e.id}
+          position={[e.lat ?? 0, e.lon ?? 0]}
+          icon={e.id !== selected ? coffeeIconDefault : coffeeIconSelected}
+          eventHandlers={{
+            click: () => {
+              setSelected(e.id);
+            }
+          }}
+        >
           <Tooltip direction='auto'>
             <b>{e.tags['name']}</b> <br />
             {getAddress(e)}
@@ -151,37 +179,71 @@ const SaveMapRef = () => {
   return null;
 }
 
-const ListView = ({ data }: MapProps) => {
+interface UnselectOnMapClickProps {
+  setSelected: Dispatch<SetStateAction<number | null>>;
+}
+
+const UnselectOnMapClick = ({ setSelected }: UnselectOnMapClickProps) => {
+  useMapEvent('click', () => {
+    setSelected(null);
+  });
+  return null;
+}
+
+const ListView = ({ data, selected, setSelected }: MapProps) => {
   return (
     <div className='list-container'>
       {data && data.map(e =>
-        <div key={e.id} className='list-elem'>
-          <b>{e.tags['name']} </b>
-          <GoToLocation map={mapRef} poi={e} /> <br/>
-          {getAddress(e)} <br />
-          {e.tags['website']}
-        </div>
+        <ListElement
+          key={e.id}
+          map={mapRef}
+          e={e}
+          selected={selected}
+          setSelected={setSelected}
+        />
       )}
     </div>
   );
 }
 
-interface GoToLocationProps {
+interface ListElementProps {
   map: Map;
-  poi: Poi;
+  e: Poi;
+  selected: number | null;
+  setSelected: Dispatch<SetStateAction<number | null>>;
 }
 
-const GoToLocation = ({ map, poi }: GoToLocationProps) => {
-  if (!hasLatLon(poi)) {
+const ListElement = ({ map, e, selected, setSelected}: ListElementProps) => {
+  const className = 'list-elem' + (
+    e.id !== selected ? '' : ' list-elem-selected'
+  );
+  return (
+    <div className={className}>
+      <b>{e.tags['name']} </b>
+      <GoToLocation
+        map={map}
+        e={e}
+        selected={selected}
+        setSelected={setSelected}
+      /> <br/>
+      {getAddress(e)} <br />
+      {e.tags['website']}
+    </div>
+  );
+};
+
+const GoToLocation = ({ map, e, selected, setSelected }: ListElementProps) => {
+  if (!hasLatLon(e)) {
     return null;
   }
 
   return (
     <GoLocation onClick={() => {
-      map.panTo([poi.lat ?? 0, poi.lon ?? 0], {
+      map.panTo([e.lat ?? 0, e.lon ?? 0], {
         animate: true,
         duration: 0.5
       });
+      setSelected(e.id);
     }} />
   );
 };

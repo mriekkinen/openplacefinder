@@ -40,3 +40,7 @@
   border-width: 1px 0px;
   padding: 2px;
 }
+
+.list-elem-selected {
+  background-color: lightgray;
+}
