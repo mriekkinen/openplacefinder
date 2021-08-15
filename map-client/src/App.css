@@ -33,26 +33,26 @@
   overflow-y: auto;
   margin: 0 5px 5px 5px;
   width: 300px;
+  border: 1px solid lightgray;
+  border-radius: 5px;
 }
 
 .list-elem {
-  border: 1px solid lightgray;
-  border-width: 1px 0;
-  padding: 2px;
+  padding: 5px;
+  margin: 0;
+  border-bottom: 1px solid lightgray;
+}
+
+.list-elem:last-child {
+  border-bottom: none;
 }
 
 .list-elem-hover {
   background-color: lightgray;
 }
 
-.info-container {
-  border: 1px solid lightgray;
-  border-radius: 5px;
-  padding: 5px;
-}
-
 .info-item {
-  margin: 10px 0;
+  margin: 10px 5px;
 }
 
 .return-to-results-btn {}
