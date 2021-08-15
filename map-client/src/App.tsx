@@ -70,6 +70,7 @@ const overpass2Poi = (data: OverpassJson | null): Poi[] => {
 const App = () => {
   const [data, setData] = useState<Poi[] | null>(null);
   const [selected, setSelected] = useState<Poi | null>(null);
+  const [hover, setHover] = useState<Poi | null>(null);
 
   useEffect(() => {
     const query = `
@@ -100,8 +101,9 @@ const App = () => {
         {selected === null
           ? <ListView
               data={data}
-              selected={selected}
-              setSelected={setSelected} />
+              setSelected={setSelected}
+              hover={hover}
+              setHover={setHover} />
           : <InfoView
               map={mapRef}
               poi={selected}
@@ -110,7 +112,8 @@ const App = () => {
         <MapView
           data={data}
           selected={selected}
-          setSelected={setSelected} />
+          setSelected={setSelected}
+          hover={hover} />
       </div>
     </div>
   );
@@ -128,9 +131,10 @@ interface MapProps {
   data: Poi[] | null;
   selected: Poi | null;
   setSelected: Dispatch<SetStateAction<Poi | null>>;
+  hover: Poi| null;
 }
 
-const MapView = ({ data, selected, setSelected }: MapProps) => {
+const MapView = ({ data, selected, setSelected, hover }: MapProps) => {
   const coffeeIconDefault = L.AwesomeMarkers.icon({
     prefix: 'fa',
     icon: 'coffee',
@@ -161,23 +165,47 @@ const MapView = ({ data, selected, setSelected }: MapProps) => {
       <TileLayer {...tileProps} />
 
       {data && data.filter(hasLatLon).map(e =>
-        <Marker
+        <PoiMarker
           key={e.id}
-          position={[e.lat ?? 0, e.lon ?? 0]}
-          icon={e !== selected ? coffeeIconDefault : coffeeIconSelected}
-          eventHandlers={{
-            click: () => {
-              setSelected(e);
-            }
-          }}
-        >
-          <Tooltip direction='auto'>
-            <b>{e.tags['name']}</b> <br />
-            {getAddress(e)}
-          </Tooltip>
-        </Marker>
+          e={e}
+          icon={e !== selected && e !== hover ? coffeeIconDefault : coffeeIconSelected}
+          handleClick={() => setSelected(e)}
+        />
       )}
     </MapContainer>
+  );
+}
+
+interface PoiMarkerProps {
+  e: Poi;
+  icon: L.AwesomeMarkers.Icon;
+  handleClick: () => void;
+}
+
+const PoiMarker = ({ e, icon, handleClick }: PoiMarkerProps) => {
+  return (
+    <Marker
+      position={[e.lat ?? 0, e.lon ?? 0]}
+      icon={icon}
+      eventHandlers={{
+        click: handleClick
+      }}
+    >
+      <PoiTooltip e={e} />
+    </Marker>
+  );
+}
+
+interface PoiTooltipProps {
+  e: Poi;
+}
+
+const PoiTooltip = ({ e }: PoiTooltipProps) => {
+  return (
+    <Tooltip direction='auto'>
+      <b>{e.tags['name']}</b><br />
+      {getAddress(e)}
+    </Tooltip>
   );
 }
 
@@ -197,7 +225,20 @@ const UnselectOnMapClick = ({ setSelected }: UnselectOnMapClickProps) => {
   return null;
 }
 
-const ListView = ({ data, selected, setSelected }: MapProps) => {
+interface ListViewProps {
+  data: Poi[] | null;
+  setSelected: Dispatch<SetStateAction<Poi | null>>;
+  hover: Poi | null;
+  setHover: Dispatch<SetStateAction<Poi| null>>;
+}
+
+const ListView = ({ data, setSelected, hover, setHover }: ListViewProps) => {
+  useEffect(() => {
+    return () => {
+      setHover(null);
+    }
+  }, []);
+
   return (
     <div className='list-container'>
       {data && data.map(e =>
@@ -205,8 +246,9 @@ const ListView = ({ data, selected, setSelected }: MapProps) => {
           key={e.id}
           map={mapRef}
           e={e}
-          selected={selected}
           setSelected={setSelected}
+          hover={hover}
+          setHover={setHover}
         />
       )}
     </div>
@@ -216,41 +258,31 @@ const ListView = ({ data, selected, setSelected }: MapProps) => {
 interface ListElementProps {
   map: Map;
   e: Poi;
-  selected: Poi | null;
   setSelected: Dispatch<SetStateAction<Poi | null>>;
+  hover: Poi | null;
+  setHover: Dispatch<SetStateAction<Poi| null>>;
 }
 
-const ListElement = ({ map, e, selected, setSelected}: ListElementProps) => {
+const ListElement = ({ map, e, setSelected, hover, setHover}: ListElementProps) => {
   const className = 'list-elem' + (
-    e !== selected ? '' : ' list-elem-selected'
+    e !== hover ? '' : ' list-elem-hover'
   );
   return (
-    <div className={className}>
-      <b>{e.tags['name']} </b>
-      <GoToLocation
-        map={map}
-        e={e}
-        selected={selected}
-        setSelected={setSelected}
-      /> <br/>
+    <div
+      className={className}
+      onMouseEnter={() => setHover(e)}
+      onMouseLeave={() => setHover(null)}
+      onClick={() => {
+        setSelected(e);
+        map.panTo([e.lat ?? 0, e.lon ?? 0], {
+          animate: true,
+          duration: 0.5
+        });
+      }}
+    >
+      <b>{e.tags['name']}</b><br/>
       {getAddress(e)}
     </div>
-  );
-};
-
-const GoToLocation = ({ map, e, selected, setSelected }: ListElementProps) => {
-  if (!hasLatLon(e)) {
-    return null;
-  }
-
-  return (
-    <GoLocation onClick={() => {
-      map.panTo([e.lat ?? 0, e.lon ?? 0], {
-        animate: true,
-        duration: 0.5
-      });
-      setSelected(e);
-    }} />
   );
 };
 
@@ -268,8 +300,6 @@ const InfoView = ({ map, poi, setSelected }: InfoViewProps) => {
         <GoToLocation
           map={map}
           e={poi}
-          selected={poi}
-          setSelected={setSelected}
         /> <br />
         {getAddress(poi)}
       </div>
@@ -285,6 +315,26 @@ const InfoView = ({ map, poi, setSelected }: InfoViewProps) => {
         </a>
       </div>
     </div>
+  );
+};
+
+interface GoToLocationProps {
+  map: Map;
+  e: Poi;
+}
+
+const GoToLocation = ({ map, e }: GoToLocationProps) => {
+  if (!hasLatLon(e)) {
+    return null;
+  }
+
+  return (
+    <GoLocation onClick={() => {
+      map.panTo([e.lat ?? 0, e.lon ?? 0], {
+        animate: true,
+        duration: 0.5
+      });
+    }} />
   );
 };
 
