@@ -1,20 +1,14 @@
-import React, {
-  Dispatch, SetStateAction,
-  useEffect, useState, useRef
-} from 'react';
-
-import { GoLocation } from 'react-icons/go';
-import { MdArrowBack } from 'react-icons/md';
+import React, { useEffect, useState, useRef } from 'react';
 
 //import { fetchOverpass } from './services/overpassService';
 import { fetchOverpass } from './services/overpassServiceMock';
 
 import { Poi } from './types';
-import { overpass2Poi, hasLatLon } from './utils';
+import { overpass2Poi } from './utils';
 import MapView from './MapView';
 import { MapHandle } from './MapView/SaveMapRef';
-import { getAddress } from './MapView/address';
 import ListView from './ListView';
+import InfoView from './InfoView';
 
 import './App.css';
 
@@ -73,65 +67,5 @@ const App = () => {
     </div>
   );
 }
-
-interface InfoViewProps {
-  mapRef: React.RefObject<MapHandle>;
-  poi: Poi;
-  setSelected: Dispatch<SetStateAction<Poi | null>>;
-}
-
-const InfoView = ({ mapRef, poi, setSelected }: InfoViewProps) => {
-  return (
-    <div className='info-container'>
-      <div className='info-item'>
-        <b>{poi.tags['name']} </b>
-        <GoToLocation
-          mapRef={mapRef}
-          e={poi}
-        /> <br />
-        {getAddress(poi)}
-      </div>
-      <div className='info-item'>
-        <ReturnBtn setSelected={setSelected} />
-      </div>
-      <div className='info-item'>
-        <a
-          target='_blank'
-          rel='noopener noreferrer'
-          href={poi.tags['website']}>
-          {poi.tags['website']}
-        </a>
-      </div>
-    </div>
-  );
-};
-
-interface GoToLocationProps {
-  mapRef: React.RefObject<MapHandle>;
-  e: Poi;
-}
-
-const GoToLocation = ({ mapRef, e }: GoToLocationProps) => {
-  if (!hasLatLon(e)) {
-    return null;
-  }
-
-  return (
-    <GoLocation onClick={() => {
-      mapRef.current?.panTo(e);
-    }} />
-  );
-};
-
-interface ReturnBtnProps {
-  setSelected: Dispatch<SetStateAction<Poi | null>>;
-}
-
-const ReturnBtn = ({ setSelected }: ReturnBtnProps) => (
-  <button
-    onClick={() => setSelected(null)}>
-    <MdArrowBack /> Return to results
-  </button>
-);
 
 export default App;
