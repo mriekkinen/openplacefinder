@@ -135,13 +135,13 @@ interface MapProps {
 }
 
 const MapView = ({ data, selected, setSelected, hover }: MapProps) => {
-  const coffeeIconDefault = L.AwesomeMarkers.icon({
+  const defaultIcon = L.AwesomeMarkers.icon({
     prefix: 'fa',
     icon: 'coffee',
     markerColor: 'red',
     //className: 'awesome-marker awesome-marker-square'
   });
-  const coffeeIconSelected = L.AwesomeMarkers.icon({
+  const selectedIcon = L.AwesomeMarkers.icon({
     prefix: 'fa',
     icon: 'coffee',
     markerColor: 'cadetblue',
@@ -168,7 +168,7 @@ const MapView = ({ data, selected, setSelected, hover }: MapProps) => {
         <PoiMarker
           key={e.id}
           e={e}
-          icon={e !== selected && e !== hover ? coffeeIconDefault : coffeeIconSelected}
+          icon={e !== selected && e !== hover ? defaultIcon : selectedIcon}
           handleClick={() => setSelected(e)}
         />
       )}
@@ -344,7 +344,6 @@ interface ReturnBtnProps {
 
 const ReturnBtn = ({ setSelected }: ReturnBtnProps) => (
   <button
-    className='return-to-results-btn'
     onClick={() => setSelected(null)}>
     <MdArrowBack /> Return to results
   </button>

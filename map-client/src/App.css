@@ -38,6 +38,7 @@
 }
 
 .list-elem {
+  cursor: pointer;
   padding: 5px;
   margin: 0;
   border-bottom: 1px solid lightgray;
@@ -48,11 +49,9 @@
 }
 
 .list-elem-hover {
-  background-color: lightgray;
+  background-color: #EEEEEE;
 }
 
 .info-item {
   margin: 10px 5px;
 }
-
-.return-to-results-btn {}
