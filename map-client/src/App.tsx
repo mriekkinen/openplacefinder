@@ -1,5 +1,7 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Map } from 'leaflet';
+import React, {
+  Dispatch, SetStateAction,
+  useEffect, useState, useRef, useImperativeHandle
+} from 'react';
 import {
   MapContainer, TileLayer, Marker, Tooltip,
   useMap, useMapEvent
@@ -19,12 +21,16 @@ import { overpass2Poi, hasLatLon } from './utils';
 
 import './App.css';
 
-let mapRef: Map;
+interface MapHandle {
+  panTo: (e: Poi) => void;
+}
 
 const App = () => {
   const [data, setData] = useState<Poi[] | null>(null);
   const [selected, setSelected] = useState<Poi | null>(null);
   const [hover, setHover] = useState<Poi | null>(null);
+
+  const mapRef = useRef<MapHandle>(null);
 
   useEffect(() => {
     const query = `
@@ -54,12 +60,13 @@ const App = () => {
       <div className='content'>
         {selected === null
           ? <ListView
+              mapRef={mapRef}
               data={data}
               setSelected={setSelected}
               hover={hover}
               setHover={setHover} />
           : <InfoView
-              map={mapRef}
+              mapRef={mapRef}
               poi={selected}
               setSelected={setSelected} />
         }
@@ -67,7 +74,8 @@ const App = () => {
           data={data}
           selected={selected}
           setSelected={setSelected}
-          hover={hover} />
+          hover={hover}
+          ref={mapRef} />
       </div>
     </div>
   );
@@ -88,7 +96,10 @@ interface MapProps {
   hover: Poi| null;
 }
 
-const MapView = ({ data, selected, setSelected, hover }: MapProps) => {
+const MapView = React.forwardRef((
+  { data, selected, setSelected, hover }: MapProps,
+  ref: React.Ref<MapHandle>
+) => {
   const defaultIcon = L.AwesomeMarkers.icon({
     prefix: 'fa',
     icon: 'coffee',
@@ -114,7 +125,7 @@ const MapView = ({ data, selected, setSelected, hover }: MapProps) => {
       zoom={13}
       scrollWheelZoom={true}
     >
-      <SaveMapRef />
+      <SaveMapRef ref={ref} />
       <UnselectOnMapClick setSelected={setSelected} />
       <TileLayer {...tileProps} />
 
@@ -128,7 +139,32 @@ const MapView = ({ data, selected, setSelected, hover }: MapProps) => {
       )}
     </MapContainer>
   );
-}
+});
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface SaveMapRefProps {}
+
+// TODO: Set a display name
+// eslint-disable-next-line react/display-name
+const SaveMapRef = React.forwardRef((
+  props: SaveMapRefProps,
+  ref: React.Ref<MapHandle>
+) => {
+  const map = useMap();
+  useImperativeHandle(ref, () => {
+    return {
+      panTo: (e: Poi) => {
+        if (e.lat === undefined || e.lon === undefined) return;
+        map.panTo([e.lat, e.lon], {
+          animate: true,
+          duration: 0.5
+        });
+      }
+    };
+  });
+
+  return null;
+});
 
 interface PoiMarkerProps {
   e: Poi;
@@ -137,9 +173,12 @@ interface PoiMarkerProps {
 }
 
 const PoiMarker = ({ e, icon, handleClick }: PoiMarkerProps) => {
+  if (e.lat === undefined || e.lon === undefined) {
+    return null;
+  }
   return (
     <Marker
-      position={[e.lat ?? 0, e.lon ?? 0]}
+      position={[e.lat, e.lon]}
       icon={icon}
       eventHandlers={{
         click: handleClick
@@ -163,11 +202,6 @@ const PoiTooltip = ({ e }: PoiTooltipProps) => {
   );
 }
 
-const SaveMapRef = () => {
-  mapRef = useMap();
-  return null;
-}
-
 interface UnselectOnMapClickProps {
   setSelected: Dispatch<SetStateAction<Poi | null>>;
 }
@@ -180,13 +214,14 @@ const UnselectOnMapClick = ({ setSelected }: UnselectOnMapClickProps) => {
 }
 
 interface ListViewProps {
+  mapRef: React.RefObject<MapHandle>;
   data: Poi[] | null;
   setSelected: Dispatch<SetStateAction<Poi | null>>;
   hover: Poi | null;
   setHover: Dispatch<SetStateAction<Poi| null>>;
 }
 
-const ListView = ({ data, setSelected, hover, setHover }: ListViewProps) => {
+const ListView = ({ mapRef, data, setSelected, hover, setHover }: ListViewProps) => {
   useEffect(() => {
     return () => {
       setHover(null);
@@ -198,7 +233,7 @@ const ListView = ({ data, setSelected, hover, setHover }: ListViewProps) => {
       {data && data.map(e =>
         <ListElement
           key={e.id}
-          map={mapRef}
+          mapRef={mapRef}
           e={e}
           setSelected={setSelected}
           hover={hover}
@@ -210,14 +245,14 @@ const ListView = ({ data, setSelected, hover, setHover }: ListViewProps) => {
 }
 
 interface ListElementProps {
-  map: Map;
+  mapRef: React.RefObject<MapHandle>;
   e: Poi;
   setSelected: Dispatch<SetStateAction<Poi | null>>;
   hover: Poi | null;
   setHover: Dispatch<SetStateAction<Poi| null>>;
 }
 
-const ListElement = ({ map, e, setSelected, hover, setHover}: ListElementProps) => {
+const ListElement = ({ mapRef, e, setSelected, hover, setHover}: ListElementProps) => {
   const className = 'list-elem' + (
     e !== hover ? '' : ' list-elem-hover'
   );
@@ -228,10 +263,7 @@ const ListElement = ({ map, e, setSelected, hover, setHover}: ListElementProps) 
       onMouseLeave={() => setHover(null)}
       onClick={() => {
         setSelected(e);
-        map.panTo([e.lat ?? 0, e.lon ?? 0], {
-          animate: true,
-          duration: 0.5
-        });
+        mapRef.current?.panTo(e);
       }}
     >
       <b>{e.tags['name']}</b><br/>
@@ -241,18 +273,18 @@ const ListElement = ({ map, e, setSelected, hover, setHover}: ListElementProps) 
 };
 
 interface InfoViewProps {
-  map: Map;
+  mapRef: React.RefObject<MapHandle>;
   poi: Poi;
   setSelected: Dispatch<SetStateAction<Poi | null>>;
 }
 
-const InfoView = ({ map, poi, setSelected }: InfoViewProps) => {
+const InfoView = ({ mapRef, poi, setSelected }: InfoViewProps) => {
   return (
     <div className='info-container'>
       <div className='info-item'>
         <b>{poi.tags['name']} </b>
         <GoToLocation
-          map={map}
+          mapRef={mapRef}
           e={poi}
         /> <br />
         {getAddress(poi)}
@@ -273,21 +305,18 @@ const InfoView = ({ map, poi, setSelected }: InfoViewProps) => {
 };
 
 interface GoToLocationProps {
-  map: Map;
+  mapRef: React.RefObject<MapHandle>;
   e: Poi;
 }
 
-const GoToLocation = ({ map, e }: GoToLocationProps) => {
+const GoToLocation = ({ mapRef, e }: GoToLocationProps) => {
   if (!hasLatLon(e)) {
     return null;
   }
 
   return (
     <GoLocation onClick={() => {
-      map.panTo([e.lat ?? 0, e.lon ?? 0], {
-        animate: true,
-        duration: 0.5
-      });
+      mapRef.current?.panTo(e);
     }} />
   );
 };
