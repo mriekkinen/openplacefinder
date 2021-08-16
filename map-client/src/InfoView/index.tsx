@@ -1,9 +1,8 @@
 import React from 'react';
 
 import { Poi } from '../types';
-import { getAddress } from '../MapView/address';
 import { MapHandle } from '../MapView/SaveMapRef';
-import GoToLocation from './GoToLocation';
+import Address from './Address';
 import ReturnBtn from './ReturnBtn';
 import Link from './Link';
 
@@ -17,15 +16,14 @@ const InfoView = ({ mapRef, poi, setSelected }: Props) => {
   return (
     <div className='info-container'>
       <div className='info-item'>
-        <b>{poi.tags['name']} </b>
-        <GoToLocation
-          mapRef={mapRef}
-          e={poi}
-        /> <br />
-        {getAddress(poi)}
+        <ReturnBtn setSelected={setSelected} />
       </div>
       <div className='info-item'>
-        <ReturnBtn setSelected={setSelected} />
+        <h2>{poi.tags['name']}</h2>
+        <span>Tea shop</span>
+      </div>
+      <div className='info-item'>
+        <Address mapRef={mapRef} e={poi} />
       </div>
       <div className='info-item'>
         <Link
