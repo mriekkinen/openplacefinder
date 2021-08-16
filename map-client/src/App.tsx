@@ -14,6 +14,7 @@ import { overpass2Poi, hasLatLon } from './utils';
 import MapView from './MapView';
 import { MapHandle } from './MapView/SaveMapRef';
 import { getAddress } from './MapView/address';
+import ListView from './ListView';
 
 import './App.css';
 
@@ -72,65 +73,6 @@ const App = () => {
     </div>
   );
 }
-
-interface ListViewProps {
-  mapRef: React.RefObject<MapHandle>;
-  data: Poi[] | null;
-  setSelected: Dispatch<SetStateAction<Poi | null>>;
-  hover: Poi | null;
-  setHover: Dispatch<SetStateAction<Poi| null>>;
-}
-
-const ListView = ({ mapRef, data, setSelected, hover, setHover }: ListViewProps) => {
-  useEffect(() => {
-    return () => {
-      setHover(null);
-    }
-  }, []);
-
-  return (
-    <div className='list-container'>
-      {data && data.map(e =>
-        <ListElement
-          key={e.id}
-          mapRef={mapRef}
-          e={e}
-          setSelected={setSelected}
-          hover={hover}
-          setHover={setHover}
-        />
-      )}
-    </div>
-  );
-}
-
-interface ListElementProps {
-  mapRef: React.RefObject<MapHandle>;
-  e: Poi;
-  setSelected: Dispatch<SetStateAction<Poi | null>>;
-  hover: Poi | null;
-  setHover: Dispatch<SetStateAction<Poi| null>>;
-}
-
-const ListElement = ({ mapRef, e, setSelected, hover, setHover}: ListElementProps) => {
-  const className = 'list-elem' + (
-    e !== hover ? '' : ' list-elem-hover'
-  );
-  return (
-    <div
-      className={className}
-      onMouseEnter={() => setHover(e)}
-      onMouseLeave={() => setHover(null)}
-      onClick={() => {
-        setSelected(e);
-        mapRef.current?.panTo(e);
-      }}
-    >
-      <b>{e.tags['name']}</b><br/>
-      {getAddress(e)}
-    </div>
-  );
-};
 
 interface InfoViewProps {
   mapRef: React.RefObject<MapHandle>;
