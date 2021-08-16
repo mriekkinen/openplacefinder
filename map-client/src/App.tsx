@@ -4,10 +4,6 @@ import {
   MapContainer, TileLayer, Marker, Tooltip,
   useMap, useMapEvent
 } from 'react-leaflet'
-import {
-  OverpassJson,
-  OverpassElement, OverpassNode, OverpassWay, OverpassRelation
-} from 'overpass-ts';
 import { GoLocation } from 'react-icons/go';
 import { MdArrowBack } from 'react-icons/md';
 
@@ -18,54 +14,12 @@ import 'leaflet.awesome-markers';
 //import { fetchOverpass } from './services/overpassService';
 import { fetchOverpass } from './services/overpassServiceMock';
 
+import { Poi } from './types';
+import { overpass2Poi, hasLatLon } from './utils';
+
 import './App.css';
 
 let mapRef: Map;
-
-type Tags = { [key: string]: string };
-
-interface Poi {
-  type: 'node' | 'way' | 'relation';
-  id: number;
-  lat?: number;
-  lon?: number;
-  tags: Tags;
-}
-
-type Nwr = OverpassNode | OverpassWay | OverpassRelation;
-
-const isNwr = (e: OverpassElement): e is Nwr => {
-  return e.type === 'node' || e.type === 'way' || e.type === 'relation';
-}
-
-const isNode = (e: OverpassElement): e is OverpassNode => {
-  return e.type === 'node';
-}
-
-// const hasLatLon = (e: Nwr): boolean => {
-//   return isNode(e) || e.center !== undefined;
-// };
-
-const hasLatLon = (e: Poi): boolean => {
-  return e.lat !== undefined && e.lon !== undefined;
-};
-
-const overpass2Poi = (data: OverpassJson | null): Poi[] => {
-  if (!data) return [];
-  return data.elements
-    .filter(isNwr)
-    .map(e => ({
-      type: e.type,
-      id: e.id,
-      lat: isNode(e)
-        ? e.lat
-        : e.center?.lat,
-      lon: isNode(e)
-        ? e.lon
-        : e.center?.lon,
-      tags: e.tags ? e.tags : {}
-    }));
-};
 
 const App = () => {
   const [data, setData] = useState<Poi[] | null>(null);
