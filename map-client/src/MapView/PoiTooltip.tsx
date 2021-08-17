@@ -2,7 +2,7 @@ import React from 'react';
 import { Tooltip } from 'react-leaflet';
 
 import { Poi } from '../types';
-import { getAddress } from './address';
+import { getAddress } from '../InfoView/Address';
 
 interface Props {
   e: Poi;

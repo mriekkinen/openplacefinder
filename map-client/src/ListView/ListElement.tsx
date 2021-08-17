@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Poi } from '../types';
 import { MapHandle } from '../MapView/SaveMapRef';
-import { getAddress } from '../MapView/address';
+import { getAddress } from '../InfoView/Address';
 
 interface Props {
   mapRef: React.RefObject<MapHandle>;
