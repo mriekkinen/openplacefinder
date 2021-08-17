@@ -1,0 +1,67 @@
+#App {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.header {
+  flex: 0 0 auto;
+  margin: 0px 5px;
+}
+
+.content {
+  flex: 1 1 400px;
+  display: flex;
+  margin: 0;
+  padding: 0;
+  /**
+   * Setting the height of this box to < 100% seems to fix the layout
+   * (but I don't know why this works...)
+   */
+  height: 80%;
+}
+
+#map-container {
+  flex: 1 0 100px;
+  width: 100%;
+  min-height: 400px;
+}
+
+.list-container,
+.info-container {
+  flex: none;
+  overflow-y: auto;
+  margin: 0 5px 5px 5px;
+  width: 300px;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+}
+
+.list-elem {
+  cursor: pointer;
+  margin: 0;
+  padding: 10px;
+  line-height: 1.25;
+  border-bottom: 1px solid lightgray;
+}
+
+.list-elem:last-child {
+  border-bottom: none;
+}
+
+.list-elem-hover {
+  background-color: #EEEEEE;
+}
+
+.info-item {
+  margin: 10px;
+  line-height: 1.25;
+}
+
+.info-item h2 {
+  margin: 0;
+}
+
+.info-item .address {
+  cursor: pointer;
+}
