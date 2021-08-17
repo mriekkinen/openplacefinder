@@ -9,7 +9,7 @@ import { Poi } from '../types';
 import { hasLatLon } from '../utils';
 import SaveMapRef, { MapHandle } from './SaveMapRef';
 import UnselectOnMapClick from './UnselectOnMapClick';
-import PoiMarker from './PoiMarker';
+import Marker from './Marker';
 
 interface Props {
   data: Poi[] | null;
@@ -52,7 +52,7 @@ const MapView = (
       <TileLayer {...tileProps} />
 
       {data && data.filter(hasLatLon).map(e =>
-        <PoiMarker
+        <Marker
           key={e.id}
           e={e}
           icon={e !== selected && e !== hover ? defaultIcon : selectedIcon}

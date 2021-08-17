@@ -1,12 +1,12 @@
 import React from 'react';
-import { Marker } from 'react-leaflet';
+import { Marker as LeafletMarker } from 'react-leaflet';
 
 // Import Leaflet.awesome-markers plugin
 import L from 'leaflet';
 import 'leaflet.awesome-markers';
 
 import { Poi } from '../types';
-import PoiTooltip from './PoiTooltip';
+import Tooltip from './Tooltip';
 
 interface Props {
   e: Poi;
@@ -14,22 +14,22 @@ interface Props {
   handleClick: () => void;
 }
 
-const PoiMarker = ({ e, icon, handleClick }: Props) => {
+const Marker = ({ e, icon, handleClick }: Props) => {
   if (e.lat === undefined || e.lon === undefined) {
     return null;
   }
 
   return (
-    <Marker
+    <LeafletMarker
       position={[e.lat, e.lon]}
       icon={icon}
       eventHandlers={{
         click: handleClick
       }}
     >
-      <PoiTooltip e={e} />
-    </Marker>
+      <Tooltip e={e} />
+    </LeafletMarker>
   );
 };
 
-export default PoiMarker;
+export default Marker;

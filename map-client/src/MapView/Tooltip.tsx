@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tooltip } from 'react-leaflet';
+import { Tooltip as LeafletTooltip } from 'react-leaflet';
 
 import { Poi } from '../types';
 import { getAddress } from '../InfoView/Address';
@@ -8,13 +8,13 @@ interface Props {
   e: Poi;
 }
 
-const PoiTooltip = ({ e }: Props) => {
+const Tooltip = ({ e }: Props) => {
   return (
-    <Tooltip direction='auto'>
+    <LeafletTooltip direction='auto'>
       <b>{e.tags['name']}</b><br />
       {getAddress(e)}
-    </Tooltip>
+    </LeafletTooltip>
   );
 };
 
-export default PoiTooltip;
+export default Tooltip;
