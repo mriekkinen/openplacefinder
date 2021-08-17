@@ -15,7 +15,6 @@ import './App.css';
 const App = () => {
   const [data, setData] = useState<Poi[] | null>(null);
   const [selected, setSelected] = useState<Poi | null>(null);
-  const [hover, setHover] = useState<Poi | null>(null);
 
   const mapRef = useRef<MapHandle>(null);
 
@@ -49,9 +48,7 @@ const App = () => {
           ? <ListView
               mapRef={mapRef}
               data={data}
-              setSelected={setSelected}
-              hover={hover}
-              setHover={setHover} />
+              setSelected={setSelected} />
           : <InfoView
               mapRef={mapRef}
               poi={selected}
@@ -61,7 +58,6 @@ const App = () => {
           data={data}
           selected={selected}
           setSelected={setSelected}
-          hover={hover}
           ref={mapRef} />
       </div>
     </div>

@@ -1,4 +1,5 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { MapContainer, TileLayer } from 'react-leaflet';
 
 // Import Leaflet.awesome-markers plugin
@@ -7,6 +8,7 @@ import 'leaflet.awesome-markers';
 
 import { Poi } from '../types';
 import { hasLatLon } from '../utils';
+import { State } from '../state';
 import SaveMapRef, { MapHandle } from './SaveMapRef';
 import UnselectOnMapClick from './UnselectOnMapClick';
 import Marker from './Marker';
@@ -14,14 +16,15 @@ import Marker from './Marker';
 interface Props {
   data: Poi[] | null;
   selected: Poi | null;
-  setSelected: Dispatch<SetStateAction<Poi | null>>;
-  hover: Poi| null;
+  setSelected: React.Dispatch<React.SetStateAction<Poi | null>>;
 }
 
 const MapView = (
-  { data, selected, setSelected, hover }: Props,
+  { data, selected, setSelected }: Props,
   ref: React.Ref<MapHandle>
 ) => {
+  const hover = useSelector<State>(state => state.hover);
+
   const defaultIcon = L.AwesomeMarkers.icon({
     prefix: 'fa',
     icon: 'coffee',
