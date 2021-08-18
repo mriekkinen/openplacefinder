@@ -1,12 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { useSelector } from 'react-redux';
 
 //import { fetchOverpass } from './services/overpassService';
 import { fetchOverpass } from './services/overpassServiceMock';
 
 import { Poi } from './types';
 import { overpass2Poi } from './utils';
+import { State } from './state';
 import MapView from './MapView';
-import { MapHandle } from './MapView/SaveMapRef';
+import { MapHandle } from './MapView/SetMapRef';
 import ListView from './ListView';
 import InfoView from './InfoView';
 
@@ -14,7 +16,7 @@ import './App.css';
 
 const App = () => {
   const [data, setData] = useState<Poi[] | null>(null);
-  const [selected, setSelected] = useState<Poi | null>(null);
+  const selected = useSelector<State, Poi | null>(state => state.selected);
 
   const mapRef = useRef<MapHandle>(null);
 
@@ -47,17 +49,12 @@ const App = () => {
         {selected === null
           ? <ListView
               mapRef={mapRef}
-              data={data}
-              setSelected={setSelected} />
+              data={data} />
           : <InfoView
-              mapRef={mapRef}
-              poi={selected}
-              setSelected={setSelected} />
+              mapRef={mapRef} />
         }
         <MapView
           data={data}
-          selected={selected}
-          setSelected={setSelected}
           ref={mapRef} />
       </div>
     </div>

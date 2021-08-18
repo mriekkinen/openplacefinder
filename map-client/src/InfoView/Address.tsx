@@ -2,7 +2,7 @@ import React from 'react';
 import { GoLocation } from 'react-icons/go';
 
 import { Poi } from '../types';
-import { MapHandle } from '../MapView/SaveMapRef';
+import { MapHandle } from '../MapView/SetMapRef';
 
 interface Props {
   mapRef: React.RefObject<MapHandle>;
