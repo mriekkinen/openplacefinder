@@ -1,19 +1,19 @@
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Poi } from '../types';
-import { MapHandle } from '../MapView/SaveMapRef';
+import { State, setSelected, setHover } from '../state';
+import { MapHandle } from '../MapView/SetMapRef';
 import ListElement from './ListElement';
-import { setHover } from '../state';
 
 interface Props {
   mapRef: React.RefObject<MapHandle>;
   data: Poi[] | null;
-  setSelected: React.Dispatch<React.SetStateAction<Poi | null>>;
 }
 
-const ListView = ({ mapRef, data, setSelected }: Props) => {
+const ListView = ({ mapRef, data }: Props) => {
   const dispatch = useDispatch();
+  const hover = useSelector<State, Poi | null>(state => state.hover);
 
   useEffect(() => {
     return () => {
@@ -26,9 +26,14 @@ const ListView = ({ mapRef, data, setSelected }: Props) => {
       {data && data.map(e =>
         <ListElement
           key={e.id}
-          mapRef={mapRef}
           e={e}
-          setSelected={setSelected}
+          isHover={e === hover}
+          handleMouseEnter={() => dispatch(setHover(e))}
+          handleMouseLeave={() => dispatch(setHover(null))}
+          handleClick={() => {
+            dispatch(setSelected(e));
+            mapRef.current?.panTo(e);
+          }}
         />
       )}
     </div>

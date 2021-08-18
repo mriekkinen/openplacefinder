@@ -1,34 +1,29 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { Poi } from '../types';
-import { MapHandle } from '../MapView/SaveMapRef';
 import { getAddress } from '../InfoView/Address';
-import { State, setHover } from '../state';
 
 interface Props {
-  mapRef: React.RefObject<MapHandle>;
   e: Poi;
-  setSelected: React.Dispatch<React.SetStateAction<Poi | null>>;
+  isHover: boolean;
+  handleMouseEnter: () => void;
+  handleMouseLeave: () => void;
+  handleClick: () => void;
 }
 
-const ListElement = ({ mapRef, e, setSelected }: Props) => {
-  const dispatch = useDispatch();
-  const hover = useSelector<State>(state => state.hover);
-
+const ListElement = (
+  { e, isHover, handleMouseEnter, handleMouseLeave, handleClick }: Props
+) => {
   const className = 'list-elem' + (
-    e !== hover ? '' : ' list-elem-hover'
+    isHover ? ' list-elem-hover' : ''
   );
 
   return (
     <div
       className={className}
-      onMouseEnter={() => dispatch(setHover(e))}
-      onMouseLeave={() => dispatch(setHover(null))}
-      onClick={() => {
-        setSelected(e);
-        mapRef.current?.panTo(e);
-      }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onClick={handleClick}
     >
       <b>{e.tags['name']}</b><br/>
       {getAddress(e)}
