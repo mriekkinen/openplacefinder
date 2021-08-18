@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Poi } from '../types';
-import { State, setSelected } from '../state';
+import { AppDispatch, State, setSelected } from '../state';
 import { MapHandle } from '../MapView/SetMapRef';
 import Address from './Address';
 import ReturnBtn from './ReturnBtn';
@@ -13,7 +13,7 @@ interface Props {
 }
 
 const InfoView = ({ mapRef }: Props) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const poi = useSelector<State, Poi | null>(state => state.selected);
 
   if (!poi) {

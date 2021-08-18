@@ -1,6 +1,12 @@
 import { Poi } from '../types';
 import { initialState, State } from './state';
 
+//import { fetchOverpass } from '../services/overpassService';
+import { fetchOverpass } from '../services/overpassServiceMock';
+import { overpass2Poi } from '../utils';
+import { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import { AnyAction } from 'redux';
+
 export type Action =
   | {
       type: 'SET_POI_LIST',
@@ -14,6 +20,17 @@ export type Action =
       type: 'SET_HOVER',
       data: Poi | null
     };
+
+export type AppThunk = ThunkAction<void, State, unknown, AnyAction>;
+export type AppDispatch = ThunkDispatch<State, unknown, AnyAction>;
+
+export const queryOverpass = (query: string): AppThunk => {
+  return async dispatch => {
+    const overpassJson = await fetchOverpass(query);
+    const newData = overpass2Poi(overpassJson);
+    dispatch(setPoiList(newData));
+  };
+};
 
 export const setPoiList = (pois: Poi[]): Action => {
   return {

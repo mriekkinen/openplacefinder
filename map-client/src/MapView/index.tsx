@@ -7,7 +7,7 @@ import L from 'leaflet';
 import 'leaflet.awesome-markers';
 
 import { Poi } from '../types';
-import { setSelected, State } from '../state';
+import { AppDispatch, setSelected, State } from '../state';
 import SetMapRef, { MapHandle } from './SetMapRef';
 import HandleMapClick from './HandleMapClick';
 import Marker from './Marker';
@@ -19,7 +19,7 @@ const MapView = (
   props: Props,
   ref: React.Ref<MapHandle>
 ) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const data = useSelector<State, Poi[]>(state => state.pois);
   const selected = useSelector<State, Poi | null>(state => state.selected);
   const hover = useSelector<State, Poi | null>(state => state.hover);

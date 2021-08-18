@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Poi } from '../types';
-import { State, setSelected, setHover } from '../state';
+import { AppDispatch, State, setSelected, setHover } from '../state';
 import { MapHandle } from '../MapView/SetMapRef';
 import ListElement from './ListElement';
 
@@ -11,7 +11,7 @@ interface Props {
 }
 
 const ListView = ({ mapRef }: Props) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const data = useSelector<State, Poi[]>(state => state.pois);
   const hover = useSelector<State, Poi | null>(state => state.hover);
 

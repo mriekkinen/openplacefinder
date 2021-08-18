@@ -1,12 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-//import { fetchOverpass } from './services/overpassService';
-import { fetchOverpass } from './services/overpassServiceMock';
-
 import { Poi } from './types';
-import { overpass2Poi } from './utils';
-import { setPoiList, State } from './state';
+import { AppDispatch, queryOverpass, State } from './state';
 import MapView from './MapView';
 import { MapHandle } from './MapView/SetMapRef';
 import ListView from './ListView';
@@ -15,7 +11,7 @@ import InfoView from './InfoView';
 import './App.css';
 
 const App = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const data = useSelector<State, Poi[]>(state => state.pois);
   const loading = useSelector<State, boolean>(state => state.loading);
   const selected = useSelector<State, Poi | null>(state => state.selected);
@@ -29,11 +25,7 @@ const App = () => {
       nwr[shop=tea](area);
       out center;
     `;
-    fetchOverpass(query)
-      .then(overpassJson => {
-        const newData = overpass2Poi(overpassJson)
-        dispatch(setPoiList(newData));
-      });
+    dispatch(queryOverpass(query));
   }, []);
 
   const status = loading
