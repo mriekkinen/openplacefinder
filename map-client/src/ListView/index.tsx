@@ -8,11 +8,11 @@ import ListElement from './ListElement';
 
 interface Props {
   mapRef: React.RefObject<MapHandle>;
-  data: Poi[] | null;
 }
 
-const ListView = ({ mapRef, data }: Props) => {
+const ListView = ({ mapRef }: Props) => {
   const dispatch = useDispatch();
+  const data = useSelector<State, Poi[]>(state => state.pois);
   const hover = useSelector<State, Poi | null>(state => state.hover);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const ListView = ({ mapRef, data }: Props) => {
 
   return (
     <div className='list-container'>
-      {data && data.map(e =>
+      {data.map(e =>
         <ListElement
           key={e.id}
           e={e}
@@ -38,6 +38,6 @@ const ListView = ({ mapRef, data }: Props) => {
       )}
     </div>
   );
-}
+};
 
 export default ListView;

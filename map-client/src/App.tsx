@@ -1,12 +1,12 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 //import { fetchOverpass } from './services/overpassService';
 import { fetchOverpass } from './services/overpassServiceMock';
 
 import { Poi } from './types';
 import { overpass2Poi } from './utils';
-import { State } from './state';
+import { setPoiList, State } from './state';
 import MapView from './MapView';
 import { MapHandle } from './MapView/SetMapRef';
 import ListView from './ListView';
@@ -15,7 +15,9 @@ import InfoView from './InfoView';
 import './App.css';
 
 const App = () => {
-  const [data, setData] = useState<Poi[] | null>(null);
+  const dispatch = useDispatch();
+  const data = useSelector<State, Poi[]>(state => state.pois);
+  const loading = useSelector<State, boolean>(state => state.loading);
   const selected = useSelector<State, Poi | null>(state => state.selected);
 
   const mapRef = useRef<MapHandle>(null);
@@ -29,15 +31,14 @@ const App = () => {
     `;
     fetchOverpass(query)
       .then(overpassJson => {
-        const poiArray = overpass2Poi(overpassJson)
-        setData(poiArray);
+        const newData = overpass2Poi(overpassJson)
+        dispatch(setPoiList(newData));
       });
   }, []);
 
-  const n = data ? data.length : 0;
-  const status = data
-    ? <p>Found <b>{n}</b> elements matching the query</p>
-    : <p>Loading...</p>;
+  const status = loading
+    ? <p>Loading...</p>
+    : <p>Found <b>{data.length}</b> elements matching the query</p>;
 
   return (
     <div id='App'>
@@ -47,18 +48,13 @@ const App = () => {
       </div>
       <div className='content'>
         {selected === null
-          ? <ListView
-              mapRef={mapRef}
-              data={data} />
-          : <InfoView
-              mapRef={mapRef} />
+          ? <ListView mapRef={mapRef} />
+          : <InfoView mapRef={mapRef} />
         }
-        <MapView
-          data={data}
-          ref={mapRef} />
+        <MapView ref={mapRef} />
       </div>
     </div>
   );
-}
+};
 
 export default App;

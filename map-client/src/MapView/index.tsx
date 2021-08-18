@@ -7,21 +7,20 @@ import L from 'leaflet';
 import 'leaflet.awesome-markers';
 
 import { Poi } from '../types';
-import { hasLatLon } from '../utils';
 import { setSelected, State } from '../state';
 import SetMapRef, { MapHandle } from './SetMapRef';
 import HandleMapClick from './HandleMapClick';
 import Marker from './Marker';
 
-interface Props {
-  data: Poi[] | null;
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface Props {}
 
 const MapView = (
-  { data }: Props,
+  props: Props,
   ref: React.Ref<MapHandle>
 ) => {
   const dispatch = useDispatch();
+  const data = useSelector<State, Poi[]>(state => state.pois);
   const selected = useSelector<State, Poi | null>(state => state.selected);
   const hover = useSelector<State, Poi | null>(state => state.hover);
 
@@ -43,7 +42,7 @@ const MapView = (
         handleMapClick={() => setSelected(null)} />
       <TileLayer {...tileProps} />
 
-      {data && data.filter(hasLatLon).map(e =>
+      {data.map(e =>
         <Marker
           key={e.id}
           e={e}
