@@ -1,13 +1,11 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { MapContainer, TileLayer } from 'react-leaflet';
 
 // Import Leaflet.awesome-markers plugin
 import L from 'leaflet';
 import 'leaflet.awesome-markers';
 
-import { Poi } from '../types';
-import { AppDispatch, setSelected, State } from '../state';
+import { setSelected, useAppDispatch, useAppSelector } from '../state';
 import SetMapRef, { MapHandle } from './SetMapRef';
 import HandleMapClick from './HandleMapClick';
 import Marker from './Marker';
@@ -19,10 +17,10 @@ const MapView = (
   props: Props,
   ref: React.Ref<MapHandle>
 ) => {
-  const dispatch = useDispatch<AppDispatch>();
-  const data = useSelector<State, Poi[]>(state => state.pois);
-  const selected = useSelector<State, Poi | null>(state => state.selected);
-  const hover = useSelector<State, Poi | null>(state => state.hover);
+  const dispatch = useAppDispatch();
+  const data = useAppSelector(state => state.pois);
+  const selected = useAppSelector(state => state.selected);
+  const hover = useAppSelector(state => state.hover);
 
   const icon = getIcon();
   const tileProps = {

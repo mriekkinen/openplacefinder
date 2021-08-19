@@ -1,8 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
-import { Poi } from './types';
-import { AppDispatch, queryOverpass, State } from './state';
+import { queryOverpass, useAppDispatch, useAppSelector } from './state';
 import MapView from './MapView';
 import { MapHandle } from './MapView/SetMapRef';
 import ListView from './ListView';
@@ -11,10 +9,10 @@ import InfoView from './InfoView';
 import './App.css';
 
 const App = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const data = useSelector<State, Poi[]>(state => state.pois);
-  const loading = useSelector<State, boolean>(state => state.loading);
-  const selected = useSelector<State, Poi | null>(state => state.selected);
+  const dispatch = useAppDispatch();
+  const data = useAppSelector(state => state.pois);
+  const loading = useAppSelector(state => state.loading);
+  const selected = useAppSelector(state => state.selected);
 
   const mapRef = useRef<MapHandle>(null);
 
