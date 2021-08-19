@@ -37,7 +37,7 @@ const MapView = (
     >
       <SetMapRef ref={ref} />
       <HandleMapClick
-        handleMapClick={() => setSelected(null)} />
+        handleMapClick={() => dispatch(setSelected(null))} />
       <TileLayer {...tileProps} />
 
       {data.map(e =>
