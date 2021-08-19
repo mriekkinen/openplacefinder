@@ -13,6 +13,10 @@ export type Action =
       data: Poi[]
     }
   | {
+      type: 'SET_LOADING',
+      data: boolean
+    }
+  | {
       type: 'SET_SELECTED',
       data: Poi | null
     }
@@ -26,9 +30,18 @@ export type AppDispatch = ThunkDispatch<State, unknown, AnyAction>;
 
 export const queryOverpass = (query: string): AppThunk => {
   return async dispatch => {
+    dispatch(setLoading(true));
     const overpassJson = await fetchOverpass(query);
     const newData = overpass2Poi(overpassJson);
     dispatch(setPoiList(newData));
+    dispatch(setLoading(false));
+  };
+};
+
+export const setLoading = (loading: boolean): Action => {
+  return {
+    type: 'SET_LOADING',
+    data: loading
   };
 };
 
@@ -62,6 +75,11 @@ export const reducer = (
       return {
         ...state,
         pois: action.data
+      };
+    case 'SET_LOADING':
+      return {
+        ...state,
+        loading: action.data
       };
     case 'SET_SELECTED':
       return {
