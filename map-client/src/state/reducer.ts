@@ -1,5 +1,5 @@
 import { Poi } from '../types';
-import { initialState, State } from './state';
+import { initialState, State, Status } from './state';
 
 //import { fetchOverpass } from '../services/overpassService';
 import { fetchOverpass } from '../services/overpassServiceMock';
@@ -13,8 +13,8 @@ export type Action =
       data: Poi[]
     }
   | {
-      type: 'SET_LOADING',
-      data: boolean
+      type: 'SET_STATUS',
+      data: Status
     }
   | {
       type: 'SET_SELECTED',
@@ -30,22 +30,26 @@ export type AppDispatch = ThunkDispatch<State, unknown, AnyAction>;
 
 export const queryOverpass = (query: string): AppThunk => {
   return async dispatch => {
-    dispatch(setLoading(true));
+    dispatch(setStatus('loading'));
     const overpassJson = await fetchOverpass(query);
+    if (overpassJson === null) {
+      return dispatch(setStatus('failed'));
+    }
+
     const newData = overpass2Poi(overpassJson);
     dispatch(setPoiList(newData));
-    dispatch(setLoading(false));
+    dispatch(setStatus('succeeded'));
   };
 };
 
-export const setLoading = (loading: boolean): Action => {
+const setStatus = (loading: Status): Action => {
   return {
-    type: 'SET_LOADING',
+    type: 'SET_STATUS',
     data: loading
   };
 };
 
-export const setPoiList = (pois: Poi[]): Action => {
+const setPoiList = (pois: Poi[]): Action => {
   return {
     type: 'SET_POI_LIST',
     data: pois
@@ -76,10 +80,10 @@ export const reducer = (
         ...state,
         pois: action.data
       };
-    case 'SET_LOADING':
+    case 'SET_STATUS':
       return {
         ...state,
-        loading: action.data
+        status: action.data
       };
     case 'SET_SELECTED':
       return {

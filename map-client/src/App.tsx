@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
-import { queryOverpass, useAppDispatch, useAppSelector } from './state';
+import { Poi } from './types';
+import { queryOverpass, Status, useAppDispatch, useAppSelector } from './state';
 import MapView from './MapView';
 import { MapHandle } from './MapView/SetMapRef';
 import ListView from './ListView';
@@ -11,7 +12,7 @@ import './App.css';
 const App = () => {
   const dispatch = useAppDispatch();
   const data = useAppSelector(state => state.pois);
-  const loading = useAppSelector(state => state.loading);
+  const status = useAppSelector(state => state.status);
   const selected = useAppSelector(state => state.selected);
 
   const mapRef = useRef<MapHandle>(null);
@@ -26,15 +27,11 @@ const App = () => {
     dispatch(queryOverpass(query));
   }, []);
 
-  const status = loading
-    ? <p>Loading...</p>
-    : <p>Found <b>{data.length}</b> elements matching the query</p>;
-
   return (
     <div id='App'>
       <div className='header'>
         <p>An example query: listing all tea shops in London</p>
-        {status}
+        <p>{getStatusMsg(status, data)}</p>
       </div>
       <div className='content'>
         {selected === null
@@ -45,6 +42,19 @@ const App = () => {
       </div>
     </div>
   );
+};
+
+const getStatusMsg = (status: Status, data: Poi[]) => {
+  switch (status) {
+    case 'idle':
+      return null;
+    case 'loading':
+      return <span>Loading...</span>
+    case 'succeeded':
+      return <span>Found <b>{data.length}</b> elements matching the query</span>;
+    case 'failed':
+      return <span>Query failed</span>;
+  }
 };
 
 export default App;
