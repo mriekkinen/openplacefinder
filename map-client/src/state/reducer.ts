@@ -42,10 +42,10 @@ export const queryOverpass = (query: string): AppThunk => {
   };
 };
 
-const setStatus = (loading: Status): Action => {
+const setStatus = (status: Status): Action => {
   return {
     type: 'SET_STATUS',
-    data: loading
+    data: status
   };
 };
 
