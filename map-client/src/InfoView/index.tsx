@@ -1,22 +1,34 @@
 import React from 'react';
 
-import { Poi } from '../types';
-import { MapHandle } from '../MapView/SaveMapRef';
+import { setSelected, useAppDispatch, useAppSelector } from '../state';
+import { MapHandle } from '../MapView/SetMapRef';
 import Address from './Address';
 import ReturnBtn from './ReturnBtn';
 import Link from './Link';
 
 interface Props {
   mapRef: React.RefObject<MapHandle>;
-  poi: Poi;
-  setSelected: React.Dispatch<React.SetStateAction<Poi | null>>;
 }
 
-const InfoView = ({ mapRef, poi, setSelected }: Props) => {
+const InfoView = ({ mapRef }: Props) => {
+  const dispatch = useAppDispatch();
+  const poi = useAppSelector(state => state.ui.selected);
+
+  if (!poi) {
+    return (
+      <div className='info-container'>
+        <div className='info-item'>
+          <i>Nothing selected</i>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className='info-container'>
       <div className='info-item'>
-        <ReturnBtn setSelected={setSelected} />
+        <ReturnBtn
+          handleClick={() => dispatch(setSelected(null))} />
       </div>
       <div className='info-item'>
         <h2>{poi.tags['name']}</h2>

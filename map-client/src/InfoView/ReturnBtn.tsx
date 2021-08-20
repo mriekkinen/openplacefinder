@@ -1,15 +1,12 @@
 import React from 'react';
 import { MdArrowBack } from 'react-icons/md';
 
-import { Poi } from '../types';
-
 interface Props {
-  setSelected: React.Dispatch<React.SetStateAction<Poi | null>>;
+  handleClick: () => void;
 }
 
-const ReturnBtn = ({ setSelected }: Props) => (
-  <button
-    onClick={() => setSelected(null)}>
+const ReturnBtn = ({ handleClick }: Props) => (
+  <button onClick={handleClick}>
     <MdArrowBack /> Return to results
   </button>
 );

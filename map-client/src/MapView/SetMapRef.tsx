@@ -10,7 +10,7 @@ export interface MapHandle {
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props {}
 
-const SaveMapRef = (
+const SetMapRef = (
   props: Props,
   ref: React.Ref<MapHandle>
 ) => {
@@ -30,4 +30,4 @@ const SaveMapRef = (
   return null;
 };
 
-export default React.forwardRef(SaveMapRef);
+export default React.forwardRef(SetMapRef);

@@ -1,30 +1,29 @@
 import React from 'react';
 
 import { Poi } from '../types';
-import { MapHandle } from '../MapView/SaveMapRef';
 import { getAddress } from '../InfoView/Address';
 
 interface Props {
-  mapRef: React.RefObject<MapHandle>;
   e: Poi;
-  setSelected: React.Dispatch<React.SetStateAction<Poi | null>>;
-  hover: Poi | null;
-  setHover: React.Dispatch<React.SetStateAction<Poi| null>>;
+  isHover: boolean;
+  handleMouseEnter: () => void;
+  handleMouseLeave: () => void;
+  handleClick: () => void;
 }
 
-const ListElement = ({ mapRef, e, setSelected, hover, setHover}: Props) => {
+const ListElement = (
+  { e, isHover, handleMouseEnter, handleMouseLeave, handleClick }: Props
+) => {
   const className = 'list-elem' + (
-    e !== hover ? '' : ' list-elem-hover'
+    isHover ? ' list-elem-hover' : ''
   );
+
   return (
     <div
       className={className}
-      onMouseEnter={() => setHover(e)}
-      onMouseLeave={() => setHover(null)}
-      onClick={() => {
-        setSelected(e);
-        mapRef.current?.panTo(e);
-      }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onClick={handleClick}
     >
       <b>{e.tags['name']}</b><br/>
       {getAddress(e)}

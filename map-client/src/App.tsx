@@ -1,21 +1,19 @@
-import React, { useEffect, useState, useRef } from 'react';
-
-//import { fetchOverpass } from './services/overpassService';
-import { fetchOverpass } from './services/overpassServiceMock';
+import React, { useEffect, useRef } from 'react';
 
 import { Poi } from './types';
-import { overpass2Poi } from './utils';
+import { queryOverpass, Status, useAppDispatch, useAppSelector } from './state';
 import MapView from './MapView';
-import { MapHandle } from './MapView/SaveMapRef';
+import { MapHandle } from './MapView/SetMapRef';
 import ListView from './ListView';
 import InfoView from './InfoView';
 
 import './App.css';
 
 const App = () => {
-  const [data, setData] = useState<Poi[] | null>(null);
-  const [selected, setSelected] = useState<Poi | null>(null);
-  const [hover, setHover] = useState<Poi | null>(null);
+  const dispatch = useAppDispatch();
+  const data = useAppSelector(state => state.poiList.data);
+  const status = useAppSelector(state => state.poiList.status);
+  const selected = useAppSelector(state => state.ui.selected);
 
   const mapRef = useRef<MapHandle>(null);
 
@@ -26,46 +24,37 @@ const App = () => {
       nwr[shop=tea](area);
       out center;
     `;
-    fetchOverpass(query)
-      .then(overpassJson => {
-        const poiArray = overpass2Poi(overpassJson)
-        setData(poiArray);
-      });
+    dispatch(queryOverpass(query));
   }, []);
-
-  const n = data ? data.length : 0;
-  const status = data
-    ? <p>Found <b>{n}</b> elements matching the query</p>
-    : <p>Loading...</p>;
 
   return (
     <div id='App'>
       <div className='header'>
         <p>An example query: listing all tea shops in London</p>
-        {status}
+        <p>{getStatusMsg(status, data)}</p>
       </div>
       <div className='content'>
         {selected === null
-          ? <ListView
-              mapRef={mapRef}
-              data={data}
-              setSelected={setSelected}
-              hover={hover}
-              setHover={setHover} />
-          : <InfoView
-              mapRef={mapRef}
-              poi={selected}
-              setSelected={setSelected} />
+          ? <ListView mapRef={mapRef} />
+          : <InfoView mapRef={mapRef} />
         }
-        <MapView
-          data={data}
-          selected={selected}
-          setSelected={setSelected}
-          hover={hover}
-          ref={mapRef} />
+        <MapView ref={mapRef} />
       </div>
     </div>
   );
-}
+};
+
+const getStatusMsg = (status: Status, data: Poi[]) => {
+  switch (status) {
+    case 'idle':
+      return null;
+    case 'loading':
+      return <span>Loading...</span>
+    case 'succeeded':
+      return <span>Found <b>{data.length}</b> elements matching the query</span>;
+    case 'failed':
+      return <span>Query failed</span>;
+  }
+};
 
 export default App;

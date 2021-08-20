@@ -1,27 +1,58 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 
 // Import Leaflet.awesome-markers plugin
 import L from 'leaflet';
 import 'leaflet.awesome-markers';
 
-import { Poi } from '../types';
-import { hasLatLon } from '../utils';
-import SaveMapRef, { MapHandle } from './SaveMapRef';
-import UnselectOnMapClick from './UnselectOnMapClick';
+import { setSelected, useAppDispatch, useAppSelector } from '../state';
+import SetMapRef, { MapHandle } from './SetMapRef';
+import HandleMapClick from './HandleMapClick';
 import Marker from './Marker';
 
-interface Props {
-  data: Poi[] | null;
-  selected: Poi | null;
-  setSelected: Dispatch<SetStateAction<Poi | null>>;
-  hover: Poi| null;
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface Props {}
 
 const MapView = (
-  { data, selected, setSelected, hover }: Props,
+  props: Props,
   ref: React.Ref<MapHandle>
 ) => {
+  const dispatch = useAppDispatch();
+  const data = useAppSelector(state => state.poiList.data);
+  const selected = useAppSelector(state => state.ui.selected);
+  const hover = useAppSelector(state => state.ui.hover);
+
+  const icon = getIcon();
+  const tileProps = {
+    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+  };
+
+  return (
+    <MapContainer
+      id='map-container'
+      center={[51.505, -0.09]}
+      zoom={13}
+      scrollWheelZoom={true}
+    >
+      <SetMapRef ref={ref} />
+      <HandleMapClick
+        handleMapClick={() => dispatch(setSelected(null))} />
+      <TileLayer {...tileProps} />
+
+      {data.map(e =>
+        <Marker
+          key={e.id}
+          e={e}
+          icon={e !== selected && e !== hover ? icon.default : icon.selected}
+          handleClick={() => dispatch(setSelected(e))}
+        />
+      )}
+    </MapContainer>
+  );
+};
+
+const getIcon = () => {
   const defaultIcon = L.AwesomeMarkers.icon({
     prefix: 'fa',
     icon: 'coffee',
@@ -35,32 +66,10 @@ const MapView = (
     //className: 'awesome-marker awesome-marker-square'
   });
 
-  const tileProps = {
-    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+  return {
+    default: defaultIcon,
+    selected: selectedIcon
   };
-
-  return (
-    <MapContainer
-      id='map-container'
-      center={[51.505, -0.09]}
-      zoom={13}
-      scrollWheelZoom={true}
-    >
-      <SaveMapRef ref={ref} />
-      <UnselectOnMapClick setSelected={setSelected} />
-      <TileLayer {...tileProps} />
-
-      {data && data.filter(hasLatLon).map(e =>
-        <Marker
-          key={e.id}
-          e={e}
-          icon={e !== selected && e !== hover ? defaultIcon : selectedIcon}
-          handleClick={() => setSelected(e)}
-        />
-      )}
-    </MapContainer>
-  );
 };
 
 export default React.forwardRef(MapView);
