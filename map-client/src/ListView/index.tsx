@@ -10,8 +10,8 @@ interface Props {
 
 const ListView = ({ mapRef }: Props) => {
   const dispatch = useAppDispatch();
-  const data = useAppSelector(state => state.pois);
-  const hover = useAppSelector(state => state.hover);
+  const data = useAppSelector(state => state.poiList.data);
+  const hover = useAppSelector(state => state.ui.hover);
 
   useEffect(() => {
     return () => {

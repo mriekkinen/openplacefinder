@@ -1,8 +1,14 @@
-import { applyMiddleware, createStore } from 'redux';
+import { applyMiddleware, combineReducers, createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 
-import { reducer } from './reducer';
+import { poiReducer } from './poiReducer';
+import { uiReducer } from './uiReducer';
+
+const reducer = combineReducers({
+  poiList: poiReducer,
+  ui: uiReducer
+});
 
 export const store = createStore(
   reducer,

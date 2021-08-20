@@ -1,5 +1,5 @@
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "./reducer";
+import { AppDispatch } from "./actions";
 import { State } from './state';
 
 // Pre-typed hooks for managing state

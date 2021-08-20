@@ -12,7 +12,7 @@ interface Props {
 
 const InfoView = ({ mapRef }: Props) => {
   const dispatch = useAppDispatch();
-  const poi = useAppSelector(state => state.selected);
+  const poi = useAppSelector(state => state.ui.selected);
 
   if (!poi) {
     return (

@@ -18,9 +18,9 @@ const MapView = (
   ref: React.Ref<MapHandle>
 ) => {
   const dispatch = useAppDispatch();
-  const data = useAppSelector(state => state.pois);
-  const selected = useAppSelector(state => state.selected);
-  const hover = useAppSelector(state => state.hover);
+  const data = useAppSelector(state => state.poiList.data);
+  const selected = useAppSelector(state => state.ui.selected);
+  const hover = useAppSelector(state => state.ui.hover);
 
   const icon = getIcon();
   const tileProps = {

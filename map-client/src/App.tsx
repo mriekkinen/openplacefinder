@@ -11,9 +11,9 @@ import './App.css';
 
 const App = () => {
   const dispatch = useAppDispatch();
-  const data = useAppSelector(state => state.pois);
-  const status = useAppSelector(state => state.status);
-  const selected = useAppSelector(state => state.selected);
+  const data = useAppSelector(state => state.poiList.data);
+  const status = useAppSelector(state => state.poiList.status);
+  const selected = useAppSelector(state => state.ui.selected);
 
   const mapRef = useRef<MapHandle>(null);
 
