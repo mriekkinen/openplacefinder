@@ -19,6 +19,7 @@
     "react-leaflet": "^3.2.1",
     "react-redux": "^7.2.4",
     "react-scripts": "4.0.3",
+    "react-select": "^4.3.1",
     "redux": "^4.1.1",
     "redux-thunk": "^2.3.0",
     "typescript": "^4.3.5",
@@ -52,6 +53,7 @@
   "devDependencies": {
     "@types/leaflet": "^1.7.4",
     "@types/leaflet.awesome-markers": "^2.0.25",
+    "@types/react-select": "^4.0.17",
     "overpass-ts": "^4.2.4",
     "redux-devtools-extension": "^2.13.9"
   }
