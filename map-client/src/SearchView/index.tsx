@@ -42,6 +42,7 @@ const SearchView = () => {
       </div>
       <div className='search-btn'>
         <SearchBtn
+          status={status}
           handleClick={handleSubmit} />
       </div>
       <div className='search-status'>
