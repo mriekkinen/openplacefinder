@@ -8,7 +8,11 @@ import Logo from './Logo';
 import SearchBox from './SearchBox';
 import SearchBtn from './SearchBtn';
 
-const SearchView = () => {
+interface Props {
+  areaFilter: string[];
+}
+
+const SearchView = ({ areaFilter }: Props) => {
   const dispatch = useAppDispatch();
   const data = useAppSelector(state => state.poiList.data);
   const status = useAppSelector(state => state.poiList.status);
@@ -23,11 +27,8 @@ const SearchView = () => {
     if (option === null) return;
     const query = buildQuery(
       [option.value],
-      ['name="London"', 'wikipedia="en:London"']
+      areaFilter
     );
-
-    console.log('Submit!');
-    console.log(query);
 
     dispatch(queryOverpass(query));
   };

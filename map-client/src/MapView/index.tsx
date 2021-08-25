@@ -10,11 +10,13 @@ import SetMapRef, { MapHandle } from './SetMapRef';
 import HandleMapClick from './HandleMapClick';
 import Marker from './Marker';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface Props {}
+interface Props {
+  center: L.LatLngExpression;
+  zoom: number;
+}
 
 const MapView = (
-  props: Props,
+  { center, zoom }: Props,
   ref: React.Ref<MapHandle>
 ) => {
   const dispatch = useAppDispatch();
@@ -31,8 +33,8 @@ const MapView = (
   return (
     <MapContainer
       id='map-container'
-      center={[51.505, -0.09]}
-      zoom={13}
+      center={center}
+      zoom={zoom}
       scrollWheelZoom={true}
     >
       <SetMapRef ref={ref} />
