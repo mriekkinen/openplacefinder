@@ -27,4 +27,17 @@ export type UiAction =
     data: Poi | null
   };
 
-export type Action = PoiAction | UiAction;
+export type FacetAction =
+  | {
+      type: 'facets/setName',
+      data: string
+    }
+  | {
+      type: 'facets/setBrand',
+      data: string
+    }
+  | {
+      type: 'facets/clear'
+    };
+
+export type Action = PoiAction | UiAction | FacetAction;

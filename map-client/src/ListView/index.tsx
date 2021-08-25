@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { setSelected, setHover, useAppDispatch, useAppSelector } from '../state';
 import { MapHandle } from '../MapView/SetMapRef';
 import ListElement from './ListElement';
+import filter from '../FacetsView/filter';
 
 interface Props {
   mapRef: React.RefObject<MapHandle>;
@@ -11,7 +12,10 @@ interface Props {
 const ListView = ({ mapRef }: Props) => {
   const dispatch = useAppDispatch();
   const data = useAppSelector(state => state.poiList.data);
+  const facets = useAppSelector(state => state.facets);
   const hover = useAppSelector(state => state.ui.hover);
+
+  const filteredData = filter(data, facets);
 
   useEffect(() => {
     return () => {
@@ -21,7 +25,7 @@ const ListView = ({ mapRef }: Props) => {
 
   return (
     <div className='list-container'>
-      {data.map(e =>
+      {filteredData.map(e =>
         <ListElement
           key={e.id}
           e={e}

@@ -7,6 +7,7 @@ import { MapHandle } from './MapView/SetMapRef';
 import ListView from './ListView';
 import InfoView from './InfoView';
 import SearchView from './SearchView';
+import FacetsView from './FacetsView';
 
 import './App.css';
 
@@ -15,10 +16,15 @@ const App = () => {
 
   const mapRef = useRef<MapHandle>(null);
 
-  //const center: LatLngTuple = [51.505, -0.09];
+  /*
+  const areaFilter = ['name="London"', 'wikipedia="en:London"'];
+  const center: LatLngTuple = [51.505, -0.09];
+  const zoom = 13;
+  */
+
+  const areaFilter = ['name="Helsinki"', 'wikipedia="fi:Helsinki"'];
   const center: LatLngTuple = [60.1673, 24.9428];
   const zoom = 13;
-  const areaFilter = ['name="Helsinki"', 'wikipedia="fi:Helsinki"'];
 
   return (
     <div id='App'>
@@ -26,6 +32,7 @@ const App = () => {
         <SearchView areaFilter={areaFilter} />
       </div>
       <div className='content'>
+        <FacetsView />
         {selected === null
           ? <ListView mapRef={mapRef} />
           : <InfoView mapRef={mapRef} />

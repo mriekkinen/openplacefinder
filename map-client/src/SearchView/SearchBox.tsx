@@ -4,12 +4,10 @@ import Select from 'react-select';
 import { Option } from './types';
 
 const options = [
-  { value: 'shop=tea', label: 'Tea shop' },
-  { value: 'amenity=university', label: 'University' },
-  { value: 'amenity=library', label: 'Library' },
-  { value: 'amenity=hospital', label: 'Hospital' },
-  { value: 'shop=department_store', label: 'Department store' },
-  { value: 'leisure=stadium', label: 'Stadium' }
+  { value: 'amenity=cafe', label: 'Café' },
+  { value: 'amenity=fast_food', label: 'Fast food' },
+  { value: 'amenity=pub', label: 'Pub' },
+  { value: 'amenity=restaurant', label: 'Restaurant' },
 ];
 
 interface Props {

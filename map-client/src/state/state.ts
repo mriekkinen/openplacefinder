@@ -12,9 +12,15 @@ export interface UiState {
   hover: Poi | null;
 }
 
+export interface FacetState {
+  name: string;
+  brand: string;
+}
+
 export interface State {
   poiList: PoiState;
   ui: UiState;
+  facets: FacetState;
 }
 
 export const initialState: State = {
@@ -25,5 +31,9 @@ export const initialState: State = {
   ui: {
     selected: null,
     hover: null
+  },
+  facets: {
+    name: '',
+    brand: ''
   }
 };

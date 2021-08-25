@@ -9,6 +9,7 @@ import { setSelected, useAppDispatch, useAppSelector } from '../state';
 import SetMapRef, { MapHandle } from './SetMapRef';
 import HandleMapClick from './HandleMapClick';
 import Marker from './Marker';
+import filter from '../FacetsView/filter';
 
 interface Props {
   center: L.LatLngExpression;
@@ -21,8 +22,11 @@ const MapView = (
 ) => {
   const dispatch = useAppDispatch();
   const data = useAppSelector(state => state.poiList.data);
+  const facets = useAppSelector(state => state.facets);
   const selected = useAppSelector(state => state.ui.selected);
   const hover = useAppSelector(state => state.ui.hover);
+
+  const filteredData = filter(data, facets);
 
   const icon = getIcon();
   const tileProps = {
@@ -42,7 +46,7 @@ const MapView = (
         handleMapClick={() => dispatch(setSelected(null))} />
       <TileLayer {...tileProps} />
 
-      {data.map(e =>
+      {filteredData.map(e =>
         <Marker
           key={e.id}
           e={e}
