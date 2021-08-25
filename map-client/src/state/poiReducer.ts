@@ -2,8 +2,8 @@ import { Poi } from '../types';
 import { initialState, PoiState, Status } from './state';
 import { Action, AppThunk } from './actions';
 
-import { fetchOverpass } from '../services/overpassService';
-//import { fetchOverpass } from '../services/overpassServiceMock';
+//import { fetchOverpass } from '../services/overpassService';
+import { fetchOverpass } from '../services/overpassServiceMock';
 import { overpass2Poi } from '../utils';
 
 export const queryOverpass = (query: string): AppThunk => {
