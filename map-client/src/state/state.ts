@@ -15,6 +15,7 @@ export interface UiState {
 export interface FacetState {
   name: string;
   brand: string;
+  cuisines: Set<string>;
 }
 
 export interface State {
@@ -34,6 +35,7 @@ export const initialState: State = {
   },
   facets: {
     name: '',
-    brand: ''
+    brand: '',
+    cuisines: new Set<string>()
   }
 };

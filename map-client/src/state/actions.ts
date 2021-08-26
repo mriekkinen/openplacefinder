@@ -37,6 +37,13 @@ export type FacetAction =
       data: string
     }
   | {
+      type: 'facets/checkCuisine',
+      data: {
+        cuisine: string,
+        isChecked: boolean
+      }
+    }
+  | {
       type: 'facets/clear'
     };
 

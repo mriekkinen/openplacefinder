@@ -15,6 +15,16 @@ export const setBrand = (brand: string): Action => {
   };
 };
 
+export const checkCuisine = (cuisine: string, isChecked: boolean): Action => {
+  return {
+    type: 'facets/checkCuisine',
+    data: {
+      cuisine,
+      isChecked
+    }
+  };
+};
+
 export const clear = (): Action => {
   return {
     type: 'facets/clear'
@@ -36,6 +46,19 @@ export const facetReducer = (
         ...state,
         brand: action.data
       };
+    case 'facets/checkCuisine': {
+      const newCuisines = new Set(state.cuisines);
+      if (action.data.isChecked) {
+        newCuisines.add(action.data.cuisine);
+      } else {
+        newCuisines.delete(action.data.cuisine);
+      }
+
+      return {
+        ...state,
+        cuisines: newCuisines
+      };
+    }
     case 'facets/clear':
       return initialState.facets;
     default:
