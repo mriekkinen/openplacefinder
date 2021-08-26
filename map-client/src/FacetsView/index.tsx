@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { useAppDispatch, useAppSelector } from '../state';
+import { FacetState, useAppDispatch, useAppSelector } from '../state';
 import { setName, setBrand, checkCuisine, clear } from '../state/facetReducer';
 import filter, { getCuisines } from './filter';
 import { Poi } from '../types';
@@ -10,12 +10,10 @@ const Facets = () => {
   const data = useAppSelector(state => state.poiList.data);
   const facets = useAppSelector(state => state.facets);
 
-  console.log('filtering data...');
   const filteredData = filter(data, facets);
 
   /*
   const filteredData = useAppSelector(state => {
-    console.log('selecting filtered data...');
     return filter(state.poiList.data, state.facets);
   }, shallowEqual);
   */
@@ -25,7 +23,7 @@ const Facets = () => {
       <Header>Refine the search</Header>
       <Name />
       <Brand />
-      <Cuisine data={data} />
+      <Cuisine data={data} facets={facets} />
       <MatchCount filteredData={filteredData} />
       <Clear />
     </Container>
@@ -62,20 +60,20 @@ const Brand = () => {
   )
 };
 
-const countCuisines = (pois: Poi[]) => {
+const countCuisines = (data: Poi[]) => {
   const counts = new Map<string, number>();
-  pois.forEach(poi => {
+  data.forEach(poi => {
     const cuisines = getCuisines(poi);
     cuisines.forEach(cuisine => {
       const count = counts.get(cuisine) ?? 0;
       counts.set(cuisine, count + 1);
-    })
+    });
   });
 
   return counts;
 };
 
-const getCuisinesList = (counts: Map<string, number>) => {
+const sortByCount = (counts: Map<string, number>) => {
   // Sort twice so that cuisines with the same count appear in alphabetical order
   // (assuming the sorting algorithm is stable)
   return Array.from(counts.entries())
@@ -86,16 +84,27 @@ const getCuisinesList = (counts: Map<string, number>) => {
 
 interface CuisineProps {
   data: Poi[];
+  facets: FacetState;
 }
 
-const Cuisine = ({ data }: CuisineProps) => {
+const Cuisine = ({ data, facets }: CuisineProps) => {
   const dispatch = useAppDispatch();
   const checkedCuisines = useAppSelector(state => state.facets.cuisines);
 
-  console.log('rendering cuisines...');
+  // Apply filters excluding cuisine, and
+  // compute the number of appearances (in that list)
+  const facetsExcludingCuisine: FacetState = {
+    ...facets,
+    cuisines: new Set<string>()
+  };
 
-  const counts = countCuisines(data);
-  const cuisinesWithNonzeroCount = getCuisinesList(counts);
+  const filtered = filter(data, facetsExcludingCuisine);
+  const counts = countCuisines(filtered);
+
+  // Note: a non-selected cuisine may have a non-zero count,
+  // because a restaurant (that matches the filters) may serve
+  // more than one type of cuisine
+  const cuisinesWithNonzeroCount = sortByCount(counts);
 
   const handleChange = (cuisine: string)
   : React.ChangeEventHandler<HTMLInputElement> => (e) => {
@@ -143,9 +152,10 @@ interface MatchCountProps {
 }
 
 const MatchCount = ({ filteredData }: MatchCountProps) => {
+  const matches = filteredData.length !== 1 ? 'matches' : 'match';
   return (
     <Facet>
-      <b>{filteredData.length}</b> matches
+      <b>{filteredData.length}</b> {matches}
     </Facet>
   )
 };
