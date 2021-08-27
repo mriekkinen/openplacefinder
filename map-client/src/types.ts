@@ -1,6 +1,6 @@
 import { OverpassNode, OverpassWay, OverpassRelation } from 'overpass-ts';
 
-export type Tags = { [key: string]: string };
+export type Tags = { [key: string]: string | undefined };
 
 export interface Poi {
   type: 'node' | 'way' | 'relation';
