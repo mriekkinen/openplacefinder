@@ -26,6 +26,8 @@ const MoreLessBtn = ({ showAll, toggle }: Props) => {
 const Button = styled(TextButton)`
   display: flex;
   align-items: start;
+  margin-left: 0;
+  padding-left: 0.1em;
 `;
 
 const Text = styled.span`

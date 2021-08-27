@@ -66,7 +66,7 @@ const Cuisine = ({ data, facets }: Props) => {
                 name={cuisine}
                 checked={isChecked(cuisine)}
                 onChange={handleChange(cuisine)} />
-                {cuisine} <Count count={counts.get(cuisine)} />
+              {cuisine} <Count count={counts.get(cuisine)} />
             </label>
           </div>
         )}
