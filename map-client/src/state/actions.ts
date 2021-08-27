@@ -37,6 +37,14 @@ export type FacetAction =
       data: string
     }
   | {
+      type: 'facets/requireOpeningHours',
+      data: boolean
+    }
+  | {
+      type: 'facets/requireOpenNow',
+      data: boolean
+    }
+  | {
       type: 'facets/checkCuisine',
       data: {
         cuisine: string,

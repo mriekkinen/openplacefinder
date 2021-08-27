@@ -6,6 +6,7 @@ import filter from './filter';
 import { Container, Header } from './styles';
 import Name from './Name';
 import Brand from './Brand';
+import { OpeningHours, OpenNow } from './OpeningHours';
 import Cuisine from './Cuisine';
 import MatchCount from './MatchCount';
 import Clear from './Clear';
@@ -27,6 +28,8 @@ const Facets = () => {
       <Header>Refine by</Header>
       <Name />
       <Brand />
+      <OpeningHours />
+      <OpenNow />
       <Cuisine data={data} facets={facets} />
       <MatchCount filteredData={filteredData} />
       <Clear />

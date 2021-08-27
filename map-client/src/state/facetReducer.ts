@@ -15,6 +15,20 @@ export const setBrand = (brand: string): Action => {
   };
 };
 
+export const requireOpeningHours = (openingHours: boolean): Action => {
+  return {
+    type: 'facets/requireOpeningHours',
+    data: openingHours
+  };
+};
+
+export const requireOpenNow = (openNow: boolean): Action => {
+  return {
+    type: 'facets/requireOpenNow',
+    data: openNow
+  };
+};
+
 export const checkCuisine = (cuisine: string, isChecked: boolean): Action => {
   return {
     type: 'facets/checkCuisine',
@@ -45,6 +59,16 @@ export const facetReducer = (
       return {
         ...state,
         brand: action.data
+      };
+      case 'facets/requireOpeningHours':
+        return {
+          ...state,
+          openingHours: action.data
+        };
+    case 'facets/requireOpenNow':
+      return {
+        ...state,
+        openNow: action.data
       };
     case 'facets/checkCuisine': {
       const newCuisines = new Set(state.cuisines);
