@@ -24,7 +24,7 @@ const Facets = () => {
 
   return (
     <Container>
-      <Header>Refine the search</Header>
+      <Header>Refine by</Header>
       <Name />
       <Brand />
       <Cuisine data={data} facets={facets} />

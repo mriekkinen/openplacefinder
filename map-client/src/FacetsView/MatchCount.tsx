@@ -4,11 +4,11 @@ import { Poi } from '../types';
 
 import { Facet } from './styles';
 
-interface MatchCountProps {
+interface Props {
   filteredData: Poi[];
 }
 
-const MatchCount = ({ filteredData }: MatchCountProps) => {
+const MatchCount = ({ filteredData }: Props) => {
   const matches = filteredData.length !== 1 ? 'matches' : 'match';
   return (
     <Facet>

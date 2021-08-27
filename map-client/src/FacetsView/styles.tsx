@@ -31,6 +31,12 @@ export const Button = styled.button`
   border-radius: 3px;
 `;
 
+export const TextButton = styled.button`
+  border: none;
+  background: transparent;
+  font-family: inherit;
+`;
+
 export const GraySpan = styled.span`
   color: #757575;
 `;

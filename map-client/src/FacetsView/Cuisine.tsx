@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
   useAppDispatch, useAppSelector,
@@ -8,6 +8,9 @@ import filter, { getCuisines } from './filter';
 import { Poi } from '../types';
 
 import { Facet, GraySpan } from './styles';
+import MoreLessBtn from './MoreLessBtn';
+
+const MORE_LESS_THRESHOLD = 10;
 
 interface Props {
   data: Poi[];
@@ -17,6 +20,8 @@ interface Props {
 const Cuisine = ({ data, facets }: Props) => {
   const dispatch = useAppDispatch();
   const checkedCuisines = useAppSelector(state => state.facets.cuisines);
+
+  const [showAll, setShowAll] = useState<boolean>(false);
 
   // Apply filters excluding cuisine, and
   // compute the number of appearances (in that list)
@@ -28,10 +33,17 @@ const Cuisine = ({ data, facets }: Props) => {
   const filtered = filter(data, facetsExcludingCuisine);
   const counts = countCuisines(filtered);
 
+  // Choose all cuisines that have a non-zero count and sort
+  //
   // Note: a non-selected cuisine may have a non-zero count,
   // because a restaurant (that matches the filters) may serve
   // more than one type of cuisine
-  const cuisinesWithNonzeroCount = sortByCount(counts);
+  const cuisines = sortByCount(counts);
+
+  // Apply the "Show more/less" filter
+  const visibleCuisines = showAll
+    ? cuisines
+    : cuisines.slice(0, MORE_LESS_THRESHOLD);
 
   const handleChange = (cuisine: string)
   : React.ChangeEventHandler<HTMLInputElement> => (e) => {
@@ -40,13 +52,13 @@ const Cuisine = ({ data, facets }: Props) => {
 
   const isChecked = (cuisine: string) => {
     return checkedCuisines.has(cuisine);
-  }
+  };
 
   return (
     <Facet>
       <fieldset>
         <legend>Cuisines</legend>
-        {cuisinesWithNonzeroCount.map((cuisine, index) =>
+        {visibleCuisines.map((cuisine, index) =>
           <div key={`cuisine-${index}-${cuisine}`}>
             <label>
               <input
@@ -58,6 +70,11 @@ const Cuisine = ({ data, facets }: Props) => {
             </label>
           </div>
         )}
+        {cuisines.length > MORE_LESS_THRESHOLD &&
+          <MoreLessBtn
+            showAll={showAll}
+            toggle={() => setShowAll(!showAll)} />
+        }
       </fieldset>
     </Facet>
   );
