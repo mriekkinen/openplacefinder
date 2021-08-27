@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Poi } from '../types';
 import { getAddress } from '../InfoView/Address';
+import { OpenState } from '../InfoView/OpeningHours';
 
 interface Props {
   e: Poi;
@@ -26,7 +27,8 @@ const ListElement = (
       onClick={handleClick}
     >
       <b>{e.tags['name']}</b><br/>
-      {getAddress(e)}
+      {getAddress(e)}<br/>
+      <OpenState openingHours={e.tags['opening_hours']} />
     </div>
   );
 };
