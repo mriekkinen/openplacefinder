@@ -7,7 +7,7 @@ import { Container, Header } from './styles';
 import Name from './Name';
 import Brand from './Brand';
 import { OpeningHours, OpenNow } from './OpeningHours';
-import Cuisine from './Cuisine';
+import Cuisines from './Cuisines';
 import MatchCount from './MatchCount';
 import Clear from './Clear';
 
@@ -30,7 +30,7 @@ const Facets = () => {
       <Brand />
       <OpeningHours />
       <OpenNow />
-      <Cuisine data={data} facets={facets} />
+      <Cuisines data={data} facets={facets} />
       <MatchCount filteredData={filteredData} />
       <Clear />
     </Container>
