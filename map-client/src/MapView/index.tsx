@@ -48,7 +48,7 @@ const MapView = (
 
       {filteredData.map(e =>
         <Marker
-          key={e.id}
+          key={`${e.type}-${e.id}`}
           e={e}
           icon={e !== selected && e !== hover ? icon.default : icon.selected}
           handleClick={() => dispatch(setSelected(e))}

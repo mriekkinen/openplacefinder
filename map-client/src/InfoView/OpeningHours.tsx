@@ -17,7 +17,7 @@ export const OpeningHours = ({ openingHours }: Props) => {
       Opening hours:
       <ul>
         {openingHours.split(';').map((row, index) =>
-          <li key={`hours-${index}`}>{row}</li>
+          <li key={`${index}-${row}`}>{row}</li>
         )}
       </ul>
     </div>

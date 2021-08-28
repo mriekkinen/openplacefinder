@@ -27,7 +27,7 @@ const ListView = ({ mapRef }: Props) => {
     <div className='list-container'>
       {filteredData.map(e =>
         <ListElement
-          key={e.id}
+          key={`${e.type}-${e.id}`}
           e={e}
           isHover={e === hover}
           handleMouseEnter={() => dispatch(setHover(e))}
