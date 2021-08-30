@@ -1,6 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import opening_hours from 'opening_hours';
+
+import { splitValue } from '../utils';
+import { createOpeningHours } from '../search';
 import { GraySpan } from '../FacetsView/styles';
 
 interface Props {
@@ -9,14 +12,14 @@ interface Props {
 
 export const OpeningHours = ({ openingHours }: Props) => {
   if (openingHours === undefined) {
-    return <div>Opening hours: <b>undefined</b></div>
+    return <div>Opening hours: (unknown)</div>
   }
 
   return (
     <div>
       Opening hours:
       <ul>
-        {openingHours.split(';').map((row, index) =>
+        {splitValue(openingHours).map((row, index) =>
           <li key={`${index}-${row}`}>{row}</li>
         )}
       </ul>
@@ -24,18 +27,14 @@ export const OpeningHours = ({ openingHours }: Props) => {
   );
 };
 
-/**
- * TODO: Add support for different time zones and holidays
- */
 export const OpenState = ({ openingHours }: Props) => {
   if (openingHours === undefined) {
     return null;
   }
 
   try {
-    // TODO: Handle time zones
-    // TODO: Handle public and school holidays correctly (set the country code)
-    const oh = new opening_hours(openingHours, null);
+    // TODO: Add support for different time zones and holidays
+    const oh = createOpeningHours(openingHours);
     const now = new Date();
 
     // Is this location open/closed at the moment?
@@ -62,6 +61,14 @@ export const OpenState = ({ openingHours }: Props) => {
   }
 };
 
+interface OpenStateTextProps {
+  readonly isOpen: boolean;
+}
+
+const OpenStateText = styled.span<OpenStateTextProps>`
+  color: ${props => props.isOpen ? '#2E7D32' : '#C62828'};
+`;
+
 const getNextChangeText = (oh: opening_hours, now: Date) => {
   const isOpen = oh.getState(now);
   const maxDate = addDays(now, 6);
@@ -71,21 +78,33 @@ const getNextChangeText = (oh: opening_hours, now: Date) => {
     return null;
   }
 
-  const options: Intl.DateTimeFormatOptions = {
-    hour: 'numeric',
-    minute: 'numeric'
-  };
+  const change = isOpen ? 'closes' : 'opens';
+  const weekday = getWeekdayString(nextChange);
+  const time = getTimeString(nextChange);
 
-  // If not the same date, show the weekday
-  if (nextChange.getDate() !== now.getDate()) {
-    options.weekday = 'short';
+  // If the same date, omit the weekday
+  if (nextChange.getDate() === now.getDate()) {
+    return `(${change} at ${time})`;
   }
 
-  const formatter = new Intl.DateTimeFormat('en-GB', options);
-  const dayTime = formatter.format(nextChange);
-  const change = isOpen ? 'closes' : 'opens';
+  return `(${change} ${weekday} at ${time})`;
+};
 
-  return `(${change} at ${dayTime})`;
+const getTimeString = (nextChange: Date) => {
+  const formatter = new Intl.DateTimeFormat('en-GB', {
+    hour: 'numeric',
+    minute: 'numeric'
+  });
+
+  return formatter.format(nextChange);
+};
+
+const getWeekdayString = (nextChange: Date) => {
+  const formatter = new Intl.DateTimeFormat('en-GB', {
+    weekday: 'short'
+  });
+
+  return formatter.format(nextChange);
 };
 
 const addDays = (base: Date, days: number): Date => {
@@ -93,11 +112,3 @@ const addDays = (base: Date, days: number): Date => {
   newDate.setDate(base.getDate() + days);
   return newDate;
 };
-
-interface OpenStateTextProps {
-  readonly isOpen: boolean;
-}
-
-const OpenStateText = styled.span<OpenStateTextProps>`
-  color: ${props => props.isOpen ? '#2E7D32' : '#C62828'};
-`;

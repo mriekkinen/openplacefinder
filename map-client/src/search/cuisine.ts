@@ -24,7 +24,7 @@ export const sortByCount = (counts: Map<string, number>) => {
 };
 
 export const getCuisines = (poi: Poi): string[] => {
-  const cuisines = poi.tags['cuisine'] ?? '(undefined)';
+  const cuisines = poi.tags['cuisine'] ?? '(unknown)';
   return splitValue(cuisines).map(trimLower2);
 };
 
