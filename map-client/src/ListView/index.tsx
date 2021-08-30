@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { setSelected, setHover, useAppDispatch, useAppSelector } from '../state';
 import { MapHandle } from '../MapView/SetMapRef';
 import ListElement from './ListElement';
-import filter from '../FacetsView/filter';
+import { filter } from '../search';
 
 interface Props {
   mapRef: React.RefObject<MapHandle>;

@@ -6,10 +6,10 @@ import L from 'leaflet';
 import 'leaflet.awesome-markers';
 
 import { setSelected, useAppDispatch, useAppSelector } from '../state';
+import { filter } from '../search';
 import SetMapRef, { MapHandle } from './SetMapRef';
 import HandleMapClick from './HandleMapClick';
 import Marker from './Marker';
-import filter from '../FacetsView/filter';
 
 interface Props {
   center: L.LatLngExpression;

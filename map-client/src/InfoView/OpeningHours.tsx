@@ -94,13 +94,6 @@ const addDays = (base: Date, days: number): Date => {
   return newDate;
 };
 
-export const isOpenNow = (openingHours: string): boolean => {
-  // TODO: Handle public and school holidays correctly (set the country code)
-  const oh = new opening_hours(openingHours, null);
-  const now = new Date();
-  return oh.getState(now);
-};
-
 interface OpenStateTextProps {
   readonly isOpen: boolean;
 }

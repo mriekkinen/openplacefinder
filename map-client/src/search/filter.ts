@@ -1,8 +1,9 @@
 import { Poi } from '../types';
 import { FacetState } from '../state';
-import { isOpenNow } from '../InfoView/OpeningHours';
+import { isOpenNow } from './openingHours';
+import { getCuisines } from './cuisine';
 
-const filter = (data: Poi[], facets: FacetState): Poi[] => {
+export const filter = (data: Poi[], facets: FacetState): Poi[] => {
   const facetName = trimLower(facets.name);
   const facetBrand = trimLower(facets.brand);
   const facetOpeningHours = facets.openingHours;
@@ -53,22 +54,6 @@ const matchCuisine = (facetCuisines: Set<string>, poi: Poi): boolean => {
   return cuisines.some(cuisine => facetCuisines.has(cuisine));
 };
 
-export const getCuisines = (poi: Poi): string[] => {
-  const cuisines = poi.tags['cuisine'] ?? '(undefined)';
-  return splitValue(cuisines).map(trimLower2);
-};
-
-const splitValue = (value: string): string[] => {
-  // TODO: This could be made more robust
-  return value.split(';')
-};
-
 const trimLower = (s: string | undefined) => {
   return s?.trim().toLowerCase();
 };
-
-const trimLower2 = (s: string) => {
-  return s.trim().toLowerCase();
-};
-
-export default filter;

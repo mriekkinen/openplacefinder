@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useAppSelector } from '../state';
-import filter from './filter';
+import { filter } from '../search';
 
 import { Container, Header } from './styles';
 import Name from './Name';
