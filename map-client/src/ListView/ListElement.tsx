@@ -3,6 +3,7 @@ import React from 'react';
 import { Poi } from '../types';
 import { getAddress } from '../InfoView/Address';
 import { OpenState } from '../InfoView/OpeningHours';
+import { getCuisines } from '../search';
 
 interface Props {
   e: Poi;
@@ -28,9 +29,19 @@ const ListElement = (
     >
       <b>{e.tags['name']}</b><br/>
       {getAddress(e)}<br/>
+      Cuisine: {getPrimaryCuisines(e)}<br/>
       <OpenState openingHours={e.tags['opening_hours']} />
     </div>
   );
+};
+
+const getPrimaryCuisines = (e: Poi) => {
+  const cuisines = getCuisines(e);
+  if (cuisines.length <= 3) {
+    return cuisines.join(', ');
+  }
+
+  return `${cuisines.slice(0, 3).join(', ')}...`;
 };
 
 export default ListElement;

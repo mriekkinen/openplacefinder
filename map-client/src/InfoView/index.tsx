@@ -6,6 +6,7 @@ import Address from './Address';
 import ReturnBtn from './ReturnBtn';
 import Link from './Link';
 import { OpeningHours, OpenState } from './OpeningHours';
+import Cuisines from './Cuisines';
 
 interface Props {
   mapRef: React.RefObject<MapHandle>;
@@ -43,6 +44,9 @@ const InfoView = ({ mapRef }: Props) => {
       </div>
       <div className='info-item'>
         <OpeningHours openingHours={poi.tags['opening_hours']} />
+      </div>
+      <div className='info-item'>
+        <Cuisines poi={poi} />
       </div>
       <div className='info-item'>
         <Link
