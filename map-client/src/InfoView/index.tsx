@@ -5,6 +5,9 @@ import { MapHandle } from '../MapView/SetMapRef';
 import Address from './Address';
 import ReturnBtn from './ReturnBtn';
 import Link from './Link';
+import OpeningHours from './OpeningHours';
+import { OpenStateWrapper } from './OpenState';
+import Cuisines from './Cuisines';
 
 interface Props {
   mapRef: React.RefObject<MapHandle>;
@@ -13,6 +16,7 @@ interface Props {
 const InfoView = ({ mapRef }: Props) => {
   const dispatch = useAppDispatch();
   const poi = useAppSelector(state => state.ui.selected);
+  const country = useAppSelector(state => state.poiList.country);
 
   if (!poi) {
     return (
@@ -23,6 +27,8 @@ const InfoView = ({ mapRef }: Props) => {
       </div>
     );
   }
+
+  const now = new Date();
 
   return (
     <div className='info-container'>
@@ -36,6 +42,18 @@ const InfoView = ({ mapRef }: Props) => {
       </div>
       <div className='info-item'>
         <Address mapRef={mapRef} e={poi} />
+      </div>
+      <div className='info-item'>
+        <OpenStateWrapper
+          poi={poi}
+          country={country}
+          now={now} />
+      </div>
+      <div className='info-item'>
+        <OpeningHours openingHours={poi.tags['opening_hours']} />
+      </div>
+      <div className='info-item'>
+        <Cuisines poi={poi} />
       </div>
       <div className='info-item'>
         <Link

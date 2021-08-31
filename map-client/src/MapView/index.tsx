@@ -6,21 +6,28 @@ import L from 'leaflet';
 import 'leaflet.awesome-markers';
 
 import { setSelected, useAppDispatch, useAppSelector } from '../state';
+import { filter } from '../search';
 import SetMapRef, { MapHandle } from './SetMapRef';
 import HandleMapClick from './HandleMapClick';
 import Marker from './Marker';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface Props {}
+interface Props {
+  center: L.LatLngExpression;
+  zoom: number;
+}
 
 const MapView = (
-  props: Props,
+  { center, zoom }: Props,
   ref: React.Ref<MapHandle>
 ) => {
   const dispatch = useAppDispatch();
   const data = useAppSelector(state => state.poiList.data);
+  const country = useAppSelector(state => state.poiList.country);
+  const facets = useAppSelector(state => state.facets);
   const selected = useAppSelector(state => state.ui.selected);
   const hover = useAppSelector(state => state.ui.hover);
+
+  const filteredData = filter(data, country, facets);
 
   const icon = getIcon();
   const tileProps = {
@@ -31,8 +38,8 @@ const MapView = (
   return (
     <MapContainer
       id='map-container'
-      center={[51.505, -0.09]}
-      zoom={13}
+      center={center}
+      zoom={zoom}
       scrollWheelZoom={true}
     >
       <SetMapRef ref={ref} />
@@ -40,9 +47,9 @@ const MapView = (
         handleMapClick={() => dispatch(setSelected(null))} />
       <TileLayer {...tileProps} />
 
-      {data.map(e =>
+      {filteredData.map(e =>
         <Marker
-          key={e.id}
+          key={`${e.type}-${e.id}`}
           e={e}
           icon={e !== selected && e !== hover ? icon.default : icon.selected}
           handleClick={() => dispatch(setSelected(e))}

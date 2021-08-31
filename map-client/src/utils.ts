@@ -33,3 +33,8 @@ export const overpass2Poi = (data: OverpassJson | null): Poi[] => {
       tags: e.tags ? e.tags : {}
     }));
 };
+
+export const splitValue = (value: string): string[] => {
+  // https://wiki.openstreetmap.org/wiki/Semi-colon_value_separator
+  return value.split(';').map(x => x.trim());
+};

@@ -6,7 +6,32 @@
 
 .header {
   flex: 0 0 auto;
-  margin: 0px 5px;
+}
+
+.search-container {
+  display: flex;
+  align-items: stretch;
+  margin: 5px 5px;
+}
+
+.logo {
+  flex: none;
+  margin: 5px;
+}
+
+.search-box {
+  flex: 1 1 auto;
+  max-width: 400px;
+  z-index: auto;
+}
+
+.search-btn {
+  flex: none;
+}
+
+.search-status {
+  flex: 1 1 auto;
+  color: #757575;
 }
 
 .content {
@@ -34,7 +59,7 @@
   margin: 0 5px 5px 5px;
   width: 300px;
   border: 1px solid lightgray;
-  border-radius: 5px;
+  border-radius: 4px;
 }
 
 .list-elem {

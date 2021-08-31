@@ -1,8 +1,8 @@
 import React from 'react';
 
 interface Props {
-  label: string;
-  href: string;
+  label: string | undefined;
+  href: string | undefined;
 }
 
 const Link = ({ label, href }: Props) => (
