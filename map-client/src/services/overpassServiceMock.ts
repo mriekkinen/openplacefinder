@@ -1,6 +1,7 @@
 import { OverpassJson } from 'overpass-ts';
-// import mockData from './teaShopsInLondon';
-import mockData from './restaurantsInHelsinki';
+// import mockData from '../data/teaShopsInLondon';
+// import mockData from '../data/fastFoodInHelsinki';
+import mockData from '../data/restaurantsInHelsinki';
 
 const sleep = (ms: number): Promise<void> => {
   return new Promise(resolve => setTimeout(resolve, ms));
