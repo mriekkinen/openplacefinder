@@ -4,7 +4,7 @@ import { Poi } from '../types';
 import { Country } from '../state';
 import { getCuisines } from '../search';
 import { getAddress } from '../InfoView/Address';
-import { OpenStateWrapper } from '../InfoView/OpeningHours';
+import { OpenStateWrapper } from '../InfoView/OpenState';
 
 interface Props {
   e: Poi;

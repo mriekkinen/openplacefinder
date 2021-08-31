@@ -5,7 +5,8 @@ import { MapHandle } from '../MapView/SetMapRef';
 import Address from './Address';
 import ReturnBtn from './ReturnBtn';
 import Link from './Link';
-import { OpeningHours, OpenStateWrapper } from './OpeningHours';
+import OpeningHours from './OpeningHours';
+import { OpenStateWrapper } from './OpenState';
 import Cuisines from './Cuisines';
 
 interface Props {
