@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import {
   useAppDispatch, useAppSelector,
-  checkCuisine, FacetState
+  checkCuisine, FacetState, Country
 } from '../state';
 import { filter, countCuisines, sortByCount } from '../search';
 import { Poi } from '../types';
@@ -15,10 +15,11 @@ const MORE_LESS_THRESHOLD = 10;
 
 interface Props {
   data: Poi[];
+  country: Country | undefined;
   facets: FacetState;
 }
 
-const Cuisines = ({ data, facets }: Props) => {
+const Cuisines = ({ data, country, facets }: Props) => {
   const dispatch = useAppDispatch();
   const checkedCuisines = useAppSelector(state => state.facets.cuisines);
 
@@ -31,7 +32,7 @@ const Cuisines = ({ data, facets }: Props) => {
     cuisines: new Set<string>()
   };
 
-  const filtered = filter(data, facetsExcludingCuisine);
+  const filtered = filter(data, country, facetsExcludingCuisine);
   const counts = countCuisines(filtered);
 
   // Choose all cuisines that have a non-zero count and sort

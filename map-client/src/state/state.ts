@@ -2,9 +2,16 @@ import { Poi } from '../types';
 
 export type Status = 'idle' | 'loading' | 'succeeded' | 'failed';
 
+export interface Country {
+  country: string,
+  countryCode: string,
+  state: string
+}
+
 export interface PoiState {
   status: Status;
   data: Poi[];
+  country: Country | undefined;
 }
 
 export interface UiState {
@@ -29,7 +36,8 @@ export interface State {
 export const initialState: State = {
   poiList: {
     status: 'idle',
-    data: []
+    data: [],
+    country: undefined
   },
   ui: {
     selected: null,

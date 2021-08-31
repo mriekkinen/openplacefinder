@@ -1,12 +1,14 @@
 import React from 'react';
 
 import { Poi } from '../types';
-import { getAddress } from '../InfoView/Address';
-import { OpenState } from '../InfoView/OpeningHours';
+import { Country } from '../state';
 import { getCuisines } from '../search';
+import { getAddress } from '../InfoView/Address';
+import { OpenStateWrapper } from '../InfoView/OpeningHours';
 
 interface Props {
   e: Poi;
+  country: Country | undefined;
   isHover: boolean;
   handleMouseEnter: () => void;
   handleMouseLeave: () => void;
@@ -14,11 +16,13 @@ interface Props {
 }
 
 const ListElement = (
-  { e, isHover, handleMouseEnter, handleMouseLeave, handleClick }: Props
+  { e, country, isHover, handleMouseEnter, handleMouseLeave, handleClick }: Props
 ) => {
   const className = 'list-elem' + (
     isHover ? ' list-elem-hover' : ''
   );
+
+  const now = new Date();
 
   return (
     <div
@@ -30,7 +34,10 @@ const ListElement = (
       <b>{e.tags['name']}</b><br/>
       {getAddress(e)}<br/>
       Cuisine: {getPrimaryCuisines(e)}<br/>
-      <OpenState openingHours={e.tags['opening_hours']} />
+      <OpenStateWrapper
+        poi={e}
+        country={country}
+        now={now} />
     </div>
   );
 };

@@ -2,7 +2,7 @@ import { AnyAction } from 'redux';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 
 import { Poi } from '../types';
-import { Status, State } from './state';
+import { Status, State, Country } from './state';
 
 export type AppThunk = ThunkAction<void, State, unknown, AnyAction>;
 export type AppDispatch = ThunkDispatch<State, unknown, AnyAction>;
@@ -15,6 +15,10 @@ export type PoiAction =
 | {
     type: 'poiList/setStatus',
     data: Status
+  }
+| {
+    type: 'poiList/setCountry',
+    data: Country
   };
 
 export type UiAction =

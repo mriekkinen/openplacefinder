@@ -1,13 +1,58 @@
 import opening_hours from 'opening_hours';
 
-export const createOpeningHours = (openingHours: string): opening_hours => {
-  // TODO: Handle time zones
-  // TODO: Handle public and school holidays correctly (set the country code)
-  return new opening_hours(openingHours, null);
+import { Poi } from '../types';
+import { Country } from '../state';
+
+interface NominatimObject {
+  lat: number,
+  lon: number,
+  address: {
+    country_code: string,
+    state: string
+  }
+}
+
+export const createNominatimObject = (
+  lat: number,
+  lon: number,
+  country: Country
+): NominatimObject => {
+  return {
+    lat,
+    lon,
+    address: {
+      country_code: country.countryCode,
+      state: country.state
+    }
+  };
 };
 
-export const isOpenNow = (openingHours: string): boolean => {
-  const oh = createOpeningHours(openingHours);
+export const createOpeningHours = (
+  openingHours: string,
+  nominatimObj: NominatimObject
+): opening_hours => {
+  // TODO: Test whether time zones and holidays are handled correctly
+  return new opening_hours(openingHours, nominatimObj);
+};
+
+export const getOpeningHours = (poi: Poi, country: Country | undefined) => {
+  const openingHours = poi.tags['opening_hours'];
+  if (openingHours === undefined
+    || poi.lat === undefined
+    || poi.lon === undefined
+    || country === undefined) {
+    return undefined;
+  }
+
+  const nom = createNominatimObject(poi.lat, poi.lon, country);
+  return createOpeningHours(openingHours, nom);
+};
+
+export const isOpenNow = (
+  poi: Poi,
+  country: Country | undefined
+): boolean | undefined => {
+  const oh = getOpeningHours(poi, country);
   const now = new Date();
-  return oh.getState(now);
+  return oh?.getState(now);
 };

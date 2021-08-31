@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 
 import { Poi } from '../types';
-import { queryOverpass, Status, useAppDispatch, useAppSelector } from '../state';
+import {
+  queryOverpass, setCountry, Status, Country,
+  useAppDispatch, useAppSelector
+} from '../state';
 import { buildQuery } from './queryBuilder';
 import { Option } from './types';
 import Logo from './Logo';
@@ -10,9 +13,10 @@ import SearchBtn from './SearchBtn';
 
 interface Props {
   areaFilter: string[];
+  country: Country;
 }
 
-const SearchView = ({ areaFilter }: Props) => {
+const SearchView = ({ areaFilter, country }: Props) => {
   const dispatch = useAppDispatch();
   const data = useAppSelector(state => state.poiList.data);
   const status = useAppSelector(state => state.poiList.status);
@@ -31,6 +35,7 @@ const SearchView = ({ areaFilter }: Props) => {
     );
 
     dispatch(queryOverpass(query));
+    dispatch(setCountry(country));
   };
 
   return (

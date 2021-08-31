@@ -12,10 +12,11 @@ interface Props {
 const ListView = ({ mapRef }: Props) => {
   const dispatch = useAppDispatch();
   const data = useAppSelector(state => state.poiList.data);
+  const country = useAppSelector(state => state.poiList.country);
   const facets = useAppSelector(state => state.facets);
   const hover = useAppSelector(state => state.ui.hover);
 
-  const filteredData = filter(data, facets);
+  const filteredData = filter(data, country, facets);
 
   useEffect(() => {
     return () => {
@@ -29,6 +30,7 @@ const ListView = ({ mapRef }: Props) => {
         <ListElement
           key={`${e.type}-${e.id}`}
           e={e}
+          country={country}
           isHover={e === hover}
           handleMouseEnter={() => dispatch(setHover(e))}
           handleMouseLeave={() => dispatch(setHover(null))}

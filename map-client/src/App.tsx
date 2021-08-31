@@ -26,10 +26,18 @@ const App = () => {
   const center: LatLngTuple = [60.1673, 24.9428];
   const zoom = 13;
 
+  const country = {
+    country: 'Finland',
+    countryCode: 'fi',
+    state: ''
+  };
+
   return (
     <div id='App'>
       <div className='header'>
-        <SearchView areaFilter={areaFilter} />
+        <SearchView
+          areaFilter={areaFilter}
+          country={country} />
       </div>
       <div className='content'>
         <FacetsView />

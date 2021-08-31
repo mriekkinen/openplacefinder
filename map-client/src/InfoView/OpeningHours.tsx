@@ -2,8 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import opening_hours from 'opening_hours';
 
+import { Poi } from '../types';
 import { splitValue } from '../utils';
-import { createOpeningHours } from '../search';
+import { Country } from '../state';
+import { getOpeningHours } from '../search';
 import { GraySpan } from '../FacetsView/styles';
 
 interface Props {
@@ -27,16 +29,35 @@ export const OpeningHours = ({ openingHours }: Props) => {
   );
 };
 
-export const OpenState = ({ openingHours }: Props) => {
-  if (openingHours === undefined) {
+interface OpenStateWrapperProps {
+  poi: Poi,
+  country: Country | undefined,
+  now: Date
+}
+
+export const OpenStateWrapper = (
+  { poi, country, now }: OpenStateWrapperProps
+) => {
+  try {
+    const oh = getOpeningHours(poi, country);
+
+    return <OpenState oh={oh} now={now} />
+  } catch (e) {
+    return <span>Invalid opening hours: {e}</span>;
+  }
+};
+
+interface OpenStateProps {
+  oh: opening_hours | undefined,
+  now: Date
+}
+
+export const OpenState = ({ oh, now }: OpenStateProps) => {
+  if (oh === undefined) {
     return null;
   }
 
   try {
-    // TODO: Add support for different time zones and holidays
-    const oh = createOpeningHours(openingHours);
-    const now = new Date();
-
     // Is this location open/closed at the moment?
     const isOpen = oh.getState(now);
     const stateText = isOpen ? 'Open' : 'Closed';

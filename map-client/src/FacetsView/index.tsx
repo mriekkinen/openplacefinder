@@ -13,9 +13,10 @@ import Clear from './Clear';
 
 const Facets = () => {
   const data = useAppSelector(state => state.poiList.data);
+  const country = useAppSelector(state => state.poiList.country);
   const facets = useAppSelector(state => state.facets);
 
-  const filteredData = filter(data, facets);
+  const filteredData = filter(data, country, facets);
 
   /*
   const filteredData = useAppSelector(state => {
@@ -30,7 +31,7 @@ const Facets = () => {
       <Brand />
       <OpeningHours />
       <OpenNow />
-      <Cuisines data={data} facets={facets} />
+      <Cuisines data={data} country={country} facets={facets} />
       <MatchCount filteredData={filteredData} />
       <Clear />
     </Container>

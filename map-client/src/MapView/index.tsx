@@ -22,11 +22,12 @@ const MapView = (
 ) => {
   const dispatch = useAppDispatch();
   const data = useAppSelector(state => state.poiList.data);
+  const country = useAppSelector(state => state.poiList.country);
   const facets = useAppSelector(state => state.facets);
   const selected = useAppSelector(state => state.ui.selected);
   const hover = useAppSelector(state => state.ui.hover);
 
-  const filteredData = filter(data, facets);
+  const filteredData = filter(data, country, facets);
 
   const icon = getIcon();
   const tileProps = {

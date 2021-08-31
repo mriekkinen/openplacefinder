@@ -1,5 +1,5 @@
 import { Poi } from '../types';
-import { initialState, PoiState, Status } from './state';
+import { Country, initialState, PoiState, Status } from './state';
 import { Action, AppThunk } from './actions';
 
 //import { fetchOverpass } from '../services/overpassService';
@@ -20,6 +20,13 @@ export const queryOverpass = (query: string): AppThunk => {
   };
 };
 
+const setPoiList = (pois: Poi[]): Action => {
+  return {
+    type: 'poiList/setData',
+    data: pois
+  };
+};
+
 const setStatus = (status: Status): Action => {
   return {
     type: 'poiList/setStatus',
@@ -27,10 +34,10 @@ const setStatus = (status: Status): Action => {
   };
 };
 
-const setPoiList = (pois: Poi[]): Action => {
+export const setCountry = (country: Country): Action => {
   return {
-    type: 'poiList/setData',
-    data: pois
+    type: 'poiList/setCountry',
+    data: country
   };
 };
 
@@ -48,6 +55,11 @@ export const poiReducer = (
       return {
         ...state,
         status: action.data
+      };
+    case 'poiList/setCountry':
+      return {
+        ...state,
+        country: action.data
       };
     default:
       return state;
