@@ -9,26 +9,17 @@ import { OpenStateWrapper } from '../InfoView/OpenState';
 interface Props {
   e: Poi;
   country: Country | undefined;
-  isHover: boolean;
-  handleMouseEnter: () => void;
-  handleMouseLeave: () => void;
   handleClick: () => void;
 }
 
 const ListElement = (
-  { e, country, isHover, handleMouseEnter, handleMouseLeave, handleClick }: Props
+  { e, country, handleClick }: Props
 ) => {
-  const className = 'list-elem' + (
-    isHover ? ' list-elem-hover' : ''
-  );
-
   const now = new Date();
 
   return (
     <div
-      className={className}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      className='list-elem'
       onClick={handleClick}
     >
       <b>{e.tags['name']}</b><br/>

@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
-import { setSelected, setHover, useAppDispatch, useAppSelector } from '../state';
+import { setSelected, useAppDispatch, useAppSelector } from '../state';
 import { MapHandle } from '../MapView/SetMapRef';
 import ListElement from './ListElement';
 import { filter } from '../search';
@@ -14,15 +14,10 @@ const ListView = ({ mapRef }: Props) => {
   const data = useAppSelector(state => state.poiList.data);
   const country = useAppSelector(state => state.poiList.country);
   const facets = useAppSelector(state => state.facets);
-  const hover = useAppSelector(state => state.ui.hover);
+
+  console.log('Rendering ListView');
 
   const filteredData = filter(data, country, facets);
-
-  useEffect(() => {
-    return () => {
-      dispatch(setHover(null));
-    }
-  }, []);
 
   return (
     <div className='list-container'>
@@ -31,9 +26,6 @@ const ListView = ({ mapRef }: Props) => {
           key={`${e.type}-${e.id}`}
           e={e}
           country={country}
-          isHover={e === hover}
-          handleMouseEnter={() => dispatch(setHover(e))}
-          handleMouseLeave={() => dispatch(setHover(null))}
           handleClick={() => {
             dispatch(setSelected(e));
             mapRef.current?.panTo(e);

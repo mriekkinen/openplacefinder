@@ -25,7 +25,8 @@ const MapView = (
   const country = useAppSelector(state => state.poiList.country);
   const facets = useAppSelector(state => state.facets);
   const selected = useAppSelector(state => state.ui.selected);
-  const hover = useAppSelector(state => state.ui.hover);
+
+  console.log('Rendering MapView');
 
   const filteredData = filter(data, country, facets);
 
@@ -51,7 +52,7 @@ const MapView = (
         <Marker
           key={`${e.type}-${e.id}`}
           e={e}
-          icon={e !== selected && e !== hover ? icon.default : icon.selected}
+          icon={e !== selected ? icon.default : icon.selected}
           handleClick={() => dispatch(setSelected(e))}
         />
       )}

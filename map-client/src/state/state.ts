@@ -14,9 +14,14 @@ export interface PoiState {
   country: Country | undefined;
 }
 
+export enum TabIndex {
+  Map = 0,
+  List
+}
+
 export interface UiState {
+  tab: TabIndex;
   selected: Poi | null;
-  hover: Poi | null;
 }
 
 export interface FacetState {
@@ -40,8 +45,8 @@ export const initialState: State = {
     country: undefined
   },
   ui: {
-    selected: null,
-    hover: null
+    tab: TabIndex.Map,
+    selected: null
   },
   facets: {
     name: '',
