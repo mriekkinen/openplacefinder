@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { LatLngTuple } from 'leaflet';
 
-import { useAppSelector } from './state';
+import { setTab, useAppDispatch, useAppSelector } from './state';
 import MapView from './MapView';
 import { MapHandle } from './MapView/SetMapRef';
 import ListView from './ListView';
@@ -11,7 +11,12 @@ import FacetsView from './FacetsView';
 
 import './App.css';
 
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
+
 const App = () => {
+  const dispatch = useAppDispatch();
+  const tab = useAppSelector(state => state.ui.tab);
   const selected = useAppSelector(state => state.ui.selected);
 
   const mapRef = useRef<MapHandle>(null);
@@ -32,6 +37,10 @@ const App = () => {
     state: ''
   };
 
+  const handleSelect = (index: number) => {
+    dispatch(setTab(index));
+  }
+
   return (
     <div id='App'>
       <div className='header'>
@@ -41,14 +50,41 @@ const App = () => {
       </div>
       <div className='content'>
         <FacetsView />
-        {selected === null
-          ? <ListView mapRef={mapRef} />
-          : <InfoView mapRef={mapRef} />
-        }
-        <MapView
-          center={center}
-          zoom={zoom}
-          ref={mapRef} />
+        <div className='tabs-container'>
+          <Tabs
+            selectedIndex={tab}
+            onSelect={handleSelect}
+            className={[
+              'react-tabs',
+              'tabs-flex-1',
+              'tabs-display-flex',
+              'tabs-flex-column'
+            ]}
+            selectedTabPanelClassName={
+              'tabs-selected-tab-panel'
+            }>
+            <TabList
+              className={[
+                'react-tabs__tab-list',
+                'tabs-flex-none'
+              ]}>
+              <Tab>Map</Tab>
+              <Tab>List</Tab>
+            </TabList>
+            <TabPanel>
+              <MapView
+                center={center}
+                zoom={zoom}
+                ref={mapRef} />
+            </TabPanel>
+            <TabPanel>
+              {selected === null
+                ? <ListView mapRef={mapRef} />
+                : <InfoView mapRef={mapRef} />
+              }
+            </TabPanel>
+          </Tabs>
+        </div>
       </div>
     </div>
   );

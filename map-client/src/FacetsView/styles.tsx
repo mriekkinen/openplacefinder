@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   flex: none;
+  align-self: flex-start;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
