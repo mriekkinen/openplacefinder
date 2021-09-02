@@ -1,10 +1,8 @@
 import React, { useImperativeHandle } from 'react';
 import { useMap } from 'react-leaflet';
 
-import { Poi } from '../types';
-
 export interface MapHandle {
-  panTo: (e: Poi) => void;
+  panTo: (lat: number | undefined, lon: number | undefined) => void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -17,9 +15,9 @@ const SetMapRef = (
   const map = useMap();
   useImperativeHandle(ref, () => {
     return {
-      panTo: (e: Poi) => {
-        if (e.lat === undefined || e.lon === undefined) return;
-        map.panTo([e.lat, e.lon], {
+      panTo: (lat: number | undefined, lon: number | undefined) => {
+        if (lat === undefined || lon === undefined) return;
+        map.panTo([lat, lon], {
           animate: true,
           duration: 0.5
         });
