@@ -9,6 +9,7 @@ import InfoView from './InfoView';
 import SearchView from './SearchView';
 import FacetsView from './FacetsView';
 
+import 'leaflet/dist/leaflet.css';
 import './App.css';
 
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';

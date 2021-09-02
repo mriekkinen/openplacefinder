@@ -1,15 +1,16 @@
 import React from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 
-// Import Leaflet.awesome-markers plugin
-import L from 'leaflet';
-import 'leaflet.awesome-markers';
-
 import { setSelected, useAppDispatch, useAppSelector } from '../state';
 import { filter } from '../search';
 import SetMapRef, { MapHandle } from './SetMapRef';
 import HandleMapClick from './HandleMapClick';
-import Marker from './Marker';
+import CircleMarker from './CircleMarker';
+
+// Option: whether to use raster instead of vector graphics?
+// If true, renders markers using an HTML canvas element.
+// If false, renders markers using a SVG layer.
+const PREFER_CANVAS = false;
 
 interface Props {
   center: L.LatLngExpression;
@@ -30,7 +31,6 @@ const MapView = (
 
   const filteredData = filter(data, country, facets);
 
-  const icon = getIcon();
   const tileProps = {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
     url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
@@ -42,6 +42,7 @@ const MapView = (
       center={center}
       zoom={zoom}
       scrollWheelZoom={true}
+      preferCanvas={PREFER_CANVAS}
     >
       <SetMapRef ref={ref} />
       <HandleMapClick
@@ -49,35 +50,15 @@ const MapView = (
       <TileLayer {...tileProps} />
 
       {filteredData.map(e =>
-        <Marker
+        <CircleMarker
           key={`${e.type}-${e.id}`}
           e={e}
-          icon={e !== selected ? icon.default : icon.selected}
+          isSelected={e === selected}
           handleClick={() => dispatch(setSelected(e))}
         />
       )}
     </MapContainer>
   );
-};
-
-const getIcon = () => {
-  const defaultIcon = L.AwesomeMarkers.icon({
-    prefix: 'fa',
-    icon: 'coffee',
-    markerColor: 'red',
-    //className: 'awesome-marker awesome-marker-square'
-  });
-  const selectedIcon = L.AwesomeMarkers.icon({
-    prefix: 'fa',
-    icon: 'coffee',
-    markerColor: 'cadetblue',
-    //className: 'awesome-marker awesome-marker-square'
-  });
-
-  return {
-    default: defaultIcon,
-    selected: selectedIcon
-  };
 };
 
 export default React.forwardRef(MapView);
