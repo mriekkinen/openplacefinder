@@ -21,6 +21,14 @@ const MapView = (
   { center, zoom }: Props,
   ref: React.Ref<MapHandle>
 ) => {
+  // For debugging memory consumption
+  React.useEffect(() => {
+    console.log('Mounted MapView');
+    return () => {
+      console.log('Unmounting MapView');
+    }
+  }, []);
+
   const dispatch = useAppDispatch();
   const data = useAppSelector(state => state.poiList.data);
   const country = useAppSelector(state => state.poiList.country);
@@ -53,8 +61,8 @@ const MapView = (
         <CircleMarker
           key={`${e.type}-${e.id}`}
           e={e}
-          isSelected={e === selected}
-          handleClick={() => dispatch(setSelected(e))}
+          isSelected={e.id === selected}
+          handleClick={() => dispatch(setSelected(e.id))}
         />
       )}
     </MapContainer>

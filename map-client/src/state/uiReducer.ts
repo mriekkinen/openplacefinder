@@ -1,4 +1,3 @@
-import { Poi } from '../types';
 import { initialState, TabIndex, UiState } from './state';
 import { Action } from './actions';
 
@@ -9,10 +8,10 @@ export const setTab = (tab: TabIndex): Action => {
   };
 };
 
-export const setSelected = (poi: Poi | null): Action => {
+export const setSelected = (id: number | null): Action => {
   return {
     type: 'ui/setSelected',
-    data: poi
+    data: id
   };
 };
 

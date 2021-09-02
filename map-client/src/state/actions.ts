@@ -28,7 +28,7 @@ export type UiAction =
   }
 | {
     type: 'ui/setSelected',
-    data: Poi | null
+    data: number | null
   };
 
 export type FacetAction =

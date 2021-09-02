@@ -15,8 +15,13 @@ interface Props {
 
 const InfoView = ({ mapRef }: Props) => {
   const dispatch = useAppDispatch();
-  const poi = useAppSelector(state => state.ui.selected);
+  const id = useAppSelector(state => state.ui.selected);
+  const data = useAppSelector(state => state.poiList.data);
   const country = useAppSelector(state => state.poiList.country);
+
+  console.log('Rendering InfoView');
+
+  const poi = data.find(e => e.id === id);
 
   if (!poi) {
     return (

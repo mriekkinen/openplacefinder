@@ -21,7 +21,7 @@ export enum TabIndex {
 
 export interface UiState {
   tab: TabIndex;
-  selected: Poi | null;
+  selected: number | null;
 }
 
 export interface FacetState {

@@ -27,7 +27,7 @@ const ListView = ({ mapRef }: Props) => {
           e={e}
           country={country}
           handleClick={() => {
-            dispatch(setSelected(e));
+            dispatch(setSelected(e.id));
             mapRef.current?.panTo(e);
           }}
         />
