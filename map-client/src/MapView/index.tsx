@@ -6,6 +6,7 @@ import { filter } from '../search';
 import SetMapRef, { MapHandle } from './SetMapRef';
 import HandleMapClick from './HandleMapClick';
 import CircleMarker from './CircleMarker';
+import RemoveMapOnUnmount from './RemoveMapOnUnmount';
 
 // Option: whether to use raster instead of vector graphics?
 // If true, renders markers using an HTML canvas element.
@@ -39,6 +40,8 @@ const MapView = (
 
   const filteredData = filter(data, country, facets);
 
+  console.log('filteredData.length:', filteredData.length);
+
   const tileProps = {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
     url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
@@ -65,6 +68,8 @@ const MapView = (
           handleClick={() => dispatch(setSelected(e.id))}
         />
       )}
+
+      <RemoveMapOnUnmount />
     </MapContainer>
   );
 };

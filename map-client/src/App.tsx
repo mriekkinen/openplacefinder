@@ -53,7 +53,7 @@ const App = () => {
         <FacetsView />
         <div className='tabs-container'>
           <Tabs
-            forceRenderTabPanel={true}  // trying to locate a memory leak...
+            forceRenderTabPanel={false}
             selectedIndex={tab}
             onSelect={handleSelect}
             className={[
