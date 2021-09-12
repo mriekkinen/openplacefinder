@@ -24,6 +24,11 @@ export interface UiState {
   selected: number | null;
 }
 
+export interface LocationState {
+  lat: number;
+  lon: number;
+}
+
 export interface FacetState {
   name: string;
   brand: string;
@@ -35,6 +40,7 @@ export interface FacetState {
 export interface State {
   poiList: PoiState;
   ui: UiState;
+  location: LocationState;
   facets: FacetState;
 }
 
@@ -47,6 +53,10 @@ export const initialState: State = {
   ui: {
     tab: TabIndex.Map,
     selected: null
+  },
+  location: {
+    lat: 60.1673,
+    lon: 24.9428
   },
   facets: {
     name: '',

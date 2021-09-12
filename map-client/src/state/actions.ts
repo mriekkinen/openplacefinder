@@ -31,6 +31,15 @@ export type UiAction =
     data: number | null
   };
 
+export type LocationAction =
+  | {
+      type: 'location/setLocation',
+      data: {
+        lat: number,
+        lon: number
+      }
+    };
+
 export type FacetAction =
   | {
       type: 'facets/setName',
@@ -59,4 +68,4 @@ export type FacetAction =
       type: 'facets/clear'
     };
 
-export type Action = PoiAction | UiAction | FacetAction;
+export type Action = PoiAction | UiAction | LocationAction | FacetAction;

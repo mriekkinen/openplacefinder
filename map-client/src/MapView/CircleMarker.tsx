@@ -26,6 +26,14 @@ const CircleMarker = ({ e, isSelected, handleClick }: Props) => {
       <Tooltip e={e} />
     </LeafletCircleMarker>
   );
+
+  /*
+  return (
+    <LeafletCircleMarker
+      center={[e.lat, e.lon]}
+    />
+  );
+  */
 };
 
 export default CircleMarker;

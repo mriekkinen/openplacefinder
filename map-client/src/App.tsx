@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { LatLngTuple } from 'leaflet';
+import styled from 'styled-components';
 
 import { setTab, useAppDispatch, useAppSelector } from './state';
 import MapView from './MapView';
@@ -8,8 +9,10 @@ import ListView from './ListView';
 import InfoView from './InfoView';
 import SearchView from './SearchView';
 import FacetsView from './FacetsView';
+import LocationView from './LocationView';
 
 import 'leaflet/dist/leaflet.css';
+import 'leaflet-contextmenu/dist/leaflet.contextmenu.css';
 import './App.css';
 
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
@@ -50,7 +53,10 @@ const App = () => {
           country={country} />
       </div>
       <div className='content'>
-        <FacetsView />
+        <SidebarBoxes>
+          <LocationView />
+          <FacetsView />
+        </SidebarBoxes>
         <div className='tabs-container'>
           <Tabs
             forceRenderTabPanel={false}
@@ -73,6 +79,7 @@ const App = () => {
               ]}>
               <Tab>Map</Tab>
               <Tab>List</Tab>
+              <Tab>Empty</Tab>
             </TabList>
             <TabPanel>
               <MapView
@@ -86,11 +93,22 @@ const App = () => {
                 : <InfoView mapRef={mapRef} />
               }
             </TabPanel>
+            {/* An extra empty tab (helps profiling) */}
+            <TabPanel>
+              This tab is empty on purpose.
+            </TabPanel>
           </Tabs>
         </div>
       </div>
     </div>
   );
 };
+
+const SidebarBoxes = styled.div`
+  flex: none;
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+`;
 
 export default App;

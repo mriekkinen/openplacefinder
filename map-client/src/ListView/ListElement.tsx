@@ -1,13 +1,14 @@
 import React from 'react';
 
-import { Poi } from '../types';
+import { Poi, PoiWithDistance } from '../types';
 import { Country } from '../state';
 import { getCuisines } from '../search';
 import { getAddress } from '../InfoView/Address';
+import { getDistance } from '../InfoView/Distance';
 import { OpenStateWrapper } from '../InfoView/OpenState';
 
 interface Props {
-  e: Poi;
+  e: PoiWithDistance;
   country: Country | undefined;
   handleClick: () => void;
 }
@@ -24,11 +25,14 @@ const ListElement = (
     >
       <b>{e.tags['name']}</b><br/>
       {getAddress(e)}<br/>
+      distance: {getDistance(e)}<br/>
       Cuisine: {getPrimaryCuisines(e)}<br/>
+      {/*
       <OpenStateWrapper
         poi={e}
         country={country}
         now={now} />
+      */}
     </div>
   );
 };

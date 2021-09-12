@@ -1,11 +1,17 @@
 import React from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet-contextmenu';
 
-import { setSelected, useAppDispatch, useAppSelector } from '../state';
+import {
+  setLocation, setSelected,
+  useAppDispatch, useAppSelector
+} from '../state';
 import { filter } from '../search';
 import SetMapRef, { MapHandle } from './SetMapRef';
 import HandleMapClick from './HandleMapClick';
 import CircleMarker from './CircleMarker';
+import LocationMarker from './LocationMarker';
 import RemoveMapOnUnmount from './RemoveMapOnUnmount';
 
 // Option: whether to use raster instead of vector graphics?
@@ -35,12 +41,22 @@ const MapView = (
   const country = useAppSelector(state => state.poiList.country);
   const facets = useAppSelector(state => state.facets);
   const selected = useAppSelector(state => state.ui.selected);
+  const location = useAppSelector(state => state.location);
 
   console.log('Rendering MapView');
 
   const filteredData = filter(data, country, facets);
 
   console.log('filteredData.length:', filteredData.length);
+
+  const contextmenuItems = [
+    {
+      text: 'Set location',
+      callback: (e: L.LeafletMouseEvent) => {
+        dispatch(setLocation(e.latlng.lat, e.latlng.lng));
+      }
+    }
+  ];
 
   const tileProps = {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
@@ -54,6 +70,8 @@ const MapView = (
       zoom={zoom}
       scrollWheelZoom={true}
       preferCanvas={PREFER_CANVAS}
+      contextmenu={true}
+      contextmenuItems={contextmenuItems}
     >
       <SetMapRef ref={ref} />
       <HandleMapClick
@@ -68,6 +86,10 @@ const MapView = (
           handleClick={() => dispatch(setSelected(e.id))}
         />
       )}
+
+      <LocationMarker
+        lat={location.lat}
+        lon={location.lon} />
 
       <RemoveMapOnUnmount />
     </MapContainer>

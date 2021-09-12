@@ -3,7 +3,7 @@ import React from 'react';
 import { setSelected, useAppDispatch, useAppSelector } from '../state';
 import { MapHandle } from '../MapView/SetMapRef';
 import ListElement from './ListElement';
-import { filter } from '../search';
+import { filter, addDistance, sortByDistance } from '../search';
 
 interface Props {
   mapRef: React.RefObject<MapHandle>;
@@ -14,14 +14,20 @@ const ListView = ({ mapRef }: Props) => {
   const data = useAppSelector(state => state.poiList.data);
   const country = useAppSelector(state => state.poiList.country);
   const facets = useAppSelector(state => state.facets);
+  const location = useAppSelector(state => state.location);
 
   console.log('Rendering ListView');
 
+  // Apply filters
   const filteredData = filter(data, country, facets);
+
+  // Sort by distance
+  const dataWithDistances = addDistance(filteredData, location.lat, location.lon);
+  sortByDistance(dataWithDistances);
 
   return (
     <div className='list-container'>
-      {filteredData.map(e =>
+      {dataWithDistances.map(e =>
         <ListElement
           key={`${e.type}-${e.id}`}
           e={e}
