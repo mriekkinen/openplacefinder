@@ -4,7 +4,6 @@ export const Container = styled.div`
   flex: none;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
   margin: 0 5px 5px 5px;
   width: 300px;
   border: 1px solid lightgray;
@@ -16,7 +15,7 @@ export const Header = styled.div`
   font-weight: 600;
 `;
 
-export const Elem = styled.div`
+export const Item = styled.div`
   margin: 10px;
   line-height: 1.25;
 `;

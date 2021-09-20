@@ -5,11 +5,11 @@ import styled from 'styled-components';
 import { setTab, useAppDispatch, useAppSelector } from './state';
 import MapView from './MapView';
 import { MapHandle } from './MapView/SetMapRef';
+import NavBar from './NavBar';
 import ListView from './ListView';
 import InfoView from './InfoView';
 import SearchView from './SearchView';
 import FacetsView from './FacetsView';
-import LocationView from './LocationView';
 
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-contextmenu/dist/leaflet.contextmenu.css';
@@ -47,14 +47,12 @@ const App = () => {
 
   return (
     <div id='App'>
-      <div className='header'>
-        <SearchView
-          areaFilter={areaFilter}
-          country={country} />
-      </div>
+      <NavBar />
       <div className='content'>
         <SidebarBoxes>
-          <LocationView />
+          <SearchView
+            areaFilter={areaFilter}
+            country={country} />
           <FacetsView />
         </SidebarBoxes>
         <div className='tabs-container'>

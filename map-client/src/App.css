@@ -4,36 +4,6 @@
   height: 100vh;
 }
 
-.header {
-  flex: 0 0 auto;
-}
-
-.search-container {
-  display: flex;
-  align-items: stretch;
-  margin: 5px 5px;
-}
-
-.logo {
-  flex: none;
-  margin: 5px;
-}
-
-.search-box {
-  flex: 1 1 auto;
-  max-width: 400px;
-  z-index: auto;
-}
-
-.search-btn {
-  flex: none;
-}
-
-.search-status {
-  flex: 1 1 auto;
-  color: #757575;
-}
-
 .content {
   flex: 1 1 400px;
   display: flex;

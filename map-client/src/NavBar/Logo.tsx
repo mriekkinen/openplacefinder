@@ -4,7 +4,7 @@ import { GoLocation } from 'react-icons/go';
 // TODO: Fix vertical alignment
 
 const Logo = () => (
-  <div className='logo'>
+  <div>
     <GoLocation /> OpenPOIGuide
   </div>
 );
