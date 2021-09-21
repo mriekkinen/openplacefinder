@@ -2,12 +2,15 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Logo from './Logo';
+import NavLink from './NavLink';
 
 const NavBar = () => {
   return (
     <Nav>
       <NavList>
         <NavItem><Logo /></NavItem>
+        <NavItem><NavLink href='#' activePage={false}>Docs</NavLink></NavItem>
+        <NavItem><NavLink href='#' activePage={false}>About</NavLink></NavItem>
       </NavList>
     </Nav>
   );
@@ -15,10 +18,11 @@ const NavBar = () => {
 
 const Nav = styled.nav`
   flex: 0 0 auto;
-  margin-bottom: 5px;
   padding: 15px;
-  color: white;
-  background-color: #039BE5;
+  padding-right: 20px;
+  color: #FAFAFA;
+  background-color: #263238;
+  margin-bottom: 5px;
 `;
 
 const NavList = styled.ul`
