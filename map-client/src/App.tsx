@@ -77,7 +77,7 @@ const App = () => {
               ]}>
               <Tab>Map</Tab>
               <Tab>List</Tab>
-              <Tab>Empty</Tab>
+              {/* <Tab>Empty</Tab> */}
             </TabList>
             <TabPanel>
               <MapView
@@ -92,9 +92,11 @@ const App = () => {
               }
             </TabPanel>
             {/* An extra empty tab (helps profiling) */}
+            {/*
             <TabPanel>
               This tab is empty on purpose.
             </TabPanel>
+            */}
           </Tabs>
         </div>
       </div>
