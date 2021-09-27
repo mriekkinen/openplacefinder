@@ -1,43 +1,38 @@
 import React from 'react';
 
-import { Poi } from '../types';
+import { Poi, PoiWithDistance } from '../types';
 import { Country } from '../state';
 import { getCuisines } from '../search';
 import { getAddress } from '../InfoView/Address';
+import { getDistance } from '../InfoView/Distance';
 import { OpenStateWrapper } from '../InfoView/OpenState';
 
 interface Props {
-  e: Poi;
+  e: PoiWithDistance;
   country: Country | undefined;
-  isHover: boolean;
-  handleMouseEnter: () => void;
-  handleMouseLeave: () => void;
   handleClick: () => void;
 }
 
 const ListElement = (
-  { e, country, isHover, handleMouseEnter, handleMouseLeave, handleClick }: Props
+  { e, country, handleClick }: Props
 ) => {
-  const className = 'list-elem' + (
-    isHover ? ' list-elem-hover' : ''
-  );
-
   const now = new Date();
 
   return (
     <div
-      className={className}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      className='list-elem'
       onClick={handleClick}
     >
       <b>{e.tags['name']}</b><br/>
       {getAddress(e)}<br/>
+      distance: {getDistance(e)}<br/>
       Cuisine: {getPrimaryCuisines(e)}<br/>
+      {/*
       <OpenStateWrapper
         poi={e}
         country={country}
         now={now} />
+      */}
     </div>
   );
 };

@@ -1,10 +1,8 @@
 import React, { useImperativeHandle } from 'react';
 import { useMap } from 'react-leaflet';
 
-import { Poi } from '../types';
-
 export interface MapHandle {
-  panTo: (e: Poi) => void;
+  panTo: (lat: number | undefined, lon: number | undefined) => void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -14,18 +12,25 @@ const SetMapRef = (
   props: Props,
   ref: React.Ref<MapHandle>
 ) => {
-  const map = useMap();
-  useImperativeHandle(ref, () => {
-    return {
-      panTo: (e: Poi) => {
-        if (e.lat === undefined || e.lon === undefined) return;
-        map.panTo([e.lat, e.lon], {
-          animate: true,
-          duration: 0.5
-        });
-      }
-    };
-  });
+  // NOTE: Disabled for the time being
+  //
+  // In the current multi-tab layout this doesn't really make much sense
+  // unless forceRenderTabPanel is true. Otherwise, it cannot function and,
+  // what's more, causes a memory leak. I'll leave this commented out
+  // for now since the layout is in flux and might change in the future.
+  //
+  // const map = useMap();
+  // useImperativeHandle(ref, () => {
+  //   return {
+  //     panTo: (lat: number | undefined, lon: number | undefined) => {
+  //       if (lat === undefined || lon === undefined) return;
+  //       map.panTo([lat, lon], {
+  //         animate: true,
+  //         duration: 0.5
+  //       });
+  //     }
+  //   };
+  // });
 
   return null;
 };

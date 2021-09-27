@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 
-import { Poi } from '../types';
 import {
-  queryOverpass, setCountry, Status, Country,
+  queryOverpass, setCountry, clearPoiList,
+  Status, Country,
   useAppDispatch, useAppSelector
 } from '../state';
 import { buildQuery } from './queryBuilder';
 import { Option } from './types';
-import Logo from './Logo';
+import { Container, Header, Item } from './styles';
 import SearchBox from './SearchBox';
-import SearchBtn from './SearchBtn';
+import Location from './Location';
 
 interface Props {
   areaFilter: string[];
@@ -18,19 +18,24 @@ interface Props {
 
 const SearchView = ({ areaFilter, country }: Props) => {
   const dispatch = useAppDispatch();
-  const data = useAppSelector(state => state.poiList.data);
   const status = useAppSelector(state => state.poiList.status);
+  const location = useAppSelector(state => state.location);
 
   const [option, setOption] = useState<Option | null>(null);
 
   const handleChange = (newOption: Option | null) => {
     setOption(newOption);
+    submit(newOption);
   };
 
-  const handleSubmit = () => {
-    if (option === null) return;
+  const submit = (newOption: Option | null) => {
+    if (newOption === null) {
+      dispatch(clearPoiList());
+      return;
+    }
+
     const query = buildQuery(
-      [option.value],
+      [newOption.value],
       areaFilter
     );
 
@@ -39,36 +44,31 @@ const SearchView = ({ areaFilter, country }: Props) => {
   };
 
   return (
-    <div className='search-container'>
-      <Logo />
-      <div className='search-box'>
+    <Container>
+      <Header>Search for</Header>
+      <Item>
         <SearchBox
           value={option}
-          handleChange={handleChange} />
-      </div>
-      <div className='search-btn'>
-        <SearchBtn
-          status={status}
-          handleClick={handleSubmit} />
-      </div>
-      <div className='search-status'>
-        {getStatusMsg(status, data)}
-      </div>
-    </div>
+          handleChange={handleChange}
+          isLoading={status === 'loading'} />
+      </Item>
+      <Item>
+        <Location lat={location.lat} lon={location.lon} />
+      </Item>
+      {status === 'failed' &&
+        <Item>{getErrorMsg(status)}</Item>
+      }
+    </Container>
   );
 };
 
-const getStatusMsg = (status: Status, data: Poi[]) => {
-  switch (status) {
-    case 'idle':
-      return null;
-    case 'loading':
-      return <span>Loading...</span>
-    case 'succeeded':
-      return <span>Found <b>{data.length}</b> elements matching the query</span>;
-    case 'failed':
-      return <span>Query failed</span>;
+const getErrorMsg = (status: Status) => {
+  if (status !== 'failed') {
+    return null;
   }
+
+  // TODO: Provide more info about the error
+  return <span>Query failed</span>;
 };
 
 export default SearchView;

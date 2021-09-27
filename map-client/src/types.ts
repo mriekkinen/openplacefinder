@@ -10,4 +10,8 @@ export interface Poi {
   tags: Tags;
 }
 
+export interface PoiWithDistance extends Poi {
+  distance: number;
+}
+
 export type Nwr = OverpassNode | OverpassWay | OverpassRelation;

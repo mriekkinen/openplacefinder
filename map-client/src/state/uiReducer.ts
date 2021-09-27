@@ -1,18 +1,17 @@
-import { Poi } from '../types';
-import { initialState, UiState } from './state';
+import { initialState, TabIndex, UiState } from './state';
 import { Action } from './actions';
 
-export const setSelected = (poi: Poi | null): Action => {
+export const setTab = (tab: TabIndex): Action => {
   return {
-    type: 'ui/setSelected',
-    data: poi
+    type: 'ui/setTab',
+    data: tab
   };
 };
 
-export const setHover = (poi: Poi | null): Action => {
+export const setSelected = (id: number | null): Action => {
   return {
-    type: 'ui/setHover',
-    data: poi
+    type: 'ui/setSelected',
+    data: id
   };
 };
 
@@ -21,15 +20,15 @@ export const uiReducer = (
   action: Action
 ): UiState => {
   switch (action.type) {
+    case 'ui/setTab':
+      return {
+        ...state,
+        tab: action.data
+      };
     case 'ui/setSelected':
       return {
         ...state,
         selected: action.data
-      };
-    case 'ui/setHover':
-      return {
-        ...state,
-        hover: action.data
       };
     default:
       return state;

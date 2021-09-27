@@ -20,6 +20,13 @@ export const queryOverpass = (query: string): AppThunk => {
   };
 };
 
+export const clearPoiList = (): AppThunk => {
+  return async dispatch => {
+    dispatch(setPoiList([]));
+    dispatch(setStatus('idle'));
+  };
+};
+
 const setPoiList = (pois: Poi[]): Action => {
   return {
     type: 'poiList/setData',

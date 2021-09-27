@@ -13,7 +13,7 @@ const Address = ({ mapRef, e }: Props) => {
   return (
     <span
       className='address'
-      onClick={() => mapRef.current?.panTo(e)}>
+      onClick={() => mapRef.current?.panTo(e.lat, e.lon)}>
       <GoLocation /> {getAddress(e)}
     </span>
   );

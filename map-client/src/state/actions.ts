@@ -2,7 +2,7 @@ import { AnyAction } from 'redux';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 
 import { Poi } from '../types';
-import { Status, State, Country } from './state';
+import { Status, State, Country, TabIndex } from './state';
 
 export type AppThunk = ThunkAction<void, State, unknown, AnyAction>;
 export type AppDispatch = ThunkDispatch<State, unknown, AnyAction>;
@@ -23,13 +23,22 @@ export type PoiAction =
 
 export type UiAction =
 | {
-    type: 'ui/setSelected',
-    data: Poi | null
+    type: 'ui/setTab',
+    data: TabIndex
   }
 | {
-    type: 'ui/setHover',
-    data: Poi | null
+    type: 'ui/setSelected',
+    data: number | null
   };
+
+export type LocationAction =
+  | {
+      type: 'location/setLocation',
+      data: {
+        lat: number,
+        lon: number
+      }
+    };
 
 export type FacetAction =
   | {
@@ -59,4 +68,4 @@ export type FacetAction =
       type: 'facets/clear'
     };
 
-export type Action = PoiAction | UiAction | FacetAction;
+export type Action = PoiAction | UiAction | LocationAction | FacetAction;
