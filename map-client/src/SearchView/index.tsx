@@ -1,18 +1,22 @@
 import React from 'react';
 
 import {
-  Category, SearchArea, Status,
-  clearPoiList, setCategory, queryOverpass,
+  Category, Status,
+  clearPoiList, setBBox, setCategory, queryOverpass,
   useAppDispatch, useAppSelector
 } from '../state';
-import { assertNever } from '../utils';
 import { buildAreaQuery, buildBBoxQuery } from '../overpass';
+import { MapHandle } from '../MapView/SetMapRef';
 import { Container, Header, Item } from './styles';
 import SearchBox from './SearchBox';
 import Location from './Location';
 import Area from './Area';
 
-const SearchView = () => {
+interface Props {
+  mapRef: React.RefObject<MapHandle>;
+}
+
+const SearchView = ({ mapRef }: Props) => {
   const dispatch = useAppDispatch();
   const status = useAppSelector(state => state.poiList.status);
   const category = useAppSelector(state => state.search.category);
@@ -26,14 +30,25 @@ const SearchView = () => {
       return;
     }
 
-    const query = buildQuery(newCategory, area);
+    // Build the query (and update the bounding box)
+    let query;
+    if (area.type === 'boundary') {
+      query = buildAreaQuery(
+        [newCategory.value],
+        area.id
+      );
+    } else {
+      let newBounds = area.bbox;
+      if (mapRef.current !== null) {
+        newBounds = mapRef.current.getBounds();
+        dispatch(setBBox(newBounds));
+      }
 
-    // TODO: We'll probably want to update the bbox, as well, before making the query
-    //
-    // if (area.type === 'bbox') {
-    //   const bounds = map.getBounds();
-    //   dispatch(setBBox(bounds));
-    // }
+      query = buildBBoxQuery(
+        [newCategory.value],
+        newBounds
+      );
+    }
 
     dispatch(setCategory(newCategory));
     dispatch(queryOverpass(query));
@@ -59,23 +74,6 @@ const SearchView = () => {
       }
     </Container>
   );
-};
-
-const buildQuery = (category: Category, area: SearchArea) => {
-  switch (area.type) {
-    case 'boundary':
-      return buildAreaQuery(
-        [category.value],
-        area.id
-      );
-    case 'bbox':
-      return buildBBoxQuery(
-        [category.value],
-        area.bbox
-      );
-    default:
-      return assertNever(area);
-  }
 };
 
 const getErrorMsg = (status: Status) => {

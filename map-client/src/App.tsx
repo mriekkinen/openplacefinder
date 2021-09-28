@@ -43,12 +43,12 @@ const App = () => {
       <NavBar />
       <div className='content'>
         <SidebarBoxes>
-          <SearchView />
+          <SearchView mapRef={mapRef} />
           <FacetsView />
         </SidebarBoxes>
         <div className='tabs-container'>
           <Tabs
-            forceRenderTabPanel={false}
+            forceRenderTabPanel={true}
             selectedIndex={tab}
             onSelect={handleSelect}
             className={[
