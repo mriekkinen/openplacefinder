@@ -1,46 +1,42 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import {
-  queryOverpass, setCountry, clearPoiList,
-  Status, Country,
+  Category, SearchArea, Status,
+  clearPoiList, setCategory, queryOverpass,
   useAppDispatch, useAppSelector
 } from '../state';
-import { buildQuery } from './queryBuilder';
-import { Option } from './types';
+import { assertNever } from '../utils';
+import { buildAreaQuery, buildBBoxQuery } from '../overpass';
 import { Container, Header, Item } from './styles';
 import SearchBox from './SearchBox';
 import Location from './Location';
+import Area from './Area';
 
-interface Props {
-  areaFilter: string[];
-  country: Country;
-}
-
-const SearchView = ({ areaFilter, country }: Props) => {
+const SearchView = () => {
   const dispatch = useAppDispatch();
   const status = useAppSelector(state => state.poiList.status);
+  const category = useAppSelector(state => state.search.category);
+  const area = useAppSelector(state => state.search.area);
   const location = useAppSelector(state => state.location);
 
-  const [option, setOption] = useState<Option | null>(null);
-
-  const handleChange = (newOption: Option | null) => {
-    setOption(newOption);
-    submit(newOption);
-  };
-
-  const submit = (newOption: Option | null) => {
-    if (newOption === null) {
+  const handleChange = (newCategory: Category | null) => {
+    if (newCategory === null) {
+      dispatch(setCategory(null));
       dispatch(clearPoiList());
       return;
     }
 
-    const query = buildQuery(
-      [newOption.value],
-      areaFilter
-    );
+    const query = buildQuery(newCategory, area);
 
+    // TODO: We'll probably want to update the bbox, as well, before making the query
+    //
+    // if (area.type === 'bbox') {
+    //   const bounds = map.getBounds();
+    //   dispatch(setBBox(bounds));
+    // }
+
+    dispatch(setCategory(newCategory));
     dispatch(queryOverpass(query));
-    dispatch(setCountry(country));
   };
 
   return (
@@ -48,9 +44,12 @@ const SearchView = ({ areaFilter, country }: Props) => {
       <Header>Search for</Header>
       <Item>
         <SearchBox
-          value={option}
+          value={category}
           handleChange={handleChange}
           isLoading={status === 'loading'} />
+      </Item>
+      <Item>
+        <Area area={area} />
       </Item>
       <Item>
         <Location lat={location.lat} lon={location.lon} />
@@ -60,6 +59,23 @@ const SearchView = ({ areaFilter, country }: Props) => {
       }
     </Container>
   );
+};
+
+const buildQuery = (category: Category, area: SearchArea) => {
+  switch (area.type) {
+    case 'boundary':
+      return buildAreaQuery(
+        [category.value],
+        area.id
+      );
+    case 'bbox':
+      return buildBBoxQuery(
+        [category.value],
+        area.bbox
+      );
+    default:
+      return assertNever(area);
+  }
 };
 
 const getErrorMsg = (status: Status) => {

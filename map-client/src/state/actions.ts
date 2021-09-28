@@ -1,8 +1,9 @@
 import { AnyAction } from 'redux';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import { LatLngBounds } from 'leaflet';
 
 import { Poi } from '../types';
-import { Status, State, Country, TabIndex } from './state';
+import { Status, State, Country, TabIndex, Category } from './state';
 
 export type AppThunk = ThunkAction<void, State, unknown, AnyAction>;
 export type AppDispatch = ThunkDispatch<State, unknown, AnyAction>;
@@ -30,6 +31,25 @@ export type UiAction =
     type: 'ui/setSelected',
     data: number | null
   };
+
+export type SearchAction =
+  | {
+      type: 'search/setCategory',
+      data: Category | null
+    }
+  | {
+      type: 'search/setBoundary',
+      data: {
+        name: string,
+        id: number
+      }
+    }
+  | {
+      type: 'search/setBBox',
+      data: {
+        bbox: LatLngBounds
+      }
+    };
 
 export type LocationAction =
   | {
@@ -68,4 +88,9 @@ export type FacetAction =
       type: 'facets/clear'
     };
 
-export type Action = PoiAction | UiAction | LocationAction | FacetAction;
+export type Action =
+  | PoiAction
+  | UiAction
+  | SearchAction
+  | LocationAction
+  | FacetAction;

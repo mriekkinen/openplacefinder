@@ -31,15 +31,8 @@ const App = () => {
   const zoom = 13;
   */
 
-  const areaFilter = ['name="Helsinki"', 'wikipedia="fi:Helsinki"'];
   const center: LatLngTuple = [60.1673, 24.9428];
   const zoom = 13;
-
-  const country = {
-    country: 'Finland',
-    countryCode: 'fi',
-    state: ''
-  };
 
   const handleSelect = (index: number) => {
     dispatch(setTab(index));
@@ -50,9 +43,7 @@ const App = () => {
       <NavBar />
       <div className='content'>
         <SidebarBoxes>
-          <SearchView
-            areaFilter={areaFilter}
-            country={country} />
+          <SearchView />
           <FacetsView />
         </SidebarBoxes>
         <div className='tabs-container'>
