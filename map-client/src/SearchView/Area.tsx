@@ -1,21 +1,50 @@
 import React from 'react';
 import { LatLngBounds } from 'leaflet';
+import Select from 'react-select';
 
-import { SearchArea } from '../state';
+import { SearchArea, SearchBoundary } from '../state';
 import { assertNever } from '../utils';
 
-interface Props {
-  area: SearchArea;
+export interface AREA_OPTION  {
+  value: SearchBoundary | null;
+  label: string;
 }
 
-const Area = ({ area }: Props) => {
+const OPTIONS: AREA_OPTION[] = [
+  {
+    value: null,
+    label: 'Current map view'
+  },
+  // {
+  //   value: {
+  //     type: 'boundary',
+  //     name: 'Helsinki',
+  //     id: 3600034914
+  //   },
+  //   label: 'Helsinki'
+  // }
+];
+
+interface Props {
+  value: AREA_OPTION;
+  handleChange: (newOption: AREA_OPTION | null) => void;
+  isLoading: boolean;
+}
+
+const Area = ({ value, handleChange, isLoading }: Props) => {
   return (
-    <>
-      In: {' '}
-      <input
-        disabled={true}
-        value={getAreaString(area)} />
-    </>
+    <Select
+      placeholder='Where?'
+      value={value}
+      options={OPTIONS}
+      onChange={handleChange}
+      isLoading={false}
+      isDisabled={true}
+      isClearable={false}
+      styles={{
+        menu: provided => ({ ...provided, zIndex: 9999 })
+      }}
+    />
   );
 };
 
@@ -24,7 +53,8 @@ const getAreaString = (area: SearchArea) => {
     case 'boundary':
       return area.name;
     case 'bbox':
-      return getApproximateBBox(area.bbox);
+      console.log('bbox:', getApproximateBBox(area.bbox));
+      return 'Current map view';
     default:
       return assertNever(area);
   }

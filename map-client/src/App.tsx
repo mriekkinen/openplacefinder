@@ -13,6 +13,7 @@ import FacetsView from './FacetsView';
 
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-contextmenu/dist/leaflet.contextmenu.css';
+import 'pelias-leaflet-plugin/dist/leaflet-geocoder-mapzen.css';
 import './App.css';
 
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
@@ -24,12 +25,6 @@ const App = () => {
   const selected = useAppSelector(state => state.ui.selected);
 
   const mapRef = useRef<MapHandle>(null);
-
-  /*
-  const areaFilter = ['name="London"', 'wikipedia="en:London"'];
-  const center: LatLngTuple = [51.505, -0.09];
-  const zoom = 13;
-  */
 
   const center: LatLngTuple = [60.1673, 24.9428];
   const zoom = 13;

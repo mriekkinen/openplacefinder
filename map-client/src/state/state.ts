@@ -93,9 +93,8 @@ export const initialState: State = {
   search: {
     category: null,
     area: {
-      type: 'boundary',
-      name: 'Helsinki',
-      id: 3600034914
+      type: 'bbox',
+      bbox: new LatLngBounds([0, 0], [1, 1])
     }
   },
   location: {

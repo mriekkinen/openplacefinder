@@ -2,15 +2,16 @@ import React from 'react';
 
 import {
   Category, Status,
-  clearPoiList, setBBox, setCategory, queryOverpass,
-  useAppDispatch, useAppSelector
+  clearPoiList, setBBox, setBoundary, setCategory, queryOverpass,
+  useAppDispatch, useAppSelector, SearchArea
 } from '../state';
+import { assertNever } from '../utils';
 import { buildAreaQuery, buildBBoxQuery } from '../overpass';
 import { MapHandle } from '../MapView/SetMapRef';
 import { Container, Header, Item } from './styles';
 import SearchBox from './SearchBox';
 import Location from './Location';
-import Area from './Area';
+import Area, { AREA_OPTION } from './Area';
 
 interface Props {
   mapRef: React.RefObject<MapHandle>;
@@ -23,7 +24,7 @@ const SearchView = ({ mapRef }: Props) => {
   const area = useAppSelector(state => state.search.area);
   const location = useAppSelector(state => state.location);
 
-  const handleChange = (newCategory: Category | null) => {
+  const handleCategoryChange = (newCategory: Category | null) => {
     if (newCategory === null) {
       dispatch(setCategory(null));
       dispatch(clearPoiList());
@@ -54,17 +55,67 @@ const SearchView = ({ mapRef }: Props) => {
     dispatch(queryOverpass(query));
   };
 
+  const handleAreaChange = (newOption: AREA_OPTION | null) => {
+    if (newOption === null) {
+      //dispatch(setBoundary(null));
+      dispatch(clearPoiList());
+      return;
+    }
+
+    const newArea = newOption.value;
+
+    console.log('handleAreaChange');
+    console.log('newOption:', newOption);
+    console.log('newArea:', newArea);
+
+    let query;
+    if (newArea !== null) {
+      dispatch(setBoundary(newArea.name, newArea.id));
+
+      if (category !== null) {
+        query = buildAreaQuery(
+          [category.value],
+          newArea.id
+        );
+      }
+    } else {
+      let newBounds = area.type === 'bbox' ? area.bbox : null;
+      if (mapRef.current !== null) {
+        console.log('newBounds:', newBounds);
+
+        newBounds = mapRef.current.getBounds();
+        dispatch(setBBox(newBounds));
+      }
+
+      if (newBounds !== null && category !== null) {
+        query = buildBBoxQuery(
+          [category.value],
+          newBounds
+        );
+      }
+    }
+
+    if (query !== undefined) {
+      dispatch(queryOverpass(query));
+    }
+  };
+
   return (
     <Container>
       <Header>Search for</Header>
       <Item>
         <SearchBox
           value={category}
-          handleChange={handleChange}
-          isLoading={status === 'loading'} />
+          handleChange={handleCategoryChange}
+          isLoading={status === 'loading'}
+        />
       </Item>
       <Item>
-        <Area area={area} />
+        <Area
+          value={toOption(area)}
+          handleChange={handleAreaChange}
+          isLoading={status === 'loading'}
+        />
       </Item>
       <Item>
         <Location lat={location.lat} lon={location.lon} />
@@ -74,6 +125,23 @@ const SearchView = ({ mapRef }: Props) => {
       }
     </Container>
   );
+};
+
+const toOption = (area: SearchArea): AREA_OPTION => {
+  switch (area.type) {
+    case 'boundary':
+      return {
+        value: area,
+        label: area.name
+      };
+    case 'bbox':
+      return {
+        value: null,
+        label: 'Current map view' // TODO: Not good... string might change elsewhere
+      }
+    default:
+      return assertNever(area);
+  }
 };
 
 const getErrorMsg = (status: Status) => {

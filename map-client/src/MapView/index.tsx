@@ -14,6 +14,7 @@ import CircleMarker from './CircleMarker';
 import LocationMarker from './LocationMarker';
 import RemoveMapOnUnmount from './RemoveMapOnUnmount';
 import AreaFilter from './AreaFilter';
+import Geocoder from './Geocoder';
 
 // Option: whether to use raster instead of vector graphics?
 // If true, renders markers using an HTML canvas element.
@@ -77,6 +78,7 @@ const MapView = (
       <SetMapRef ref={ref} />
       <HandleMapClick
         handleMapClick={() => dispatch(setSelected(null))} />
+      <Geocoder />
       <AreaFilter />
 
       <TileLayer {...tileProps} />
