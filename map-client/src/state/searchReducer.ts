@@ -1,12 +1,12 @@
 import { LatLngBounds } from 'leaflet';
 
-import { initialState, SearchState, Category } from './state';
+import { initialState, SearchState, MapFeature } from './state';
 import { Action } from './actions';
 
-export const setCategory = (category: Category | null): Action => {
+export const setMapFeature = (feature: MapFeature | null): Action => {
   return {
-    type: 'search/setCategory',
-    data: category
+    type: 'search/setMapFeature',
+    data: feature
   };
 };
 
@@ -33,7 +33,7 @@ export const searchReducer = (
   action: Action
 ): SearchState => {
   switch (action.type) {
-    case 'search/setCategory':
+    case 'search/setMapFeature':
       return {
         ...state,
         category: action.data

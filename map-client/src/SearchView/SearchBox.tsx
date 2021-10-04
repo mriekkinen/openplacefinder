@@ -1,11 +1,11 @@
 import React from 'react';
 import Select from 'react-select';
 
-import { Category, CATEGORIES } from '../state';
+import { MapFeature, mapFeatures } from '../state';
 
 interface Props {
-  value: Category | null;
-  handleChange: (newCategory: Category | null) => void;
+  value: MapFeature | null;
+  handleChange: (newValue: MapFeature | null) => void;
   isLoading: boolean;
 }
 
@@ -14,7 +14,7 @@ const SearchBox = ({ value, handleChange, isLoading }: Props) => {
     <Select
       placeholder='What are you looking for?'
       value={value}
-      options={CATEGORIES}
+      options={mapFeatures}
       onChange={handleChange}
       isLoading={isLoading}
       isDisabled={isLoading}

@@ -3,7 +3,7 @@ import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { LatLngBounds } from 'leaflet';
 
 import { Poi } from '../types';
-import { Status, State, Country, TabIndex, Category } from './state';
+import { Status, State, Country, TabIndex, MapFeature } from './state';
 
 export type AppThunk = ThunkAction<void, State, unknown, AnyAction>;
 export type AppDispatch = ThunkDispatch<State, unknown, AnyAction>;
@@ -34,8 +34,8 @@ export type UiAction =
 
 export type SearchAction =
   | {
-      type: 'search/setCategory',
-      data: Category | null
+      type: 'search/setMapFeature',
+      data: MapFeature | null
     }
   | {
       type: 'search/setBoundary',

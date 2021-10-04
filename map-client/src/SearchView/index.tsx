@@ -1,8 +1,8 @@
 import React from 'react';
 
 import {
-  Category, Status,
-  clearPoiList, setBBox, setBoundary, setCategory, queryOverpass,
+  MapFeature, Status,
+  clearPoiList, setBBox, setBoundary, setMapFeature, queryOverpass,
   useAppDispatch, useAppSelector, SearchArea
 } from '../state';
 import { assertNever } from '../utils';
@@ -24,9 +24,9 @@ const SearchView = ({ mapRef }: Props) => {
   const area = useAppSelector(state => state.search.area);
   const location = useAppSelector(state => state.location);
 
-  const handleCategoryChange = (newCategory: Category | null) => {
-    if (newCategory === null) {
-      dispatch(setCategory(null));
+  const handleFeatureChange = (newFeature: MapFeature | null) => {
+    if (newFeature === null) {
+      dispatch(setMapFeature(null));
       dispatch(clearPoiList());
       return;
     }
@@ -35,7 +35,7 @@ const SearchView = ({ mapRef }: Props) => {
     let query;
     if (area.type === 'boundary') {
       query = buildAreaQuery(
-        [newCategory.value],
+        [newFeature.value],
         area.id
       );
     } else {
@@ -46,12 +46,12 @@ const SearchView = ({ mapRef }: Props) => {
       }
 
       query = buildBBoxQuery(
-        [newCategory.value],
+        [newFeature.value],
         newBounds
       );
     }
 
-    dispatch(setCategory(newCategory));
+    dispatch(setMapFeature(newFeature));
     dispatch(queryOverpass(query));
   };
 
@@ -106,7 +106,7 @@ const SearchView = ({ mapRef }: Props) => {
       <Item>
         <SearchBox
           value={category}
-          handleChange={handleCategoryChange}
+          handleChange={handleFeatureChange}
           isLoading={status === 'loading'}
         />
       </Item>
