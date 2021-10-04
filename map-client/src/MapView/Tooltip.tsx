@@ -10,7 +10,7 @@ interface Props {
 
 const Tooltip = ({ e }: Props) => {
   return (
-    <LeafletTooltip direction='auto'>
+    <LeafletTooltip direction='top'>
       <b>{e.tags['name']}</b><br />
       {getAddress(e)}
     </LeafletTooltip>
