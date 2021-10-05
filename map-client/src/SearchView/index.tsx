@@ -1,9 +1,9 @@
 import React from 'react';
 
 import {
-  MapFeature, Status,
-  clearPoiList, setBBox, setBoundary, setMapFeature, queryOverpass,
-  useAppDispatch, useAppSelector, SearchArea
+  MapFeature, QueryStatus, SearchArea,
+  clearPoiList, queryOverpass, setBBox, setBoundary, setMapFeature,
+  useAppDispatch, useAppSelector
 } from '../state';
 import { assertNever } from '../utils';
 import { buildAreaQuery, buildBBoxQuery } from '../overpass';
@@ -20,7 +20,7 @@ interface Props {
 const SearchView = ({ mapRef }: Props) => {
   const dispatch = useAppDispatch();
   const status = useAppSelector(state => state.poiList.status);
-  const category = useAppSelector(state => state.search.category);
+  const feature = useAppSelector(state => state.search.feature);
   const area = useAppSelector(state => state.search.area);
   const location = useAppSelector(state => state.location);
 
@@ -72,9 +72,9 @@ const SearchView = ({ mapRef }: Props) => {
     if (newArea !== null) {
       dispatch(setBoundary(newArea.name, newArea.id));
 
-      if (category !== null) {
+      if (feature !== null) {
         query = buildAreaQuery(
-          [category.value],
+          [feature.value],
           newArea.id
         );
       }
@@ -87,9 +87,9 @@ const SearchView = ({ mapRef }: Props) => {
         dispatch(setBBox(newBounds));
       }
 
-      if (newBounds !== null && category !== null) {
+      if (newBounds !== null && feature !== null) {
         query = buildBBoxQuery(
-          [category.value],
+          [feature.value],
           newBounds
         );
       }
@@ -105,7 +105,7 @@ const SearchView = ({ mapRef }: Props) => {
       <Header>Search for</Header>
       <Item>
         <SearchBox
-          value={category}
+          value={feature}
           handleChange={handleFeatureChange}
           isLoading={status === 'loading'}
         />
@@ -144,7 +144,7 @@ const toOption = (area: SearchArea): AREA_OPTION => {
   }
 };
 
-const getErrorMsg = (status: Status) => {
+const getErrorMsg = (status: QueryStatus) => {
   if (status !== 'failed') {
     return null;
   }

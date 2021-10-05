@@ -2,7 +2,7 @@ import { LatLngBounds } from 'leaflet';
 
 import { Poi } from '../types';
 
-export type Status = 'idle' | 'loading' | 'succeeded' | 'failed';
+export type QueryStatus = 'idle' | 'loading' | 'succeeded' | 'failed';
 
 export interface Country {
   country: string,
@@ -11,7 +11,7 @@ export interface Country {
 }
 
 export interface PoiState {
-  status: Status;
+  status: QueryStatus;
   data: Poi[];
   country: Country | undefined;
 }
@@ -104,7 +104,7 @@ export const mapFeatures: readonly MapFeatureGroup[] = [
 ];
 
 export interface SearchState {
-  category: MapFeature | null;
+  feature: MapFeature | null;
   area: SearchArea;
 }
 
@@ -144,7 +144,7 @@ export const initialState: State = {
     selected: null
   },
   search: {
-    category: null,
+    feature: null,
     area: {
       type: 'bbox',
       bbox: new LatLngBounds([0, 0], [1, 1])

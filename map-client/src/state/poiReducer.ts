@@ -1,5 +1,5 @@
 import { Poi } from '../types';
-import { Country, initialState, PoiState, Status } from './state';
+import { Country, initialState, PoiState, QueryStatus } from './state';
 import { Action, AppThunk } from './actions';
 
 import { fetchOverpass } from '../overpass';
@@ -33,7 +33,7 @@ const setPoiList = (pois: Poi[]): Action => {
   };
 };
 
-const setStatus = (status: Status): Action => {
+const setStatus = (status: QueryStatus): Action => {
   return {
     type: 'poiList/setStatus',
     data: status

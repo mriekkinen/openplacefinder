@@ -36,7 +36,7 @@ export const searchReducer = (
     case 'search/setMapFeature':
       return {
         ...state,
-        category: action.data
+        feature: action.data
       };
     case 'search/setBoundary':
       return {

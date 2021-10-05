@@ -11,7 +11,7 @@ import { buildBBoxQuery } from '../overpass';
 
 const AreaFilter = () => {
   const dispatch = useAppDispatch();
-  const category = useAppSelector(state => state.search.category);
+  const feature = useAppSelector(state => state.search.feature);
 
   const map = useMap();
 
@@ -20,9 +20,9 @@ const AreaFilter = () => {
 
     dispatch(setBBox(bounds));
 
-    if (category !== null) {
+    if (feature !== null) {
       const query = buildBBoxQuery(
-        [category.value],
+        [feature.value],
         bounds
       );
 
