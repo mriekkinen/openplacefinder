@@ -1,7 +1,8 @@
 import React from 'react';
 import Select from 'react-select';
 
-import { MapFeature, mapFeatures } from '../state';
+import { MapFeature } from '../state';
+import { mapFeatures } from '../data/mapFeatures';
 
 interface Props {
   value: MapFeature | null;
