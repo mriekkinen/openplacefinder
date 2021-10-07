@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet-contextmenu';
@@ -8,6 +8,7 @@ import {
   useAppDispatch, useAppSelector
 } from '../state';
 import { filter } from '../search';
+import presetService, { Preset, PresetIndex } from '../presets';
 import SetMapRef, { MapHandle } from './SetMapRef';
 import HandleMapClick from './HandleMapClick';
 import CircleMarker from './CircleMarker';
@@ -15,6 +16,8 @@ import LocationMarker from './LocationMarker';
 import RemoveMapOnUnmount from './RemoveMapOnUnmount';
 import AreaFilter from './AreaFilter';
 import Geocoder from './Geocoder';
+
+import presetData from '@openstreetmap/id-tagging-schema/dist/presets.json';
 
 // Option: whether to use raster instead of vector graphics?
 // If true, renders markers using an HTML canvas element.
@@ -30,14 +33,6 @@ const MapView = (
   { center, zoom }: Props,
   ref: React.Ref<MapHandle>
 ) => {
-  // For debugging memory consumption
-  React.useEffect(() => {
-    console.log('Mounted MapView');
-    return () => {
-      console.log('Unmounting MapView');
-    }
-  }, []);
-
   const dispatch = useAppDispatch();
   const data = useAppSelector(state => state.poiList.data);
   const country = useAppSelector(state => state.poiList.country);
@@ -45,11 +40,15 @@ const MapView = (
   const selected = useAppSelector(state => state.ui.selected);
   const location = useAppSelector(state => state.location);
 
-  console.log('Rendering MapView');
+  const [presetIndex, setPresetIndex] = useState<PresetIndex>({});
+
+  useEffect(() => {
+    const presets: Preset[] = presetService.parsePresetData(presetData);
+    const index: PresetIndex = presetService.buildIndex(presets);
+    setPresetIndex(index);
+  }, []);
 
   const filteredData = filter(data, country, facets);
-
-  console.log('filteredData.length:', filteredData.length);
 
   const contextmenuItems = [
     {
@@ -89,6 +88,7 @@ const MapView = (
           e={e}
           isSelected={e.id === selected}
           handleClick={() => dispatch(setSelected(e.id))}
+          preset={presetService.matchTags(presetIndex, e.tags)}
         />
       )}
 
