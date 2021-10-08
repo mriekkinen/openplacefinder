@@ -2,8 +2,7 @@ import { Poi } from '../types';
 import { Country, initialState, PoiState, QueryStatus } from './state';
 import { Action, AppThunk } from './actions';
 
-import { fetchOverpass } from '../overpass';
-import { overpass2Poi } from '../utils';
+import { fetchOverpass, overpass2Poi, PoiDecorator } from '../overpass';
 
 export const queryOverpass = (query: string): AppThunk => {
   return async dispatch => {
@@ -13,8 +12,9 @@ export const queryOverpass = (query: string): AppThunk => {
       return dispatch(setStatus('failed'));
     }
 
-    const newData = overpass2Poi(overpassJson);
-    dispatch(setPoiList(newData));
+    const newData1 = overpass2Poi(overpassJson);
+    const newData2 = PoiDecorator.extend(newData1);
+    dispatch(setPoiList(newData2));
     dispatch(setStatus('succeeded'));
   };
 };

@@ -16,8 +16,6 @@ const ListView = ({ mapRef }: Props) => {
   const facets = useAppSelector(state => state.facets);
   const location = useAppSelector(state => state.location);
 
-  console.log('Rendering ListView');
-
   // Apply filters
   const filteredData = filter(data, country, facets);
 

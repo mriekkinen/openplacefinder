@@ -3,6 +3,7 @@ import { LatLngTuple } from 'leaflet';
 import styled from 'styled-components';
 
 import { setTab, useAppDispatch, useAppSelector } from './state';
+import { PoiDecorator } from './overpass';
 import MapView from './MapView';
 import { MapHandle } from './MapView/SetMapRef';
 import NavBar from './NavBar';
@@ -32,6 +33,8 @@ const App = () => {
   const handleSelect = (index: number) => {
     dispatch(setTab(index));
   }
+
+  PoiDecorator.loadData();
 
   return (
     <div id='App'>

@@ -63,7 +63,7 @@ const buildIndex = (presets: Preset[]): PresetIndex => {
 const canIgnore = (preset: Preset): boolean => {
   for (const k in preset.tags) {
     // Ignore presets where the value field is '*'
-    if (k === '*') {
+    if (preset.tags[k] === '*') {
       return true;
     }
 
