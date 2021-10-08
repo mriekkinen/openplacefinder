@@ -41,7 +41,7 @@ const InfoView = ({ mapRef }: Props) => {
       </div>
       <div className='info-item'>
         <h2>{poi.tags['name']}</h2>
-        <span>Tea shop</span>
+        <span>{poi.presetId}</span>
       </div>
       <div className='info-item'>
         <Address mapRef={mapRef} e={poi} />
