@@ -2,7 +2,7 @@ import React from 'react';
 
 import {
   MapFeature, QueryStatus, SearchArea,
-  clearPoiList, queryOverpass, setBBox, setBoundary, setMapFeature,
+  clearPoiList, queryOverpass, setBBox, setBoundary, setMapFeature, setSelected,
   useAppDispatch, useAppSelector
 } from '../state';
 import { assertNever } from '../utils';
@@ -27,6 +27,7 @@ const SearchView = ({ mapRef }: Props) => {
   const handleFeatureChange = (newFeature: MapFeature | null) => {
     if (newFeature === null) {
       dispatch(setMapFeature(null));
+      dispatch(setSelected(null));
       dispatch(clearPoiList());
       return;
     }
@@ -58,6 +59,7 @@ const SearchView = ({ mapRef }: Props) => {
   const handleAreaChange = (newOption: AREA_OPTION | null) => {
     if (newOption === null) {
       //dispatch(setBoundary(null));
+      dispatch(setSelected(null));
       dispatch(clearPoiList());
       return;
     }
