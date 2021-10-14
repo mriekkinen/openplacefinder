@@ -4,7 +4,7 @@ import L from 'leaflet';
 import 'leaflet-contextmenu';
 
 import {
-  setLocation, setSelected,
+  setLocation, setSelected, setTab, TabIndex,
   useAppDispatch, useAppSelector
 } from '../state';
 import { filter } from '../search';
@@ -64,6 +64,15 @@ const MapView = (
     url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
   };
 
+  const handleMapClick = () => {
+    dispatch(setSelected(null));
+  };
+
+  const handleMarkerClick = (e: Poi) => () => {
+    dispatch(setSelected(e.id));
+    dispatch(setTab(TabIndex.List));
+  };
+
   return (
     <MapContainer
       id='map-container'
@@ -76,7 +85,7 @@ const MapView = (
     >
       <SetMapRef ref={ref} />
       <HandleMapClick
-        handleMapClick={() => dispatch(setSelected(null))} />
+        handleMapClick={handleMapClick} />
       <Geocoder />
       <AreaFilter />
 

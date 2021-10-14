@@ -27,10 +27,7 @@ const SetMapRef = (
 
       panTo: (lat: number | undefined, lon: number | undefined) => {
         if (lat === undefined || lon === undefined) return;
-        map.panTo([lat, lon], {
-          animate: true,
-          duration: 0.5
-        });
+        map.panTo([lat, lon]);
       }
     };
   });

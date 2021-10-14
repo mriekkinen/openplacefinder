@@ -2,6 +2,7 @@ import React from 'react';
 import { GoLocation } from 'react-icons/go';
 
 import { Poi } from '../types';
+import { setTab, TabIndex, useAppDispatch } from '../state';
 import { MapHandle } from '../MapView/SetMapRef';
 
 interface Props {
@@ -10,10 +11,19 @@ interface Props {
 }
 
 const Address = ({ mapRef, e }: Props) => {
+  const dispatch = useAppDispatch();
+
+  const handleClick = () => {
+    if (mapRef.current) {
+      dispatch(setTab(TabIndex.Map));
+      mapRef.current.panTo(e.lat, e.lon);
+    }
+  };
+
   return (
     <span
       className='address'
-      onClick={() => mapRef.current?.panTo(e.lat, e.lon)}>
+      onClick={handleClick}>
       <GoLocation /> {getAddress(e)}
     </span>
   );
