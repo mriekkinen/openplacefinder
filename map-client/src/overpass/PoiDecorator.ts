@@ -27,8 +27,30 @@ const getPreset = (id: string): Preset | undefined => {
   return presetMap[id];
 };
 
+/**
+ * Returns true, if this type of POI should/could have the specified field
+ */
+const hasField = (poi: Poi, name: string): boolean => {
+  // If this tag is present, show it anyway
+  // (even if it doesn't appear in the preset)
+  if (name in poi.tags) {
+    return true;
+  }
+
+  if (!poi.presetId) {
+    return false;
+  }
+
+  // Fetch the appropriate preset
+  const preset = getPreset(poi.presetId);
+
+  // ...and check whether this field is present
+  return preset !== undefined && preset.fields.has(name);
+  };
+
 export const PoiDecorator = {
   loadData,
   extend,
-  getPreset
+  getPreset,
+  hasField
 };

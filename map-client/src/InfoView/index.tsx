@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { setSelected, useAppDispatch, useAppSelector } from '../state';
+import { PoiDecorator } from '../overpass';
 import { MapHandle } from '../MapView/SetMapRef';
 import Address from './Address';
 import ReturnBtn from './ReturnBtn';
@@ -46,18 +47,24 @@ const InfoView = ({ mapRef }: Props) => {
       <div className='info-item'>
         <Address mapRef={mapRef} e={poi} />
       </div>
-      <div className='info-item'>
-        <OpenStateWrapper
-          poi={poi}
-          country={country}
-          now={now} />
-      </div>
-      <div className='info-item'>
-        <OpeningHours openingHours={poi.tags['opening_hours']} />
-      </div>
-      <div className='info-item'>
-        <Cuisines poi={poi} />
-      </div>
+      {PoiDecorator.hasField(poi, 'opening_hours') &&
+        <>
+          <div className='info-item'>
+            <OpenStateWrapper
+              poi={poi}
+              country={country}
+              now={now} />
+          </div>
+          <div className='info-item'>
+            <OpeningHours openingHours={poi.tags['opening_hours']} />
+          </div>
+        </>
+      }
+      {PoiDecorator.hasField(poi, 'cuisine') &&
+        <div className='info-item'>
+          <Cuisines poi={poi} />
+        </div>
+      }
       <div className='info-item'>
         <Link
           href={poi.tags['website']}

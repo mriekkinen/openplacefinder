@@ -37,19 +37,20 @@ const parsePresetData = (data: PresetJsonMap): Preset[] => {
       continue;
     }
 
+    const allFields = [
+      ...(pd.fields ?? []),
+      ...(pd.moreFields ?? [])
+    ];
+
     const p: Preset = {
       id,
       tags: pd.tags,
-      fields: pd.fields ?? [],
+      fields: new Set(allFields),
       originalScore: pd.originalScore ?? 1
     };
 
     if (pd.addTags) {
       p.addTags = pd.addTags;
-    }
-
-    if (pd.moreFields) {
-      p.moreFields = pd.moreFields;
     }
 
     presets.push(p);

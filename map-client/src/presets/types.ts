@@ -16,8 +16,7 @@ export interface Preset {
   id: string;
   tags: Tags;
   addTags?: Tags;
-  fields: string[];
-  moreFields?: string[];
+  fields: Set<string>;
   originalScore: number;
 }
 

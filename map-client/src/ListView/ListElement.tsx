@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Poi, PoiWithDistance } from '../types';
 import { Country } from '../state';
+import { PoiDecorator } from '../overpass';
 import { getCuisines } from '../search';
 import { getAddress } from '../InfoView/Address';
 import { getDistance } from '../InfoView/Distance';
@@ -26,7 +27,11 @@ const ListElement = (
       <b>{e.tags['name']}</b><br/>
       {getAddress(e)}<br/>
       distance: {getDistance(e)}<br/>
-      Cuisine: {getPrimaryCuisines(e)}<br/>
+      {PoiDecorator.hasField(e, 'cuisine') &&
+        <>
+          Cuisine: {getPrimaryCuisines(e)}<br/>
+        </>
+      }
       {/*
       <OpenStateWrapper
         poi={e}
