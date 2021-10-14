@@ -10,7 +10,6 @@ import { buildAreaQuery, buildBBoxQuery } from '../overpass';
 import { MapHandle } from '../MapView/SetMapRef';
 import { Container, Header, Item } from './styles';
 import SearchBox from './SearchBox';
-import Location from './Location';
 import Area, { AREA_OPTION } from './Area';
 
 interface Props {
@@ -22,7 +21,6 @@ const SearchView = ({ mapRef }: Props) => {
   const status = useAppSelector(state => state.poiList.status);
   const feature = useAppSelector(state => state.search.feature);
   const area = useAppSelector(state => state.search.area);
-  const location = useAppSelector(state => state.location);
 
   const handleFeatureChange = (newFeature: MapFeature | null) => {
     if (newFeature === null) {
@@ -118,9 +116,6 @@ const SearchView = ({ mapRef }: Props) => {
           handleChange={handleAreaChange}
           isLoading={status === 'loading'}
         />
-      </Item>
-      <Item>
-        <Location lat={location.lat} lon={location.lon} />
       </Item>
       {status === 'failed' &&
         <Item>{getErrorMsg(status)}</Item>
