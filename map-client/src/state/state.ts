@@ -61,7 +61,6 @@ export interface LocationState {
 
 export interface FacetState {
   name: string;
-  brand: string;
   openingHours: boolean;
   openNow: boolean;
   cuisines: Set<string>;
@@ -102,7 +101,6 @@ export const initialState: State = {
   },
   facets: {
     name: '',
-    brand: '',
     openingHours: false,
     openNow: false,
     cuisines: new Set<string>()

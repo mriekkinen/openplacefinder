@@ -8,13 +8,6 @@ export const setName = (name: string): Action => {
   };
 };
 
-export const setBrand = (brand: string): Action => {
-  return {
-    type: 'facets/setBrand',
-    data: brand
-  };
-};
-
 export const requireOpeningHours = (openingHours: boolean): Action => {
   return {
     type: 'facets/requireOpeningHours',
@@ -55,16 +48,11 @@ export const facetReducer = (
         ...state,
         name: action.data
       };
-    case 'facets/setBrand':
+    case 'facets/requireOpeningHours':
       return {
         ...state,
-        brand: action.data
+        openingHours: action.data
       };
-      case 'facets/requireOpeningHours':
-        return {
-          ...state,
-          openingHours: action.data
-        };
     case 'facets/requireOpenNow':
       return {
         ...state,

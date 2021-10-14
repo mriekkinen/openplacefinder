@@ -66,10 +66,6 @@ export type FacetAction =
       data: string
     }
   | {
-      type: 'facets/setBrand',
-      data: string
-    }
-  | {
       type: 'facets/requireOpeningHours',
       data: boolean
     }

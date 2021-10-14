@@ -5,7 +5,6 @@ import { filter } from '../search';
 
 import { Container, Header } from './styles';
 import Name from './Name';
-import Brand from './Brand';
 import { OpeningHours, OpenNow } from './OpeningHours';
 import Cuisines from './Cuisines';
 import MatchCount from './MatchCount';
@@ -26,9 +25,8 @@ const Facets = () => {
 
   return (
     <Container>
-      <Header>Refine by</Header>
+      <Header>Filter by</Header>
       <Name />
-      <Brand />
       <OpeningHours />
       <OpenNow />
       <Cuisines data={data} country={country} facets={facets} />
