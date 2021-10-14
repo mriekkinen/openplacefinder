@@ -9,7 +9,7 @@ export interface OverpassPoi {
 }
 
 export interface Poi extends OverpassPoi {
-  presetId: string | null;
+  presetId: string | undefined;
 }
 
 export interface PoiWithDistance extends Poi {

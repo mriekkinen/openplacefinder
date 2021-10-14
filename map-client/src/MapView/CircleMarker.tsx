@@ -9,7 +9,7 @@ interface Props {
   e: Poi;
   isSelected: boolean;
   handleClick: () => void;
-  preset: Preset | null;
+  preset: Preset | undefined;
 }
 
 const CircleMarker = ({ e, isSelected, handleClick, preset }: Props) => {

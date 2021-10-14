@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet-contextmenu';
 
+import { Poi } from '../types';
 import {
   setLocation, setSelected, setTab, TabIndex,
   useAppDispatch, useAppSelector
 } from '../state';
 import { filter } from '../search';
-import presetService, { Preset, PresetIndex } from '../presets';
+import { PoiDecorator } from '../overpass';
 import SetMapRef, { MapHandle } from './SetMapRef';
 import HandleMapClick from './HandleMapClick';
 import CircleMarker from './CircleMarker';
@@ -16,8 +17,6 @@ import LocationMarker from './LocationMarker';
 import RemoveMapOnUnmount from './RemoveMapOnUnmount';
 import AreaFilter from './AreaFilter';
 import Geocoder from './Geocoder';
-
-import presetData from '@openstreetmap/id-tagging-schema/dist/presets.json';
 
 // Option: whether to use raster instead of vector graphics?
 // If true, renders markers using an HTML canvas element.
@@ -39,14 +38,6 @@ const MapView = (
   const facets = useAppSelector(state => state.facets);
   const selected = useAppSelector(state => state.ui.selected);
   const location = useAppSelector(state => state.location);
-
-  const [presetIndex, setPresetIndex] = useState<PresetIndex>({});
-
-  useEffect(() => {
-    const presets: Preset[] = presetService.parsePresetData(presetData);
-    const index: PresetIndex = presetService.buildIndex(presets);
-    setPresetIndex(index);
-  }, []);
 
   const filteredData = filter(data, country, facets);
 
@@ -96,8 +87,8 @@ const MapView = (
           key={`${e.type}-${e.id}`}
           e={e}
           isSelected={e.id === selected}
-          handleClick={() => dispatch(setSelected(e.id))}
-          preset={presetService.matchTags(presetIndex, e.tags)}
+          handleClick={handleMarkerClick(e)}
+          preset={e.presetId ? PoiDecorator.getPreset(e.presetId) : undefined}
         />
       )}
 

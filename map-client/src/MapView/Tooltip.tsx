@@ -7,7 +7,7 @@ import { getAddress } from '../InfoView/Address';
 
 interface Props {
   e: Poi;
-  preset: Preset | null;
+  preset: Preset | undefined;
 }
 
 const Tooltip = ({ e, preset }: Props) => {

@@ -25,20 +25,31 @@
  */
 
 import { Tags } from '../types';
-import { Preset, PresetIndex, PresetJson, PresetJsonMap } from './types';
+import {
+  Preset, PresetIndex, PresetJson, PresetJsonMap, PresetMap
+} from './types';
 
 const parsePresetData = (data: PresetJsonMap): Preset[] => {
   const presets: Preset[] = [];
   for (const id in data) {
     const pd: PresetJson = data[id];
+    if (canIgnore(pd)) {
+      continue;
+    }
+
     const p: Preset = {
       id,
       tags: pd.tags,
+      fields: pd.fields ?? [],
       originalScore: pd.originalScore ?? 1
     };
 
     if (pd.addTags) {
       p.addTags = pd.addTags;
+    }
+
+    if (pd.moreFields) {
+      p.moreFields = pd.moreFields;
     }
 
     presets.push(p);
@@ -51,7 +62,6 @@ const buildIndex = (presets: Preset[]): PresetIndex => {
   // TODO: Consider differentiating by the type of geometry (point, area, ...)
   const index: PresetIndex = {};
   presets.forEach(preset => {
-    if (canIgnore(preset)) return;
     for (const key in preset.tags) {
       (index[key] = index[key] ?? []).push(preset);
     }
@@ -60,10 +70,25 @@ const buildIndex = (presets: Preset[]): PresetIndex => {
   return index;
 };
 
-const canIgnore = (preset: Preset): boolean => {
+const buildMap = (presets: Preset[]): PresetMap => {
+  const map: PresetMap = {};
+  presets.forEach(preset => {
+    map[preset.id] = preset;
+  });
+
+  return map;
+};
+
+const canIgnore = (preset: PresetJson): boolean => {
   for (const k in preset.tags) {
     // Ignore presets where the value field is '*'
     if (preset.tags[k] === '*') {
+      return true;
+    }
+
+    // Ignore presets which have no fields
+    // For instance, "embankment", which is an attribute
+    if (!('fields' in preset)) {
       return true;
     }
 
@@ -71,8 +96,6 @@ const canIgnore = (preset: Preset): boolean => {
     if (/^addr:/.test(k)) {
       return true;
     }
-
-    // TODO: There are probably many more which could be ignored...
   }
 
   return false;
@@ -127,6 +150,7 @@ const matchScore = (preset: Preset, entityTags: Tags): number => {
 export default {
   parsePresetData,
   buildIndex,
+  buildMap,
   matchTags,
   matchScore
 };
