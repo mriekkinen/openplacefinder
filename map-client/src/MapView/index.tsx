@@ -88,7 +88,7 @@ const MapView = (
           e={e}
           isSelected={e.id === selected}
           handleClick={handleMarkerClick(e)}
-          preset={e.presetId ? PoiDecorator.getPreset(e.presetId) : undefined}
+          preset={PoiDecorator.getPreset(e.presetId)}
         />
       )}
 

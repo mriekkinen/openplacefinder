@@ -53,6 +53,10 @@ const parsePresetData = (data: PresetJsonMap): Preset[] => {
       p.addTags = pd.addTags;
     }
 
+    if (pd.icon) {
+      p.icon = pd.icon;
+    }
+
     presets.push(p);
   }
 

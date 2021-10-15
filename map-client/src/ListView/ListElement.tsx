@@ -7,6 +7,7 @@ import { getCuisines } from '../search';
 import { getAddress } from '../InfoView/Address';
 import { getDistance } from '../InfoView/Distance';
 import { OpenStateWrapper } from '../InfoView/OpenState';
+import { PresetIcon } from '../icons';
 
 interface Props {
   e: PoiWithDistance;
@@ -25,6 +26,7 @@ const ListElement = (
       onClick={handleClick}
     >
       <b>{e.tags['name']}</b><br/>
+      <PresetIcon presetId={e.presetId} /> {e.presetId}<br/>
       {getAddress(e)}<br/>
       distance: {getDistance(e)}<br/>
       {PoiDecorator.hasField(e, 'cuisine') &&

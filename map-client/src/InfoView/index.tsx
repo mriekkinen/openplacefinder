@@ -9,6 +9,7 @@ import Link from './Link';
 import OpeningHours from './OpeningHours';
 import { OpenStateWrapper } from './OpenState';
 import Cuisines from './Cuisines';
+import { PresetIcon } from '../icons';
 
 interface Props {
   mapRef: React.RefObject<MapHandle>;
@@ -42,7 +43,10 @@ const InfoView = ({ mapRef }: Props) => {
       </div>
       <div className='info-item'>
         <h2>{poi.tags['name']}</h2>
-        <span>{poi.presetId}</span>
+        <div>
+          <PresetIcon presetId={poi.presetId} /> {' '}
+          {poi.presetId}
+        </div>
       </div>
       <div className='info-item'>
         <Address mapRef={mapRef} e={poi} />

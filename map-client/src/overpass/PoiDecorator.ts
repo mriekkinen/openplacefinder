@@ -23,7 +23,11 @@ const extend = (pois: OverpassPoi[]): Poi[] => {
   }));
 };
 
-const getPreset = (id: string): Preset | undefined => {
+const getPreset = (id: string | undefined): Preset | undefined => {
+  if (id === undefined) {
+    return undefined;
+  }
+
   return presetMap[id];
 };
 
@@ -35,10 +39,6 @@ const hasField = (poi: Poi, name: string): boolean => {
   // (even if it doesn't appear in the preset)
   if (name in poi.tags) {
     return true;
-  }
-
-  if (!poi.presetId) {
-    return false;
   }
 
   // Fetch the appropriate preset
