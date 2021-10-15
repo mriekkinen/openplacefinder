@@ -26,37 +26,6 @@
   min-height: 400px;
 }
 
-.list-container,
-.info-container {
-  margin-right: 15px;
-  margin-bottom: 15px;
-}
-
-.list-elem {
-  cursor: pointer;
-  margin: 0;
-  padding: 10px;
-  line-height: 1.25;
-  border-bottom: 1px solid lightgray;
-}
-
-.list-elem:hover {
-  background-color: #EEEEEE;
-}
-
-.info-item {
-  margin: 10px;
-  line-height: 1.25;
-}
-
-.info-item h2 {
-  margin: 0;
-}
-
-.info-item .address {
-  cursor: pointer;
-}
-
 .tabs-display-flex {
   display: flex;
   align-items: stretch;

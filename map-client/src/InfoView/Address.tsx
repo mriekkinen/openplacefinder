@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 import { GoLocation } from 'react-icons/go';
 
 import { Poi } from '../types';
@@ -21,13 +22,15 @@ const Address = ({ mapRef, e }: Props) => {
   };
 
   return (
-    <span
-      className='address'
-      onClick={handleClick}>
+    <Span onClick={handleClick}>
       <GoLocation /> {getAddress(e)}
-    </span>
+    </Span>
   );
 };
+
+const Span = styled.span`
+  cursor: pointer;
+`;
 
 export const getAddress = (e: Poi) => {
   if (!e.tags['addr:street']) {

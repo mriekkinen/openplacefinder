@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 
 import { setSelected, useAppDispatch, useAppSelector } from '../state';
 import { MapHandle } from '../MapView/SetMapRef';
@@ -24,7 +25,7 @@ const ListView = ({ mapRef }: Props) => {
   sortByDistance(dataWithDistances);
 
   return (
-    <div className='list-container'>
+    <Container>
       {dataWithDistances.map(e =>
         <ListElement
           key={`${e.type}-${e.id}`}
@@ -36,8 +37,13 @@ const ListView = ({ mapRef }: Props) => {
           }}
         />
       )}
-    </div>
+    </Container>
   );
 };
+
+const Container = styled.div`
+  margin-right: 15px;
+  margin-bottom: 15px;
+`;
 
 export default ListView;
