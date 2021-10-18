@@ -6,11 +6,9 @@ import 'pelias-leaflet-plugin';
 const Geocoder = () => {
   const map = useMap();
   useEffect(() => {
-    //
-    // TODO: THIS IS *NOT* THE RIGHT WAY TO STORE SECRETS !!!
-    //
-    const apiKey = process.env.REACT_APP_GEO_API_KEY ?? 'api-key-missing';
+    const apiKey = 'no-api-key';
     const options = {
+      url: 'https://localhost',
       focus: true,
       markers: false
     };
