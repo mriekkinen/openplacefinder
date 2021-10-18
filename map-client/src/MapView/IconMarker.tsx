@@ -41,7 +41,7 @@ const getDivIcon = (preset: Preset | undefined): L.DivIcon | null => {
     return null;
   }
 
-  const path = getIconPath(preset.icon);
+  const path = getIconPath(preset.icon, 'white');
   if (!path) {
     return null;
   }
@@ -50,16 +50,16 @@ const getDivIcon = (preset: Preset | undefined): L.DivIcon | null => {
 
   return L.divIcon({
     html,
-    className: 'div-icon',
-    iconSize: [26, 26]
+    className: 'map-icon',
+    iconSize: [24, 24]
   });
 };
 
 const getDefaultDivIcon = (): L.DivIcon => {
   return L.divIcon({
     html: '',
-    className: 'div-icon',
-    iconSize: [26, 26]
+    className: 'map-icon',
+    iconSize: [24, 24]
   });
 };
 

@@ -16,7 +16,6 @@
   display: flex;
   align-items: stretch;
   width: 100%;
-  /*min-height: 400px;*/
   margin: 0 0 0 5px;
 }
 
@@ -49,15 +48,23 @@
   flex: 1;
 }
 
-/** Blue color the same as Leaflet's default... */
-.div-icon {
+/**
+ * A circular icon which contains an SVG element
+ *
+ * Inspired by: https://gis.stackexchange.com/a/360454
+ * Uses Leaflet's default blue color as the background.
+ */
+.map-icon {
   box-sizing: border-box;
   border-radius: 50%;
-  border: 3px solid #3388ff;
-  background: rgba(51, 136, 255, 0.2);
+  color: white;
+  border: 2px solid white;
+  background: rgba(51, 136, 255, 1);
+  box-shadow: 2px 1px 4px rgba(0, 0, 0, 0.2);
+  opacity: 0.9;
 }
 
-.div-icon img {
+.map-icon img {
   position: relative;
   top: 2.5px;
   left: 2.5px;

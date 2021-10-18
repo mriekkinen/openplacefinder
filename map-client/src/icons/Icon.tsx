@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { iconSets } from './iconSets';
+import { IconFill } from './types';
 
 interface Props {
   name: string;
@@ -20,11 +21,15 @@ export const Icon = ({ name, width, height }: Props) => {
     src={path} />;
 };
 
-export const getIconPath = (name: string): string | null => {
+export const getIconPath = (
+  name: string,
+  fill: IconFill = 'black'
+): string | null => {
   for (const s of iconSets) {
     if (name.startsWith(s.prefix)) {
       const filename = name.substring(s.prefix.length);
-      return `${process.env.PUBLIC_URL}/${s.dir}/${filename}.svg`;
+      const filldir = fill === 'white' ? 'modified' : 'originals';
+      return `${process.env.PUBLIC_URL}/icons/${filldir}/${s.dir}/${filename}.svg`;
     }
   }
 
