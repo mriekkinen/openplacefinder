@@ -14,19 +14,17 @@ export const Icon = ({ name, width, height }: Props) => {
     return null;
   }
 
-  const publicPath = `${process.env.PUBLIC_URL}/${path}`;
-
   return <img
     width={width}
     height={height}
-    src={publicPath} />;
+    src={path} />;
 };
 
-const getIconPath = (name: string): string | null => {
+export const getIconPath = (name: string): string | null => {
   for (const s of iconSets) {
     if (name.startsWith(s.prefix)) {
       const filename = name.substring(s.prefix.length);
-      return `${s.dir}/${filename}.svg`;
+      return `${process.env.PUBLIC_URL}/${s.dir}/${filename}.svg`;
     }
   }
 

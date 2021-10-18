@@ -48,3 +48,17 @@
   align-items: stretch;
   flex: 1;
 }
+
+/** Blue color the same as Leaflet's default... */
+.div-icon {
+  box-sizing: border-box;
+  border-radius: 50%;
+  border: 3px solid #3388ff;
+  background: rgba(51, 136, 255, 0.2);
+}
+
+.div-icon img {
+  position: relative;
+  top: 2.5px;
+  left: 2.5px;
+}

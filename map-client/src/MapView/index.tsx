@@ -13,6 +13,7 @@ import { PoiDecorator } from '../overpass';
 import SetMapRef, { MapHandle } from './SetMapRef';
 import HandleMapClick from './HandleMapClick';
 import CircleMarker from './CircleMarker';
+import IconMarker from './IconMarker';
 import LocationMarker from './LocationMarker';
 import RemoveMapOnUnmount from './RemoveMapOnUnmount';
 import AreaFilter from './AreaFilter';
@@ -82,8 +83,20 @@ const MapView = (
 
       <TileLayer {...tileProps} />
 
+    {/*
       {filteredData.map(e =>
         <CircleMarker
+          key={`${e.type}-${e.id}`}
+          e={e}
+          isSelected={e.id === selected}
+          handleClick={handleMarkerClick(e)}
+          preset={PoiDecorator.getPreset(e.presetId)}
+        />
+      )}
+      */}
+
+      {filteredData.map(e =>
+        <IconMarker
           key={`${e.type}-${e.id}`}
           e={e}
           isSelected={e.id === selected}
