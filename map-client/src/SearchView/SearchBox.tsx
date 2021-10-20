@@ -21,7 +21,7 @@ const SearchBox = ({ value, handleChange, isLoading }: Props) => {
       isDisabled={isLoading}
       isClearable={true}
       styles={{
-        menu: provided => ({ ...provided, zIndex: 9999 })
+        menu: provided => ({ ...provided, zIndex: 99999 })
       }}
     />
   );

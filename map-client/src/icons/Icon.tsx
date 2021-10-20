@@ -23,13 +23,12 @@ export const Icon = ({ name, width, height }: Props) => {
 
 export const getIconPath = (
   name: string,
-  fill: IconFill = 'black'
+  fill: IconFill = 'original'
 ): string | null => {
   for (const s of iconSets) {
     if (name.startsWith(s.prefix)) {
       const filename = name.substring(s.prefix.length);
-      const filldir = fill === 'white' ? 'modified' : 'originals';
-      return `${process.env.PUBLIC_URL}/icons/${filldir}/${s.dir}/${filename}.svg`;
+      return `${process.env.PUBLIC_URL}/icons/${fill}/${s.dir}/${filename}.svg`;
     }
   }
 

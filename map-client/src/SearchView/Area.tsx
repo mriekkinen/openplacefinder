@@ -42,7 +42,7 @@ const Area = ({ value, handleChange, isLoading }: Props) => {
       isDisabled={true}
       isClearable={false}
       styles={{
-        menu: provided => ({ ...provided, zIndex: 9999 })
+        menu: provided => ({ ...provided, zIndex: 99999 })
       }}
     />
   );

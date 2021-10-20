@@ -1,1 +1,1 @@
-export type IconFill = 'black' | 'white';
+export type IconFill = 'original' | 'blue' | 'white';

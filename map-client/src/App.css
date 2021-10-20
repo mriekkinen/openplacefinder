@@ -64,6 +64,12 @@
   opacity: 0.9;
 }
 
+.map-icon.selected {
+  color: rgba(51, 136, 255, 1);
+  border-color: rgba(51, 136, 255, 1);
+  background: white;
+}
+
 .map-icon img {
   position: relative;
   top: 2.5px;
