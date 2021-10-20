@@ -55,22 +55,22 @@ const getDivIcon = (
   }
 
   const html = `<img src="${path}" width=15 height=15 />`;
+
+  return createIcon(html, isSelected);
+};
+
+const getDefaultDivIcon = (isSelected: boolean): L.DivIcon => {
+  return createIcon('', isSelected);
+};
+
+const createIcon = (html: string, isSelected: boolean): L.DivIcon => {
   const className = clsx('map-icon', isSelected && 'selected');
 
   return L.divIcon({
     html,
     className,
-    iconSize: [24, 24]
-  });
-};
-
-const getDefaultDivIcon = (isSelected: boolean): L.DivIcon => {
-  const className = clsx('map-icon', isSelected && 'selected');
-
-  return L.divIcon({
-    html: '',
-    className,
-    iconSize: [24, 24]
+    iconSize: [24, 24],
+    tooltipAnchor: [0, -12]
   });
 };
 
