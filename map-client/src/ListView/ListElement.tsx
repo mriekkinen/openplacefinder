@@ -4,9 +4,7 @@ import styled from 'styled-components';
 import { Poi, PoiWithDistance } from '../types';
 import { Country } from '../state';
 import { PoiDecorator } from '../overpass';
-import { getCuisines } from '../search';
-import { getAddress } from '../info';
-import { getDistance } from '../InfoView/Distance';
+import { getAddress, getCuisines, getDistance } from '../info';
 import { OpenStateWrapper } from '../InfoView/OpenState';
 import { PresetIcon } from '../icons';
 

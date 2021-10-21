@@ -1,7 +1,7 @@
 import { Poi } from '../types';
 import { Country, FacetState } from '../state';
 import { isOpenNow } from './openingHours';
-import { getCuisines } from './cuisine';
+import { getCuisines } from '../info';
 
 export const filter = (
   data: Poi[],

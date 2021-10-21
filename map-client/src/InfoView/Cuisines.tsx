@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Poi } from '../types';
-import { getCuisines } from '../search';
+import { getCuisines } from '../info';
 
 interface Props {
   poi: Poi;

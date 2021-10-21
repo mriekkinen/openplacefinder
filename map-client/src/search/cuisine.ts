@@ -1,5 +1,5 @@
 import { Poi } from '../types';
-import { splitValue } from '../utils';
+import { getCuisines } from '../info';
 
 export const countCuisines = (data: Poi[]) => {
   const counts = new Map<string, number>();
@@ -21,13 +21,4 @@ export const sortByCount = (counts: Map<string, number>) => {
     .sort()
     .sort((a, b) => b[1] - a[1])
     .map(e => e[0]);
-};
-
-export const getCuisines = (poi: Poi): string[] => {
-  const cuisines = poi.tags['cuisine'] ?? '(unknown)';
-  return splitValue(cuisines).map(trimLower2);
-};
-
-const trimLower2 = (s: string) => {
-  return s.trim().toLowerCase();
 };
