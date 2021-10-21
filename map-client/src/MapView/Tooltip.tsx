@@ -3,7 +3,7 @@ import { Tooltip as LeafletTooltip } from 'react-leaflet';
 
 import { Poi } from '../types';
 import { Preset } from '../presets';
-import { getAddress } from '../InfoView/Address';
+import { getAddress } from '../info';
 
 interface Props {
   e: Poi;
@@ -15,7 +15,7 @@ const Tooltip = ({ e, preset }: Props) => {
     <LeafletTooltip direction='top'>
       <b>{e.tags['name']}</b><br />
       {preset?.id}<br />
-      {getAddress(e)}
+      {getAddress(e, 'short')}
     </LeafletTooltip>
   );
 };

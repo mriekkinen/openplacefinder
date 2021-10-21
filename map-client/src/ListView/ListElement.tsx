@@ -5,7 +5,7 @@ import { Poi, PoiWithDistance } from '../types';
 import { Country } from '../state';
 import { PoiDecorator } from '../overpass';
 import { getCuisines } from '../search';
-import { getAddress } from '../InfoView/Address';
+import { getAddress } from '../info';
 import { getDistance } from '../InfoView/Distance';
 import { OpenStateWrapper } from '../InfoView/OpenState';
 import { PresetIcon } from '../icons';
@@ -29,7 +29,7 @@ const ListElement = (
       <ContentDiv>
         <b>{e.tags['name']}</b><br/>
         {e.presetId}<br/>
-        {getAddress(e)}<br/>
+        {getAddress(e, 'long')}<br/>
         Distance: {getDistance(e)}<br/>
         {PoiDecorator.hasField(e, 'cuisine') &&
           <>
