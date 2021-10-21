@@ -4,13 +4,22 @@ import styled from 'styled-components';
 import { setSelected, useAppDispatch, useAppSelector } from '../state';
 import { PoiDecorator } from '../overpass';
 import { MapHandle } from '../MapView/SetMapRef';
+import { PresetIcon } from '../icons';
 import Address from './Address';
 import ReturnBtn from './ReturnBtn';
-import Link from './Link';
-import OpeningHours from './OpeningHours';
+import Phone from './Phone';
+import Website from './Website';
 import { OpenStateWrapper } from './OpenState';
+import OpeningHours from './OpeningHours';
 import Cuisines from './Cuisines';
-import { PresetIcon } from '../icons';
+
+import {
+  AddressIcon,
+  OpeningHoursIcon,
+  CuisineIcon,
+  PhoneIcon,
+  WebsiteIcon
+} from './icons';
 
 interface Props {
   mapRef: React.RefObject<MapHandle>;
@@ -28,9 +37,9 @@ const InfoView = ({ mapRef }: Props) => {
     return (
       <Container>
         <TopContainer>
-          <Item>
+          <NothingSelected>
             <i>Nothing selected</i>
-          </Item>
+          </NothingSelected>
         </TopContainer>
       </Container>
     );
@@ -47,7 +56,10 @@ const InfoView = ({ mapRef }: Props) => {
       <FlexContainer>
         <IconDiv>
           <Header>
-            <PresetIcon presetId={poi.presetId} />
+            <PresetIcon
+              presetId={poi.presetId}
+              width={20}
+              height={20} />
           </Header>
         </IconDiv>
         <ContentDiv>
@@ -61,32 +73,39 @@ const InfoView = ({ mapRef }: Props) => {
       </FlexContainer>
 
       <ItemContainer>
-        <Item>
-          <Address mapRef={mapRef} e={poi} />
-        </Item>
+        <AddressIcon />
+        <Address mapRef={mapRef} e={poi} />
+
         {PoiDecorator.hasField(poi, 'opening_hours') &&
           <>
-            <Item>
-              <OpenStateWrapper
-                poi={poi}
-                country={country}
-                now={now} />
-            </Item>
-            <Item>
-              <OpeningHours openingHours={poi.tags['opening_hours']} />
-            </Item>
+            <OpeningHoursIcon />
+            <OpenStateWrapper
+              poi={poi}
+              country={country}
+              now={now} />
+            <div></div>
+            <OpeningHours poi={poi} />
           </>
         }
+
         {PoiDecorator.hasField(poi, 'cuisine') &&
-          <Item>
+          <>
+            <CuisineIcon />
             <Cuisines poi={poi} />
-          </Item>
+          </>
         }
-        <Item>
-          <Link
-            href={poi.tags['website']}
-            label={poi.tags['website']} />
-        </Item>
+        {PoiDecorator.hasField(poi, 'phone') &&
+          <>
+            <PhoneIcon />
+            <Phone phone={poi.tags['phone']} />
+          </>
+        }
+        {PoiDecorator.hasField(poi, 'website') &&
+          <>
+            <WebsiteIcon />
+            <Website href={poi.tags['website']} />
+          </>
+        }
       </ItemContainer>
     </Container>
   );
@@ -117,15 +136,19 @@ const ContentDiv = styled.div`
 `;
 
 const ItemContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1.25em 1fr;
+  column-gap: 10px;
+  row-gap: 10px;
   margin: 0 10px;
-`;
-
-const Item = styled.div`
-  margin: 10px 0;
 `;
 
 const Header = styled.h2`
   margin: 0;
+`;
+
+const NothingSelected = styled.div`
+  margin: 10px 0;
 `;
 
 export default InfoView;

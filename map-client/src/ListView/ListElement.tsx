@@ -30,7 +30,7 @@ const ListElement = (
         <b>{e.tags['name']}</b><br/>
         {e.presetId}<br/>
         {getAddress(e)}<br/>
-        distance: {getDistance(e)}<br/>
+        Distance: {getDistance(e)}<br/>
         {PoiDecorator.hasField(e, 'cuisine') &&
           <>
             Cuisine: {getPrimaryCuisines(e)}<br/>

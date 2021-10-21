@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { GoLocation } from 'react-icons/go';
 
 import { Poi } from '../types';
 import { setTab, TabIndex, useAppDispatch } from '../state';
@@ -14,6 +13,8 @@ interface Props {
 const Address = ({ mapRef, e }: Props) => {
   const dispatch = useAppDispatch();
 
+  // TODO: Clicking on the icon should do the same!
+  // TODO: The "clickable" area may be too wide!
   const handleClick = () => {
     if (mapRef.current) {
       dispatch(setTab(TabIndex.Map));
@@ -22,13 +23,13 @@ const Address = ({ mapRef, e }: Props) => {
   };
 
   return (
-    <Span onClick={handleClick}>
-      <GoLocation /> {getAddress(e)}
-    </Span>
+    <Div onClick={handleClick}>
+      {getAddress(e)}
+    </Div>
   );
 };
 
-const Span = styled.span`
+const Div = styled.div`
   cursor: pointer;
 `;
 
