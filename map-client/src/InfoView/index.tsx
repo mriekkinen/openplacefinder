@@ -83,8 +83,12 @@ const InfoView = ({ mapRef }: Props) => {
               poi={poi}
               country={country}
               now={now} />
-            <div></div>
-            <OpeningHours poi={poi} />
+            {poi.tags['opening_hours'] !== undefined &&
+              <>
+                <div></div>
+                <OpeningHours poi={poi} />
+              </>
+            }
           </>
         }
 
