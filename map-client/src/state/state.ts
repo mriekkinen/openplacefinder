@@ -60,10 +60,10 @@ export interface LocationState {
 }
 
 export interface FacetState {
-  name: string;
-  openingHours: boolean;
-  openNow: boolean;
-  cuisines: Set<string>;
+  name?: string;
+  openingHours?: boolean;
+  openNow?: boolean;
+  cuisines?: Set<string>;
 }
 
 export interface State {
@@ -103,6 +103,15 @@ export const initialState: State = {
     name: '',
     openingHours: false,
     openNow: false,
-    cuisines: new Set<string>()
+    //cuisines: new Set<string>()
   }
+};
+
+// Initial values for all facets
+// (including those not in the initial state)
+export const facetReset: FacetState = {
+  name: '',
+  openingHours: false,
+  openNow: false,
+  cuisines: new Set<string>()
 };

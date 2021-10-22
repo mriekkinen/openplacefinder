@@ -18,7 +18,7 @@ export const filter = (
       && (!facetName || matchName(facetName, poi))
       && (!facetOpeningHours || matchOpeningHours(poi))
       && (!facetOpenNow || matchOpenNow(poi, country))
-      && (facetCuisines.size === 0 || matchCuisine(facetCuisines, poi));
+      && (!facetCuisines || facetCuisines.size === 0 || matchCuisine(facetCuisines, poi));
   });
 };
 

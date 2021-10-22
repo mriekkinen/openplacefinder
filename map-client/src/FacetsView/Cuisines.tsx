@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import {
-  useAppDispatch, useAppSelector,
+  useAppDispatch,
   checkCuisine, FacetState, Country
 } from '../state';
 import { filter, countCuisines, sortByCount } from '../search';
@@ -21,9 +21,14 @@ interface Props {
 
 const Cuisines = ({ data, country, facets }: Props) => {
   const dispatch = useAppDispatch();
-  const checkedCuisines = useAppSelector(state => state.facets.cuisines);
 
   const [showAll, setShowAll] = useState<boolean>(false);
+
+  if (facets.cuisines === undefined) {
+    return null;
+  }
+
+  const checkedCuisines = facets.cuisines;
 
   // Apply filters excluding cuisine, and
   // compute the number of appearances (in that list)

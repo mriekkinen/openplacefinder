@@ -81,6 +81,10 @@ export type FacetAction =
       }
     }
   | {
+      type: 'facets/migrate',
+      data: Set<string>
+    }
+  | {
       type: 'facets/clear'
     };
 

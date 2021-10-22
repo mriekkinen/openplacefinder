@@ -1,4 +1,4 @@
-import { initialState, FacetState } from './state';
+import { initialState, facetReset, FacetState } from './state';
 import { Action } from './actions';
 
 export const setName = (name: string): Action => {
@@ -32,7 +32,14 @@ export const checkCuisine = (cuisine: string, isChecked: boolean): Action => {
   };
 };
 
-export const clear = (): Action => {
+export const migrateFacets = (fields: Set<string>): Action => {
+  return {
+    type: 'facets/migrate',
+    data: fields
+  };
+};
+
+export const clearFacets = (): Action => {
   return {
     type: 'facets/clear'
   };
@@ -70,6 +77,25 @@ export const facetReducer = (
         ...state,
         cuisines: newCuisines
       };
+    }
+    case 'facets/migrate': {
+      const newFacets: FacetState = {};
+      const fields = action.data;
+
+      if (fields.has('name')) {
+        newFacets.name = state.name ?? facetReset.name;
+      }
+
+      if (fields.has('opening_hours')) {
+        newFacets.openingHours = state.openingHours ?? facetReset.openingHours;
+        newFacets.openNow = state.openNow ?? facetReset.openNow;
+      }
+
+      if (fields.has('cuisine')) {
+        newFacets.cuisines = state.cuisines ?? facetReset.cuisines;
+      }
+
+      return newFacets;
     }
     case 'facets/clear':
       return initialState.facets;

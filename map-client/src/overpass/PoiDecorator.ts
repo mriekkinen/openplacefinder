@@ -46,11 +46,28 @@ const hasField = (poi: Poi, name: string): boolean => {
 
   // ...and check whether this field is present
   return preset !== undefined && preset.fields.has(name);
-  };
+};
+
+const enumerateFields = (pois: Poi[]): Set<string> => {
+  const fields = new Set<string>();
+  pois.forEach(poi => {
+    const preset = getPreset(poi.presetId);
+    if (!preset) {
+      return;
+    }
+
+    preset.fields.forEach(field => {
+      fields.add(field);
+    });
+  });
+
+  return fields;
+};
 
 export const PoiDecorator = {
   loadData,
   extend,
   getPreset,
-  hasField
+  hasField,
+  enumerateFields
 };
