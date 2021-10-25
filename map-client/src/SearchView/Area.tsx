@@ -1,6 +1,8 @@
 import React from 'react';
+import styled from 'styled-components';
 import { LatLngBounds } from 'leaflet';
-import Select from 'react-select';
+import Select, { components, ControlProps } from 'react-select';
+import { GoLocation } from 'react-icons/go';
 
 import { SearchArea, SearchBoundary } from '../state';
 import { assertNever } from '../utils';
@@ -41,12 +43,27 @@ const Area = ({ value, handleChange, isLoading }: Props) => {
       isLoading={false}
       isDisabled={true}
       isClearable={false}
+      components={{ Control }}
       styles={{
-        menu: provided => ({ ...provided, zIndex: 99999 })
+        menu: css => ({ ...css, zIndex: 99999 }),
+        valueContainer: css => ({ ...css, paddingLeft: 6, paddingRight: 6 })
       }}
     />
   );
 };
+
+const Control = ({ children, ...props }: ControlProps<AREA_OPTION, false>) => (
+  <components.Control {...props}>
+    <Icon /> {children}
+  </components.Control>
+);
+
+const Icon = styled(GoLocation)`
+  margin-left: 8px;
+  width: 1.25em;
+  height: 1.25em;
+  color: hsl(0, 0%, 50%);
+`;
 
 const getAreaString = (area: SearchArea) => {
   switch (area.type) {
