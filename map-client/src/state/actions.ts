@@ -86,6 +86,9 @@ export type FacetAction =
     }
   | {
       type: 'facets/clear'
+    }
+  | {
+      type: 'facets/reset'
     };
 
 export type Action =

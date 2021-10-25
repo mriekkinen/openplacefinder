@@ -109,7 +109,7 @@ export const initialState: State = {
 
 // Initial values for all facets
 // (including those not in the initial state)
-export const facetReset: FacetState = {
+export const facetClear: FacetState = {
   name: '',
   openingHours: false,
   openNow: false,

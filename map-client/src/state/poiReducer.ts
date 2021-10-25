@@ -1,7 +1,7 @@
 import { Poi } from '../types';
 import { Country, initialState, PoiState, QueryStatus } from './state';
 import { Action, AppThunk } from './actions';
-import { clearFacets, migrateFacets } from './facetReducer';
+import { migrateFacets, resetFacets } from './facetReducer';
 
 import { fetchOverpass, overpass2Poi, PoiDecorator } from '../overpass';
 
@@ -25,7 +25,7 @@ export const queryOverpass = (query: string): AppThunk => {
 export const clearPoiList = (): AppThunk => {
   return async dispatch => {
     dispatch(setPoiList([]));
-    dispatch(clearFacets());
+    dispatch(resetFacets());
     dispatch(setStatus('idle'));
   };
 };
