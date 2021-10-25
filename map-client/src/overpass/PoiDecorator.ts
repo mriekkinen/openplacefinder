@@ -1,15 +1,22 @@
 import { OverpassPoi, Poi } from '../types';
-import presetService, { Preset, PresetIndex, PresetMap } from '../presets';
+import presetService, {
+  Preset, PresetIndex, PresetMap, PresetNames
+} from '../presets';
 
 import presetData from '@openstreetmap/id-tagging-schema/dist/presets.min.json';
+//import presetNamesEn from '@openstreetmap/id-tagging-schema/dist/translations/en.min.json';
+import presetNamesFi from '@openstreetmap/id-tagging-schema/dist/translations/fi.min.json';
 
 let index: PresetIndex;
 let presetMap: PresetMap;
+let names: PresetNames;
 
 const loadData = () => {
   const presets = presetService.parsePresetData(presetData);
   index = presetService.buildIndex(presets);
   presetMap = presetService.buildMap(presets);
+
+  names = new PresetNames(presetNamesFi, 'fi');
 }
 
 const extend = (pois: OverpassPoi[]): Poi[] => {
@@ -64,10 +71,19 @@ const enumerateFields = (pois: Poi[]): Set<string> => {
   return fields;
 };
 
+const getNames = (): PresetNames => {
+  if (!names) {
+    throw new Error('Preset names haven\'t been loaded: did you call loadData?');
+  }
+
+  return names;
+};
+
 export const PoiDecorator = {
   loadData,
   extend,
   getPreset,
   hasField,
-  enumerateFields
+  enumerateFields,
+  getNames
 };

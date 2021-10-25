@@ -26,7 +26,7 @@ const ListElement = (
       </IconDiv>
       <ContentDiv>
         <b>{e.tags['name']}</b><br/>
-        {e.presetId}<br/>
+        {PoiDecorator.getNames().getName(e.presetId)}<br/>
         {getAddress(e, 'long')}<br/>
         Distance: {getDistance(e)}<br/>
         {PoiDecorator.hasField(e, 'cuisine') &&

@@ -29,3 +29,19 @@ export interface PresetIndex {
 export interface PresetMap {
   [id: string]: Preset | undefined;
 }
+
+export interface PresetNamesJson {
+  [locale: string]: {
+    presets: {
+      presets: {
+        [id: string]: {
+          name: string
+        };
+      }
+    }
+  } | undefined;
+}
+
+export interface PresetNamesMap {
+  [id: string]: string | undefined
+}

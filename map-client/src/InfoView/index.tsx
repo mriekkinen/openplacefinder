@@ -67,7 +67,7 @@ const InfoView = ({ mapRef }: Props) => {
             {poi.tags['name']}
           </Header>
           <div>
-            {poi.presetId}
+            {PoiDecorator.getNames().getName(poi.presetId)}
           </div>
         </ContentDiv>
       </FlexContainer>
