@@ -11,6 +11,7 @@ import {
 import { filter } from '../search';
 import { presetSingleton } from '../presets';
 import SetMapRef, { MapHandle } from './SetMapRef';
+import HandleResize from './HandleResize';
 import HandleMapClick from './HandleMapClick';
 import IconMarker from './IconMarker';
 import LocationMarker from './LocationMarker';
@@ -75,6 +76,7 @@ const MapView = (
       contextmenuItems={contextmenuItems}
     >
       <SetMapRef ref={ref} />
+      <HandleResize />
       <HandleMapClick
         handleMapClick={handleMapClick} />
       <Geocoder />
