@@ -3,7 +3,8 @@ import { Country, initialState, PoiState, QueryStatus } from './state';
 import { Action, AppThunk } from './actions';
 import { migrateFacets, resetFacets } from './facetReducer';
 
-import { fetchOverpass, overpass2Poi, PoiDecorator } from '../overpass';
+import { fetchOverpass, overpass2Poi } from '../overpass';
+import { presetSingleton } from '../presets';
 
 export const queryOverpass = (query: string): AppThunk => {
   return async dispatch => {
@@ -14,8 +15,8 @@ export const queryOverpass = (query: string): AppThunk => {
     }
 
     const newData1 = overpass2Poi(overpassJson);
-    const newData2 = PoiDecorator.extend(newData1);
-    const newFields = PoiDecorator.enumerateFields(newData2);
+    const newData2 = presetSingleton.extend(newData1);
+    const newFields = presetSingleton.enumerateFields(newData2);
     dispatch(setPoiList(newData2));
     dispatch(migrateFacets(newFields));
     dispatch(setStatus('succeeded'));

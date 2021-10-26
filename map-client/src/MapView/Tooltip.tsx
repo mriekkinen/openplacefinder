@@ -3,7 +3,7 @@ import { Tooltip as LeafletTooltip } from 'react-leaflet';
 
 import { Poi } from '../types';
 import { Preset } from '../presets';
-import { PoiDecorator } from '../overpass';
+import { presetSingleton } from '../presets';
 import { getAddress } from '../info';
 
 interface Props {
@@ -15,7 +15,7 @@ const Tooltip = ({ e, preset }: Props) => {
   return (
     <LeafletTooltip direction='top'>
       <b>{e.tags['name']}</b><br />
-      {PoiDecorator.getNames().getName(preset?.id)}<br />
+      {presetSingleton.getName(preset?.id)}<br />
       {getAddress(e, 'short')}
     </LeafletTooltip>
   );

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { Poi, PoiWithDistance } from '../types';
 import { Country } from '../state';
-import { PoiDecorator } from '../overpass';
+import { presetSingleton } from '../presets';
 import { getAddress, getCuisines, getDistance } from '../info';
 import { OpenStateWrapper } from '../InfoView/OpenState';
 import { PresetIcon } from '../icons';
@@ -26,10 +26,10 @@ const ListElement = (
       </IconDiv>
       <ContentDiv>
         <b>{e.tags['name']}</b><br/>
-        {PoiDecorator.getNames().getName(e.presetId)}<br/>
+        {presetSingleton.getName(e.presetId)}<br/>
         {getAddress(e, 'long')}<br/>
         Distance: {getDistance(e)}<br/>
-        {PoiDecorator.hasField(e, 'cuisine') &&
+        {presetSingleton.hasField(e, 'cuisine') &&
           <>
             Cuisine: {getPrimaryCuisines(e)}<br/>
           </>

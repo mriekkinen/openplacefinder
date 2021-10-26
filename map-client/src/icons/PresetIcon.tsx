@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { PoiDecorator } from '../overpass';
+import { presetSingleton } from '../presets';
 import { Icon } from './Icon';
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
 }
 
 export const PresetIcon = ({ presetId, width, height }: Props) => {
-  const preset = PoiDecorator.getPreset(presetId);
+  const preset = presetSingleton.getPreset(presetId);
   if (!preset || !preset.icon) {
     return null;
   }

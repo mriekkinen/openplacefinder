@@ -9,7 +9,7 @@ import {
   useAppDispatch, useAppSelector
 } from '../state';
 import { filter } from '../search';
-import { PoiDecorator } from '../overpass';
+import { presetSingleton } from '../presets';
 import SetMapRef, { MapHandle } from './SetMapRef';
 import HandleMapClick from './HandleMapClick';
 import IconMarker from './IconMarker';
@@ -88,7 +88,7 @@ const MapView = (
           e={e}
           isSelected={e.id === selected}
           handleClick={handleMarkerClick(e)}
-          preset={PoiDecorator.getPreset(e.presetId)}
+          preset={presetSingleton.getPreset(e.presetId)}
         />
       )}
 

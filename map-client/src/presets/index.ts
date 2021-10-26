@@ -1,5 +1,5 @@
 export * from './types';
+export * from './presets';
 export * from './presetNames';
-
-import presetService from './presetService';
-export default presetService;
+export * from './presetService';
+export * from './presetSingleton';

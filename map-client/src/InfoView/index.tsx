@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { setSelected, useAppDispatch, useAppSelector } from '../state';
-import { PoiDecorator } from '../overpass';
+import { presetSingleton } from '../presets';
 import { MapHandle } from '../MapView/SetMapRef';
 import { PresetIcon } from '../icons';
 import Address from './Address';
@@ -67,7 +67,7 @@ const InfoView = ({ mapRef }: Props) => {
             {poi.tags['name']}
           </Header>
           <div>
-            {PoiDecorator.getNames().getName(poi.presetId)}
+            {presetSingleton.getName(poi.presetId)}
           </div>
         </ContentDiv>
       </FlexContainer>
@@ -76,7 +76,7 @@ const InfoView = ({ mapRef }: Props) => {
         <AddressIcon />
         <Address mapRef={mapRef} e={poi} />
 
-        {PoiDecorator.hasField(poi, 'opening_hours') &&
+        {presetSingleton.hasField(poi, 'opening_hours') &&
           <>
             <OpeningHoursIcon />
             <OpenStateWrapper
@@ -92,19 +92,19 @@ const InfoView = ({ mapRef }: Props) => {
           </>
         }
 
-        {PoiDecorator.hasField(poi, 'cuisine') &&
+        {presetSingleton.hasField(poi, 'cuisine') &&
           <>
             <CuisineIcon />
             <Cuisines poi={poi} />
           </>
         }
-        {PoiDecorator.hasField(poi, 'phone') &&
+        {presetSingleton.hasField(poi, 'phone') &&
           <>
             <PhoneIcon />
             <Phone phone={poi.tags['phone']} />
           </>
         }
-        {PoiDecorator.hasField(poi, 'website') &&
+        {presetSingleton.hasField(poi, 'website') &&
           <>
             <WebsiteIcon />
             <Website href={poi.tags['website']} />

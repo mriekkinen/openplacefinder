@@ -29,133 +29,144 @@ import {
   Preset, PresetIndex, PresetJson, PresetJsonMap, PresetMap
 } from './types';
 
-const parsePresetData = (data: PresetJsonMap): Preset[] => {
-  const presets: Preset[] = [];
-  for (const id in data) {
-    const pd: PresetJson = data[id];
-    if (canIgnore(pd)) {
-      continue;
-    }
+export class PresetParser {
+  readonly index: PresetIndex;
+  readonly presetMap: PresetMap;
 
-    const allFields = [
-      ...(pd.fields ?? []),
-      ...(pd.moreFields ?? [])
-    ];
-
-    const p: Preset = {
-      id,
-      tags: pd.tags,
-      fields: new Set(allFields),
-      originalScore: pd.originalScore ?? 1
-    };
-
-    if (pd.addTags) {
-      p.addTags = pd.addTags;
-    }
-
-    if (pd.icon) {
-      p.icon = pd.icon;
-    }
-
-    presets.push(p);
+  constructor(json: PresetJsonMap) {
+    const presets = this.parsePresetData(json);
+    this.index = this.buildIndex(presets);
+    this.presetMap = this.buildMap(presets);
   }
 
-  return presets;
-};
+  parsePresetData(data: PresetJsonMap): Preset[] {
+    const presets: Preset[] = [];
+    for (const id in data) {
+      const pd: PresetJson = data[id];
+      if (this.canIgnore(pd)) {
+        continue;
+      }
 
-const buildIndex = (presets: Preset[]): PresetIndex => {
-  // TODO: Consider differentiating by the type of geometry (point, area, ...)
-  const index: PresetIndex = {};
-  presets.forEach(preset => {
-    for (const key in preset.tags) {
-      (index[key] = index[key] ?? []).push(preset);
-    }
-  });
+      const allFields = [
+        ...(pd.fields ?? []),
+        ...(pd.moreFields ?? [])
+      ];
 
-  return index;
-};
+      const p: Preset = {
+        id,
+        tags: pd.tags,
+        fields: new Set(allFields),
+        originalScore: pd.originalScore ?? 1
+      };
 
-const buildMap = (presets: Preset[]): PresetMap => {
-  const map: PresetMap = {};
-  presets.forEach(preset => {
-    map[preset.id] = preset;
-  });
+      if (pd.addTags) {
+        p.addTags = pd.addTags;
+      }
 
-  return map;
-};
+      if (pd.icon) {
+        p.icon = pd.icon;
+      }
 
-const canIgnore = (preset: PresetJson): boolean => {
-  for (const k in preset.tags) {
-    // Ignore presets where the value field is '*'
-    if (preset.tags[k] === '*') {
-      return true;
-    }
-
-    // Ignore presets which have no fields
-    // For instance, "embankment", which is an attribute
-    if (!('fields' in preset)) {
-      return true;
+      presets.push(p);
     }
 
-    // Ignore the address presets (there seem to be just 2)
-    if (/^addr:/.test(k)) {
-      return true;
-    }
+    return presets;
   }
 
-  return false;
-};
-
-const matchTags = (index: PresetIndex, tags: Tags): Preset | null => {
-  let best = -1;
-  let match = null;
-
-  for (const k in tags) {
-    const keyMatches = index[k];
-    if (!keyMatches) continue;
-
-    keyMatches.forEach(candidate => {
-      const score = matchScore(candidate, tags);
-      if (score > best) {
-        best = score;
-        match = candidate;
+  buildIndex(presets: Preset[]): PresetIndex {
+    // TODO: Consider differentiating by the type of geometry (point, area, ...)
+    const index: PresetIndex = {};
+    presets.forEach(preset => {
+      for (const key in preset.tags) {
+        (index[key] = index[key] ?? []).push(preset);
       }
     });
+
+    return index;
   }
 
-  return match;
-};
+  buildMap(presets: Preset[]): PresetMap {
+    const map: PresetMap = {};
+    presets.forEach(preset => {
+      map[preset.id] = preset;
+    });
 
-const matchScore = (preset: Preset, entityTags: Tags): number => {
-  const seen = new Set<string>();
-  let score = 0;
+    return map;
+  }
 
-  // match on tags
-  for (const k in preset.tags) {
-    seen.add(k);
-    if (entityTags[k] === preset.tags[k]) {
-      score += preset.originalScore;
-    } else if (preset.tags[k] === '*' && k in entityTags) {
-      score += preset.originalScore / 2;
-    } else {
-      return -1;
+  canIgnore(preset: PresetJson): boolean {
+    for (const k in preset.tags) {
+      // Ignore presets where the value field is '*'
+      if (preset.tags[k] === '*') {
+        return true;
+      }
+
+      // Ignore presets which have no fields
+      // For instance, "embankment", which is an attribute
+      if (!('fields' in preset)) {
+        return true;
+      }
+
+      // Ignore the address presets (there seem to be just 2)
+      if (/^addr:/.test(k)) {
+        return true;
+      }
     }
+
+    return false;
+  }
+}
+
+export class PresetMatcher {
+  readonly parser: PresetParser;
+
+  constructor(parser: PresetParser) {
+    this.parser = parser;
   }
 
-  // boost score for additional matches in addTags - #6802
-  for (const k in preset.addTags) {
-    if (!seen.has(k) && entityTags[k] === preset.addTags[k]) {
-      score += preset.originalScore;
+  matchTags(tags: Tags): Preset | null {
+    let best = -1;
+    let match = null;
+
+    for (const k in tags) {
+      const keyMatches = this.parser.index[k];
+      if (!keyMatches) continue;
+
+      keyMatches.forEach(candidate => {
+        const score = this.matchScore(candidate, tags);
+        if (score > best) {
+          best = score;
+          match = candidate;
+        }
+      });
     }
+
+    return match;
   }
 
-  return score;
-};
+  matchScore(preset: Preset, entityTags: Tags): number {
+    const seen = new Set<string>();
+    let score = 0;
 
-export default {
-  parsePresetData,
-  buildIndex,
-  buildMap,
-  matchTags,
-  matchScore
-};
+    // match on tags
+    for (const k in preset.tags) {
+      seen.add(k);
+      if (entityTags[k] === preset.tags[k]) {
+        score += preset.originalScore;
+      } else if (preset.tags[k] === '*' && k in entityTags) {
+        score += preset.originalScore / 2;
+      } else {
+        return -1;
+      }
+    }
+
+    // boost score for additional matches in addTags - #6802
+    for (const k in preset.addTags) {
+      if (!seen.has(k) && entityTags[k] === preset.addTags[k]) {
+        score += preset.originalScore;
+      }
+    }
+
+    return score;
+  }
+}
