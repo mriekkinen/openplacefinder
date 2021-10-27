@@ -5,7 +5,7 @@ import 'leaflet-contextmenu';
 
 import { Poi } from '../types';
 import {
-  setLocation, setSelected, setTab, TabIndex,
+  setLocation, setSelected,
   useAppDispatch, useAppSelector
 } from '../state';
 import { filter } from '../search';
@@ -62,7 +62,6 @@ const MapView = (
 
   const handleMarkerClick = (e: Poi) => () => {
     dispatch(setSelected(e.id));
-    dispatch(setTab(TabIndex.List));
   };
 
   return (

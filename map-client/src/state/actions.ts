@@ -3,7 +3,7 @@ import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { LatLngBounds } from 'leaflet';
 
 import { Poi } from '../types';
-import { Country, MapFeature, QueryStatus, State, TabIndex } from './state';
+import { Country, MapFeature, QueryStatus, State } from './state';
 
 export type AppThunk = ThunkAction<void, State, unknown, AnyAction>;
 export type AppDispatch = ThunkDispatch<State, unknown, AnyAction>;
@@ -23,10 +23,6 @@ export type PoiAction =
   };
 
 export type UiAction =
-| {
-    type: 'ui/setTab',
-    data: TabIndex
-  }
 | {
     type: 'ui/setSelected',
     data: number | null

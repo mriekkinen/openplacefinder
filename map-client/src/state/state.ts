@@ -16,13 +16,7 @@ export interface PoiState {
   country: Country | undefined;
 }
 
-export enum TabIndex {
-  Map = 0,
-  List
-}
-
 export interface UiState {
-  tab: TabIndex;
   selected: number | null;
 }
 
@@ -85,7 +79,6 @@ export const initialState: State = {
     }
   },
   ui: {
-    tab: TabIndex.Map,
     selected: null
   },
   search: {

@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { LatLngTuple } from 'leaflet';
 import styled from 'styled-components';
 
-import { setTab, useAppDispatch, useAppSelector } from './state';
+import { useAppSelector } from './state';
 import { loadPresets } from './presets';
 import MapView from './MapView';
 import { MapHandle } from './MapView/SetMapRef';
@@ -17,12 +17,7 @@ import 'leaflet-contextmenu/dist/leaflet.contextmenu.css';
 import 'pelias-leaflet-plugin/dist/leaflet-geocoder-mapzen.css';
 import './App.css';
 
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import 'react-tabs/style/react-tabs.css';
-
 const App = () => {
-  const dispatch = useAppDispatch();
-  const tab = useAppSelector(state => state.ui.tab);
   const selected = useAppSelector(state => state.ui.selected);
   const n = useAppSelector(state => state.poiList.data.length);
 
@@ -30,10 +25,6 @@ const App = () => {
 
   const center: LatLngTuple = [60.1673, 24.9428];
   const zoom = 13;
-
-  const handleSelect = (index: number) => {
-    dispatch(setTab(index));
-  }
 
   loadPresets();
 
