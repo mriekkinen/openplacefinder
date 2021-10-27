@@ -41,9 +41,6 @@ const ListView = ({ mapRef }: Props) => {
   );
 };
 
-const Container = styled.div`
-  margin-right: 15px;
-  margin-bottom: 15px;
-`;
+const Container = styled.div``;
 
 export default ListView;

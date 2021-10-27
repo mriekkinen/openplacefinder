@@ -37,67 +37,53 @@ const App = () => {
   loadPresets();
 
   return (
-    <div id='App'>
+    <AppContainer>
       <NavBar />
-      <div className='content'>
+      <Content>
         <SidebarBoxes>
           <SearchView mapRef={mapRef} />
-          <FacetsView />
-        </SidebarBoxes>
-        <div className='tabs-container'>
-          <Tabs
-            forceRenderTabPanel={true}
-            selectedIndex={tab}
-            onSelect={handleSelect}
-            className={[
-              'react-tabs',
-              'tabs-flex-1',
-              'tabs-display-flex',
-              'tabs-flex-column'
-            ]}
-            selectedTabPanelClassName={
-              'tabs-selected-tab-panel'
+          <Results>
+            {selected === null
+              ? <ListView mapRef={mapRef} />
+              : <InfoView mapRef={mapRef} />
             }
-          >
-            <TabList
-              className={[
-                'react-tabs__tab-list',
-                'tabs-flex-none'
-              ]}>
-              <Tab>Map</Tab>
-              <Tab>List</Tab>
-              {/* <Tab>Empty</Tab> */}
-            </TabList>
-            <TabPanel>
-              <MapView
-                center={center}
-                zoom={zoom}
-                ref={mapRef} />
-            </TabPanel>
-            <TabPanel>
-              {selected === null
-                ? <ListView mapRef={mapRef} />
-                : <InfoView mapRef={mapRef} />
-              }
-            </TabPanel>
-            {/* An extra empty tab (helps profiling) */}
-            {/*
-            <TabPanel>
-              This tab is empty on purpose.
-            </TabPanel>
-            */}
-          </Tabs>
-        </div>
-      </div>
-    </div>
+          </Results>
+        </SidebarBoxes>
+        <MapView
+          center={center}
+          zoom={zoom}
+          ref={mapRef} />
+      </Content>
+    </AppContainer>
   );
 };
 
-const SidebarBoxes = styled.div`
-  flex: none;
-  align-self: flex-start;
+const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
+  height: 100vh;
+`;
+
+const Content = styled.div`
+  flex: 1 1 400px;
+  display: flex;
+  margin: 0;
+  padding: 0;
+`;
+
+const SidebarBoxes = styled.div`
+  flex: none;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Results = styled.div`
+  flex: 1 0 100px;
+  overflow-y: auto;
+  margin: 0 5px 5px 5px;
+  width: 300px;
+  border: 1px solid hsl(0, 0%, 80%);
+  border-radius: 4px;
 `;
 
 export default App;
