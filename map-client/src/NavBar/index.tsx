@@ -22,7 +22,6 @@ const Nav = styled.nav`
   padding-right: 20px;
   color: #FAFAFA;
   background-color: #263238;
-  margin-bottom: 5px;
 `;
 
 const NavList = styled.ul`

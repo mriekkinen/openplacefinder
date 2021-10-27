@@ -16,7 +16,7 @@ interface Props {
   mapRef: React.RefObject<MapHandle>;
 }
 
-const SearchView = ({ mapRef }: Props) => {
+const SearchBar = ({ mapRef }: Props) => {
   const dispatch = useAppDispatch();
   const status = useAppSelector(state => state.poiList.status);
   const feature = useAppSelector(state => state.search.feature);
@@ -102,7 +102,7 @@ const SearchView = ({ mapRef }: Props) => {
 
   return (
     <Container>
-      <Header>Search for</Header>
+      <Header>Search</Header>
       <Item>
         <SearchBox
           value={feature}
@@ -150,4 +150,4 @@ const getErrorMsg = (status: QueryStatus) => {
   return <span>Query failed</span>;
 };
 
-export default SearchView;
+export default SearchBar;

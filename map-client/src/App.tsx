@@ -9,7 +9,7 @@ import { MapHandle } from './MapView/SetMapRef';
 import NavBar from './NavBar';
 import ListView from './ListView';
 import InfoView from './InfoView';
-import SearchView from './SearchView';
+import SearchBar from './SearchBar';
 import FacetsView from './FacetsView';
 
 import 'leaflet/dist/leaflet.css';
@@ -24,6 +24,7 @@ const App = () => {
   const dispatch = useAppDispatch();
   const tab = useAppSelector(state => state.ui.tab);
   const selected = useAppSelector(state => state.ui.selected);
+  const n = useAppSelector(state => state.poiList.data.length);
 
   const mapRef = useRef<MapHandle>(null);
 
@@ -39,15 +40,17 @@ const App = () => {
   return (
     <AppContainer>
       <NavBar />
+      <SearchBar mapRef={mapRef} />
       <Content>
         <SidebarBoxes>
-          <SearchView mapRef={mapRef} />
-          <Results>
-            {selected === null
-              ? <ListView mapRef={mapRef} />
-              : <InfoView mapRef={mapRef} />
-            }
-          </Results>
+          {n !== 0 &&
+            <Results>
+              {selected === null
+                ? <ListView mapRef={mapRef} />
+                : <InfoView mapRef={mapRef} />
+              }
+            </Results>
+          }
         </SidebarBoxes>
         <MapView
           center={center}
@@ -80,10 +83,8 @@ const SidebarBoxes = styled.div`
 const Results = styled.div`
   flex: 1 0 100px;
   overflow-y: auto;
-  margin: 0 5px 5px 5px;
+  margin: 0;
   width: 300px;
-  border: 1px solid hsl(0, 0%, 80%);
-  border-radius: 4px;
 `;
 
 export default App;
