@@ -8,6 +8,10 @@ const Name = () => {
   const dispatch = useAppDispatch();
   const name = useAppSelector(state => state.facets.name);
 
+  if (name === undefined) {
+    return null;
+  }
+
   return (
     <Facet>
       Name: {' '}

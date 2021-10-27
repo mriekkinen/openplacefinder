@@ -1,8 +1,9 @@
 import { AnyAction } from 'redux';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import { LatLngBounds } from 'leaflet';
 
 import { Poi } from '../types';
-import { Status, State, Country, TabIndex } from './state';
+import { Country, MapFeature, QueryStatus, State, TabIndex } from './state';
 
 export type AppThunk = ThunkAction<void, State, unknown, AnyAction>;
 export type AppDispatch = ThunkDispatch<State, unknown, AnyAction>;
@@ -14,7 +15,7 @@ export type PoiAction =
   }
 | {
     type: 'poiList/setStatus',
-    data: Status
+    data: QueryStatus
   }
 | {
     type: 'poiList/setCountry',
@@ -31,6 +32,25 @@ export type UiAction =
     data: number | null
   };
 
+export type SearchAction =
+  | {
+      type: 'search/setMapFeature',
+      data: MapFeature | null
+    }
+  | {
+      type: 'search/setBoundary',
+      data: {
+        name: string,
+        id: number
+      }
+    }
+  | {
+      type: 'search/setBBox',
+      data: {
+        bbox: LatLngBounds
+      }
+    };
+
 export type LocationAction =
   | {
       type: 'location/setLocation',
@@ -43,10 +63,6 @@ export type LocationAction =
 export type FacetAction =
   | {
       type: 'facets/setName',
-      data: string
-    }
-  | {
-      type: 'facets/setBrand',
       data: string
     }
   | {
@@ -65,7 +81,19 @@ export type FacetAction =
       }
     }
   | {
+      type: 'facets/migrate',
+      data: Set<string>
+    }
+  | {
       type: 'facets/clear'
+    }
+  | {
+      type: 'facets/reset'
     };
 
-export type Action = PoiAction | UiAction | LocationAction | FacetAction;
+export type Action =
+  | PoiAction
+  | UiAction
+  | SearchAction
+  | LocationAction
+  | FacetAction;

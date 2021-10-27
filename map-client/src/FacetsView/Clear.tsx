@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useAppDispatch, clear } from '../state';
+import { useAppDispatch, clearFacets } from '../state';
 
 import { Facet, Button } from './styles';
 
@@ -11,7 +11,7 @@ const Clear = () => {
     <Facet>
       <Button
         type='button'
-        onClick={() => dispatch(clear())}>
+        onClick={() => dispatch(clearFacets())}>
         Clear
       </Button>
     </Facet>

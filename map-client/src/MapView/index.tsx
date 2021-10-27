@@ -3,16 +3,21 @@ import { MapContainer, TileLayer } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet-contextmenu';
 
+import { Poi } from '../types';
 import {
-  setLocation, setSelected,
+  setLocation, setSelected, setTab, TabIndex,
   useAppDispatch, useAppSelector
 } from '../state';
 import { filter } from '../search';
+import { presetSingleton } from '../presets';
 import SetMapRef, { MapHandle } from './SetMapRef';
+import HandleResize from './HandleResize';
 import HandleMapClick from './HandleMapClick';
-import CircleMarker from './CircleMarker';
+import IconMarker from './IconMarker';
 import LocationMarker from './LocationMarker';
 import RemoveMapOnUnmount from './RemoveMapOnUnmount';
+import AreaFilter from './AreaFilter';
+import Geocoder from './Geocoder';
 
 // Option: whether to use raster instead of vector graphics?
 // If true, renders markers using an HTML canvas element.
@@ -28,14 +33,6 @@ const MapView = (
   { center, zoom }: Props,
   ref: React.Ref<MapHandle>
 ) => {
-  // For debugging memory consumption
-  React.useEffect(() => {
-    console.log('Mounted MapView');
-    return () => {
-      console.log('Unmounting MapView');
-    }
-  }, []);
-
   const dispatch = useAppDispatch();
   const data = useAppSelector(state => state.poiList.data);
   const country = useAppSelector(state => state.poiList.country);
@@ -43,11 +40,7 @@ const MapView = (
   const selected = useAppSelector(state => state.ui.selected);
   const location = useAppSelector(state => state.location);
 
-  console.log('Rendering MapView');
-
   const filteredData = filter(data, country, facets);
-
-  console.log('filteredData.length:', filteredData.length);
 
   const contextmenuItems = [
     {
@@ -63,6 +56,15 @@ const MapView = (
     url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
   };
 
+  const handleMapClick = () => {
+    dispatch(setSelected(null));
+  };
+
+  const handleMarkerClick = (e: Poi) => () => {
+    dispatch(setSelected(e.id));
+    dispatch(setTab(TabIndex.List));
+  };
+
   return (
     <MapContainer
       id='map-container'
@@ -74,16 +76,21 @@ const MapView = (
       contextmenuItems={contextmenuItems}
     >
       <SetMapRef ref={ref} />
+      <HandleResize />
       <HandleMapClick
-        handleMapClick={() => dispatch(setSelected(null))} />
+        handleMapClick={handleMapClick} />
+      <Geocoder />
+      <AreaFilter />
+
       <TileLayer {...tileProps} />
 
       {filteredData.map(e =>
-        <CircleMarker
+        <IconMarker
           key={`${e.type}-${e.id}`}
           e={e}
           isSelected={e.id === selected}
-          handleClick={() => dispatch(setSelected(e.id))}
+          handleClick={handleMarkerClick(e)}
+          preset={presetSingleton.getPreset(e.presetId)}
         />
       )}
 

@@ -1,11 +1,12 @@
 import React from 'react';
+import styled from 'styled-components';
 
 import { Poi, PoiWithDistance } from '../types';
 import { Country } from '../state';
-import { getCuisines } from '../search';
-import { getAddress } from '../InfoView/Address';
-import { getDistance } from '../InfoView/Distance';
+import { presetSingleton } from '../presets';
+import { getAddress, getCuisines, getDistance } from '../info';
 import { OpenStateWrapper } from '../InfoView/OpenState';
+import { PresetIcon } from '../icons';
 
 interface Props {
   e: PoiWithDistance;
@@ -19,23 +20,52 @@ const ListElement = (
   const now = new Date();
 
   return (
-    <div
-      className='list-elem'
-      onClick={handleClick}
-    >
-      <b>{e.tags['name']}</b><br/>
-      {getAddress(e)}<br/>
-      distance: {getDistance(e)}<br/>
-      Cuisine: {getPrimaryCuisines(e)}<br/>
-      {/*
-      <OpenStateWrapper
-        poi={e}
-        country={country}
-        now={now} />
-      */}
-    </div>
+    <Container onClick={handleClick}>
+      <IconDiv>
+        <PresetIcon presetId={e.presetId} />
+      </IconDiv>
+      <ContentDiv>
+        <b>{e.tags['name']}</b><br/>
+        {presetSingleton.getName(e.presetId)}<br/>
+        {getAddress(e, 'long')}<br/>
+        Distance: {getDistance(e)}<br/>
+        {presetSingleton.hasField(e, 'cuisine') &&
+          <>
+            Cuisine: {getPrimaryCuisines(e)}<br/>
+          </>
+        }
+        {/*
+        <OpenStateWrapper
+          poi={e}
+          country={country}
+          now={now} />
+        */}
+      </ContentDiv>
+    </Container>
   );
 };
+
+const Container = styled.div`
+  display: flex;
+  cursor: pointer;
+  margin: 0;
+  padding: 10px;
+  line-height: 1.25;
+  border-bottom: 1px solid lightgray;
+
+  &:hover {
+    background-color: #EEEEEE;
+  }
+`;
+
+const IconDiv = styled.div`
+  flex: none;
+  padding-right: 5px;
+`;
+
+const ContentDiv = styled.div`
+  flex: auto;
+`;
 
 const getPrimaryCuisines = (e: Poi) => {
   const cuisines = getCuisines(e);

@@ -32,7 +32,7 @@ interface OpenStateProps {
 
 export const OpenState = ({ oh, now }: OpenStateProps) => {
   if (oh === undefined) {
-    return null;
+    return <span>(unknown)</span>;
   }
 
   try {
@@ -44,7 +44,7 @@ export const OpenState = ({ oh, now }: OpenStateProps) => {
     const nextChangeText = getNextChangeText(oh, now);
 
     return (
-      <>
+      <span>
         <OpenStateText isOpen={isOpen}>
           {stateText}
         </OpenStateText>
@@ -52,7 +52,7 @@ export const OpenState = ({ oh, now }: OpenStateProps) => {
         <GraySpan>
           {nextChangeText}
         </GraySpan>
-      </>
+      </span>
     );
   } catch (e) {
     // console.log('opening_hours exception:', e);
@@ -69,7 +69,6 @@ const OpenStateText = styled.span<OpenStateTextProps>`
 `;
 
 const getNextChangeText = (oh: opening_hours, now: Date) => {
-  const isOpen = oh.getState(now);
   const maxDate = addDays(now, 6);
   const nextChange = oh.getNextChange(now, maxDate);
 
@@ -77,16 +76,21 @@ const getNextChangeText = (oh: opening_hours, now: Date) => {
     return null;
   }
 
-  const change = isOpen ? 'closes' : 'opens';
   const weekday = getWeekdayString(nextChange);
   const time = getTimeString(nextChange);
 
   // If the same date, omit the weekday
   if (nextChange.getDate() === now.getDate()) {
-    return `(${change} at ${time})`;
+    return `until ${time}`;
   }
 
-  return `(${change} ${weekday} at ${time})`;
+  // If tomorrow, use the phrase "tomorrow"
+  const tomorrow = addDays(now, 1);
+  if (nextChange.getDate() === tomorrow.getDate()) {
+    return `until ${time} tomorrow`;
+  }
+
+  return `until ${weekday} at ${time}`;
 };
 
 const getTimeString = (nextChange: Date) => {
@@ -100,7 +104,7 @@ const getTimeString = (nextChange: Date) => {
 
 const getWeekdayString = (nextChange: Date) => {
   const formatter = new Intl.DateTimeFormat('en-GB', {
-    weekday: 'short'
+    weekday: 'long'
   });
 
   return formatter.format(nextChange);

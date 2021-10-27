@@ -1,13 +1,25 @@
 import React from 'react';
+import styled from 'styled-components';
 
 import { setSelected, useAppDispatch, useAppSelector } from '../state';
+import { presetSingleton } from '../presets';
 import { MapHandle } from '../MapView/SetMapRef';
+import { PresetIcon } from '../icons';
 import Address from './Address';
 import ReturnBtn from './ReturnBtn';
-import Link from './Link';
-import OpeningHours from './OpeningHours';
+import Phone from './Phone';
+import Website from './Website';
 import { OpenStateWrapper } from './OpenState';
+import OpeningHours from './OpeningHours';
 import Cuisines from './Cuisines';
+
+import {
+  AddressIcon,
+  OpeningHoursIcon,
+  CuisineIcon,
+  PhoneIcon,
+  WebsiteIcon
+} from './icons';
 
 interface Props {
   mapRef: React.RefObject<MapHandle>;
@@ -19,54 +31,128 @@ const InfoView = ({ mapRef }: Props) => {
   const data = useAppSelector(state => state.poiList.data);
   const country = useAppSelector(state => state.poiList.country);
 
-  console.log('Rendering InfoView');
-
   const poi = data.find(e => e.id === id);
 
   if (!poi) {
     return (
-      <div className='info-container'>
-        <div className='info-item'>
-          <i>Nothing selected</i>
-        </div>
-      </div>
+      <Container>
+        <TopContainer>
+          <NothingSelected>
+            <i>Nothing selected</i>
+          </NothingSelected>
+        </TopContainer>
+      </Container>
     );
   }
 
   const now = new Date();
 
   return (
-    <div className='info-container'>
-      <div className='info-item'>
-        <ReturnBtn
-          handleClick={() => dispatch(setSelected(null))} />
-      </div>
-      <div className='info-item'>
-        <h2>{poi.tags['name']}</h2>
-        <span>Tea shop</span>
-      </div>
-      <div className='info-item'>
+    <Container>
+      <TopContainer>
+        <ReturnBtn handleClick={() => dispatch(setSelected(null))} />
+      </TopContainer>
+
+      <FlexContainer>
+        <IconDiv>
+          <Header>
+            <PresetIcon
+              presetId={poi.presetId}
+              width={20}
+              height={20} />
+          </Header>
+        </IconDiv>
+        <ContentDiv>
+          <Header>
+            {poi.tags['name']}
+          </Header>
+          <div>
+            {presetSingleton.getName(poi.presetId)}
+          </div>
+        </ContentDiv>
+      </FlexContainer>
+
+      <ItemContainer>
+        <AddressIcon />
         <Address mapRef={mapRef} e={poi} />
-      </div>
-      <div className='info-item'>
-        <OpenStateWrapper
-          poi={poi}
-          country={country}
-          now={now} />
-      </div>
-      <div className='info-item'>
-        <OpeningHours openingHours={poi.tags['opening_hours']} />
-      </div>
-      <div className='info-item'>
-        <Cuisines poi={poi} />
-      </div>
-      <div className='info-item'>
-        <Link
-          href={poi.tags['website']}
-          label={poi.tags['website']} />
-      </div>
-    </div>
+
+        {presetSingleton.hasField(poi, 'opening_hours') &&
+          <>
+            <OpeningHoursIcon />
+            <OpenStateWrapper
+              poi={poi}
+              country={country}
+              now={now} />
+            {poi.tags['opening_hours'] !== undefined &&
+              <>
+                <div></div>
+                <OpeningHours poi={poi} />
+              </>
+            }
+          </>
+        }
+
+        {presetSingleton.hasField(poi, 'cuisine') &&
+          <>
+            <CuisineIcon />
+            <Cuisines poi={poi} />
+          </>
+        }
+        {presetSingleton.hasField(poi, 'phone') &&
+          <>
+            <PhoneIcon />
+            <Phone phone={poi.tags['phone']} />
+          </>
+        }
+        {presetSingleton.hasField(poi, 'website') &&
+          <>
+            <WebsiteIcon />
+            <Website href={poi.tags['website']} />
+          </>
+        }
+      </ItemContainer>
+    </Container>
   );
 };
+
+const Container = styled.div`
+  margin-right: 15px;
+  margin-bottom: 15px;
+  line-height: 1.25;
+`;
+
+const TopContainer = styled.div`
+  margin: 10px;
+`;
+
+const FlexContainer = styled.div`
+  display: flex;
+  margin: 10px;
+`;
+
+const IconDiv = styled.div`
+  flex: none;
+  margin-right: 5px;
+`;
+
+const ContentDiv = styled.div`
+  flex: auto;
+`;
+
+const ItemContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1.25em 1fr;
+  column-gap: 10px;
+  row-gap: 10px;
+  margin: 0 10px;
+`;
+
+const Header = styled.h2`
+  margin: 0;
+`;
+
+const NothingSelected = styled.div`
+  margin: 10px 0;
+`;
 
 export default InfoView;

@@ -10,6 +10,10 @@ export const OpeningHours = () => {
   const dispatch = useAppDispatch();
   const openingHours = useAppSelector(state => state.facets.openingHours);
 
+  if (openingHours === undefined) {
+    return null;
+  }
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(requireOpeningHours(e.target.checked));
   };
@@ -31,6 +35,10 @@ export const OpeningHours = () => {
 export const OpenNow = () => {
   const dispatch = useAppDispatch();
   const openNow = useAppSelector(state => state.facets.openNow);
+
+  if (openNow === undefined) {
+    return null;
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(requireOpenNow(e.target.checked));

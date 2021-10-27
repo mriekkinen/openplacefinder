@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 
 import { setSelected, useAppDispatch, useAppSelector } from '../state';
 import { MapHandle } from '../MapView/SetMapRef';
@@ -16,8 +17,6 @@ const ListView = ({ mapRef }: Props) => {
   const facets = useAppSelector(state => state.facets);
   const location = useAppSelector(state => state.location);
 
-  console.log('Rendering ListView');
-
   // Apply filters
   const filteredData = filter(data, country, facets);
 
@@ -26,7 +25,7 @@ const ListView = ({ mapRef }: Props) => {
   sortByDistance(dataWithDistances);
 
   return (
-    <div className='list-container'>
+    <Container>
       {dataWithDistances.map(e =>
         <ListElement
           key={`${e.type}-${e.id}`}
@@ -34,12 +33,17 @@ const ListView = ({ mapRef }: Props) => {
           country={country}
           handleClick={() => {
             dispatch(setSelected(e.id));
-            mapRef.current?.panTo(e.lat, e.lon);
+            //mapRef.current?.panTo(e.lat, e.lon);
           }}
         />
       )}
-    </div>
+    </Container>
   );
 };
+
+const Container = styled.div`
+  margin-right: 15px;
+  margin-bottom: 15px;
+`;
 
 export default ListView;

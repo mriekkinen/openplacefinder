@@ -1,17 +1,10 @@
-import { initialState, FacetState } from './state';
+import { initialState, facetClear, FacetState } from './state';
 import { Action } from './actions';
 
 export const setName = (name: string): Action => {
   return {
     type: 'facets/setName',
     data: name
-  };
-};
-
-export const setBrand = (brand: string): Action => {
-  return {
-    type: 'facets/setBrand',
-    data: brand
   };
 };
 
@@ -39,9 +32,22 @@ export const checkCuisine = (cuisine: string, isChecked: boolean): Action => {
   };
 };
 
-export const clear = (): Action => {
+export const migrateFacets = (fields: Set<string>): Action => {
+  return {
+    type: 'facets/migrate',
+    data: fields
+  };
+};
+
+export const clearFacets = (): Action => {
   return {
     type: 'facets/clear'
+  };
+};
+
+export const resetFacets = (): Action => {
+  return {
+    type: 'facets/reset'
   };
 };
 
@@ -55,16 +61,11 @@ export const facetReducer = (
         ...state,
         name: action.data
       };
-    case 'facets/setBrand':
+    case 'facets/requireOpeningHours':
       return {
         ...state,
-        brand: action.data
+        openingHours: action.data
       };
-      case 'facets/requireOpeningHours':
-        return {
-          ...state,
-          openingHours: action.data
-        };
     case 'facets/requireOpenNow':
       return {
         ...state,
@@ -83,7 +84,44 @@ export const facetReducer = (
         cuisines: newCuisines
       };
     }
-    case 'facets/clear':
+    case 'facets/migrate': {
+      const newFacets: FacetState = {};
+      const fields = action.data;
+
+      if (fields.has('name')) {
+        newFacets.name = state.name ?? facetClear.name;
+      }
+
+      if (fields.has('opening_hours')) {
+        newFacets.openingHours = state.openingHours ?? facetClear.openingHours;
+        newFacets.openNow = state.openNow ?? facetClear.openNow;
+      }
+
+      if (fields.has('cuisine')) {
+        newFacets.cuisines = state.cuisines ?? facetClear.cuisines;
+      }
+
+      return newFacets;
+    }
+    case 'facets/clear': {
+      const newFacets: FacetState = {};
+
+      if (state.name !== undefined) {
+        newFacets.name = facetClear.name;
+      }
+
+      if (state.openingHours !== undefined) {
+        newFacets.openingHours = facetClear.openingHours;
+        newFacets.openNow = facetClear.openNow;
+      }
+
+      if (state.cuisines !== undefined) {
+        newFacets.cuisines = facetClear.cuisines;
+      }
+
+      return newFacets;
+    }
+    case 'facets/reset':
       return initialState.facets;
     default:
       return state;

@@ -1,7 +1,7 @@
 import { Poi } from '../types';
 import { Country, FacetState } from '../state';
 import { isOpenNow } from './openingHours';
-import { getCuisines } from './cuisine';
+import { getCuisines } from '../info';
 
 export const filter = (
   data: Poi[],
@@ -9,7 +9,6 @@ export const filter = (
   facets: FacetState
 ): Poi[] => {
   const facetName = trimLower(facets.name);
-  const facetBrand = trimLower(facets.brand);
   const facetOpeningHours = facets.openingHours;
   const facetOpenNow = facets.openNow;
   const facetCuisines = facets.cuisines;
@@ -17,10 +16,9 @@ export const filter = (
   return data.filter(poi => {
     return true
       && (!facetName || matchName(facetName, poi))
-      && (!facetBrand || matchBrand(facetBrand, poi))
       && (!facetOpeningHours || matchOpeningHours(poi))
       && (!facetOpenNow || matchOpenNow(poi, country))
-      && (facetCuisines.size === 0 || matchCuisine(facetCuisines, poi));
+      && (!facetCuisines || facetCuisines.size === 0 || matchCuisine(facetCuisines, poi));
   });
 };
 
@@ -29,13 +27,6 @@ const matchName = (facetName: string, poi: Poi): boolean => {
   if (!name) return false;
 
   return name.includes(facetName);
-};
-
-const matchBrand = (facetBrand: string, poi: Poi): boolean => {
-  const brand = trimLower(poi.tags['brand']);
-  if (!brand) return false;
-
-  return brand.includes(facetBrand);
 };
 
 const matchOpeningHours = (poi: Poi): boolean => {

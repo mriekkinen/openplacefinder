@@ -16,7 +16,6 @@
   display: flex;
   align-items: stretch;
   width: 100%;
-  /*min-height: 400px;*/
   margin: 0 0 0 5px;
 }
 
@@ -24,37 +23,6 @@
   flex: 1 0 100px;
   width: 100%;
   min-height: 400px;
-}
-
-.list-container,
-.info-container {
-  margin-right: 15px;
-  margin-bottom: 15px;
-}
-
-.list-elem {
-  cursor: pointer;
-  margin: 0;
-  padding: 10px;
-  line-height: 1.25;
-  border-bottom: 1px solid lightgray;
-}
-
-.list-elem:hover {
-  background-color: #EEEEEE;
-}
-
-.info-item {
-  margin: 10px;
-  line-height: 1.25;
-}
-
-.info-item h2 {
-  margin: 0;
-}
-
-.info-item .address {
-  cursor: pointer;
 }
 
 .tabs-display-flex {
@@ -78,4 +46,32 @@
   display: flex !important;
   align-items: stretch;
   flex: 1;
+}
+
+/**
+ * A circular icon which contains an SVG element
+ *
+ * Inspired by: https://gis.stackexchange.com/a/360454
+ * Uses Leaflet's default blue color as the background.
+ */
+.map-icon {
+  box-sizing: border-box;
+  border-radius: 50%;
+  color: white;
+  border: 2px solid white;
+  background: rgba(51, 136, 255, 1);
+  box-shadow: 2px 1px 4px rgba(0, 0, 0, 0.2);
+  opacity: 0.9;
+}
+
+.map-icon.selected {
+  color: rgba(51, 136, 255, 1);
+  border-color: rgba(51, 136, 255, 1);
+  background: white;
+}
+
+.map-icon img {
+  position: relative;
+  top: 2.5px;
+  left: 2.5px;
 }

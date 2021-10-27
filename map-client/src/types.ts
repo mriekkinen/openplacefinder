@@ -1,8 +1,6 @@
-import { OverpassNode, OverpassWay, OverpassRelation } from 'overpass-ts';
-
 export type Tags = { [key: string]: string | undefined };
 
-export interface Poi {
+export interface OverpassPoi {
   type: 'node' | 'way' | 'relation';
   id: number;
   lat?: number;
@@ -10,8 +8,10 @@ export interface Poi {
   tags: Tags;
 }
 
+export interface Poi extends OverpassPoi {
+  presetId: string | undefined;
+}
+
 export interface PoiWithDistance extends Poi {
   distance: number;
 }
-
-export type Nwr = OverpassNode | OverpassWay | OverpassRelation;

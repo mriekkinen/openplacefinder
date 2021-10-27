@@ -1,8 +1,10 @@
 import React from 'react';
-import { GoLocation } from 'react-icons/go';
+import styled from 'styled-components';
 
 import { Poi } from '../types';
+import { setTab, TabIndex, useAppDispatch } from '../state';
 import { MapHandle } from '../MapView/SetMapRef';
+import { getAddress } from '../info';
 
 interface Props {
   mapRef: React.RefObject<MapHandle>;
@@ -10,21 +12,26 @@ interface Props {
 }
 
 const Address = ({ mapRef, e }: Props) => {
+  const dispatch = useAppDispatch();
+
+  const handleClick = () => {
+    if (mapRef.current) {
+      dispatch(setTab(TabIndex.Map));
+      mapRef.current.panTo(e.lat, e.lon);
+    }
+  };
+
   return (
-    <span
-      className='address'
-      onClick={() => mapRef.current?.panTo(e.lat, e.lon)}>
-      <GoLocation /> {getAddress(e)}
-    </span>
+    <div>
+      <Span onClick={handleClick}>
+        {getAddress(e, 'long') ?? '(unknown)'}
+      </Span>
+    </div>
   );
 };
 
-export const getAddress = (e: Poi) => {
-  if (!e.tags['addr:street']) {
-    return null;
-  }
-
-  return <span>{e.tags['addr:street']} {e.tags['addr:housenumber']}</span>
-};
+const Span = styled.span`
+  cursor: pointer;
+`;
 
 export default Address;

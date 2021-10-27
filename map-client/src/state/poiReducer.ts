@@ -1,10 +1,10 @@
 import { Poi } from '../types';
-import { Country, initialState, PoiState, Status } from './state';
+import { Country, initialState, PoiState, QueryStatus } from './state';
 import { Action, AppThunk } from './actions';
+import { migrateFacets, resetFacets } from './facetReducer';
 
-//import { fetchOverpass } from '../services/overpassService';
-import { fetchOverpass } from '../services/overpassServiceMock';
-import { overpass2Poi } from '../utils';
+import { fetchOverpass, overpass2Poi } from '../overpass';
+import { presetSingleton } from '../presets';
 
 export const queryOverpass = (query: string): AppThunk => {
   return async dispatch => {
@@ -14,8 +14,11 @@ export const queryOverpass = (query: string): AppThunk => {
       return dispatch(setStatus('failed'));
     }
 
-    const newData = overpass2Poi(overpassJson);
-    dispatch(setPoiList(newData));
+    const newData1 = overpass2Poi(overpassJson);
+    const newData2 = presetSingleton.extend(newData1);
+    const newFields = presetSingleton.enumerateFields(newData2);
+    dispatch(setPoiList(newData2));
+    dispatch(migrateFacets(newFields));
     dispatch(setStatus('succeeded'));
   };
 };
@@ -23,6 +26,7 @@ export const queryOverpass = (query: string): AppThunk => {
 export const clearPoiList = (): AppThunk => {
   return async dispatch => {
     dispatch(setPoiList([]));
+    dispatch(resetFacets());
     dispatch(setStatus('idle'));
   };
 };
@@ -34,7 +38,7 @@ const setPoiList = (pois: Poi[]): Action => {
   };
 };
 
-const setStatus = (status: Status): Action => {
+const setStatus = (status: QueryStatus): Action => {
   return {
     type: 'poiList/setStatus',
     data: status
