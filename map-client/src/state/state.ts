@@ -18,6 +18,7 @@ export interface PoiState {
 
 export interface UiState {
   selected: number | null;
+  filtersVisible: boolean;
 }
 
 export interface SearchBoundary {
@@ -79,7 +80,8 @@ export const initialState: State = {
     }
   },
   ui: {
-    selected: null
+    selected: null,
+    filtersVisible: false
   },
   search: {
     feature: null,

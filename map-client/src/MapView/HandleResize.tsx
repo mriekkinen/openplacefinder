@@ -18,11 +18,12 @@ import { useAppSelector } from '../state';
  */
 const HandleResize = () => {
   const isEmpty = useAppSelector(state => state.poiList.data.length !== 0);
+  const filtersVisible = useAppSelector(state => state.ui.filtersVisible);
   const map = useMap();
 
   useEffect(() => {
     map.invalidateSize();
-  }, [isEmpty]);
+  }, [isEmpty, filtersVisible]);
 
   return null;
 };

@@ -6,10 +6,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  margin: 0 5px 5px 5px;
   width: 300px;
-  border: 1px solid lightgray;
-  border-radius: 4px;
 `;
 
 export const Header = styled.div`

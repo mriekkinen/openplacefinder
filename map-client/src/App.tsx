@@ -19,6 +19,7 @@ import './App.css';
 
 const App = () => {
   const selected = useAppSelector(state => state.ui.selected);
+  const filtersVisible = useAppSelector(state => state.ui.filtersVisible);
   const n = useAppSelector(state => state.poiList.data.length);
 
   const mapRef = useRef<MapHandle>(null);
@@ -47,6 +48,13 @@ const App = () => {
           center={center}
           zoom={zoom}
           ref={mapRef} />
+        {filtersVisible &&
+          <SidebarBoxes>
+            <Filters>
+              <FacetsView />
+            </Filters>
+          </SidebarBoxes>
+        }
       </Content>
     </AppContainer>
   );
@@ -76,6 +84,10 @@ const Results = styled.div`
   overflow-y: auto;
   margin: 0;
   width: 300px;
+`;
+
+const Filters = styled(Results)`
+  background-color: hsl(0, 0%, 97%);
 `;
 
 export default App;

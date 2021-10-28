@@ -11,6 +11,7 @@ import { MapHandle } from '../MapView/SetMapRef';
 import { Container, Header, Item } from './styles';
 import SearchBox from './SearchBox';
 import Area, { AREA_OPTION } from './Area';
+import FiltersBtn from './FiltersBtn';
 
 interface Props {
   mapRef: React.RefObject<MapHandle>;
@@ -116,6 +117,9 @@ const SearchBar = ({ mapRef }: Props) => {
           handleChange={handleAreaChange}
           isLoading={status === 'loading'}
         />
+      </Item>
+      <Item>
+        <FiltersBtn />
       </Item>
       {status === 'failed' &&
         <Item>{getErrorMsg(status)}</Item>
