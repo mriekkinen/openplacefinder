@@ -49,12 +49,16 @@ const Container = styled.div`
   display: flex;
   cursor: pointer;
   margin: 0;
-  padding: 10px;
+  padding: 10px 15px;
   line-height: 1.25;
-  border-bottom: 1px solid lightgray;
+  border-bottom: 1px solid hsl(0, 0%, 80%);
+
+  &:last-child {
+    border-bottom: none;
+  }
 
   &:hover {
-    background-color: #EEEEEE;
+    background-color: hsl(0, 0%, 93%);
   }
 `;
 

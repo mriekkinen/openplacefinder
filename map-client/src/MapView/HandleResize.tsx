@@ -1,27 +1,29 @@
 import { useEffect } from 'react';
 import { useMap } from 'react-leaflet';
 
-import { TabIndex, useAppSelector } from '../state';
+import { useAppSelector } from '../state';
 
 /**
- * Instructs Leaflet to refresh map dimensions after activating the map tab.
+ * Instructs Leaflet to refresh map dimensions when the map container resizes.
  * 
- * If the window size changes while the map tab is not active, Leaflet won't
- * be informed of the change, and this will break rendering upon return
- * to the map tab. To correct this problem, we need to call map.invalidateSize
- * manually.
+ * If the size size of the map container changes after initialization,
+ * Leaflet won't be informed of the change, and this may break rendering.
+ * The map container resizes when the POI list is cleared -- or populated again.
+ * To correct this problem, we need to call map.invalidateSize manually.
+ * 
+ * To clarify, this problem doesn't arise when the user resizes the browser
+ * window, since Leaflet will handle that event automatically.
  * 
  * For reference, see https://stackoverflow.com/a/36257493
  */
 const HandleResize = () => {
-  const tab = useAppSelector(state => state.ui.tab);
+  const isEmpty = useAppSelector(state => state.poiList.data.length !== 0);
+  const filtersVisible = useAppSelector(state => state.ui.filtersVisible);
   const map = useMap();
 
   useEffect(() => {
-    if (tab === TabIndex.Map) {
-      map.invalidateSize();
-    }
-  }, [tab]);
+    map.invalidateSize();
+  }, [isEmpty, filtersVisible]);
 
   return null;
 };

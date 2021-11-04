@@ -6,11 +6,12 @@ import 'pelias-leaflet-plugin';
 const Geocoder = () => {
   const map = useMap();
   useEffect(() => {
-    const apiKey = 'no-api-key';
+    const apiKey = '';
     const options = {
-      url: 'https://localhost',
-      focus: true,
-      markers: false
+      url: 'https://api.digitransit.fi/geocoding/v1',
+      focus: false,
+      markers: false,
+      attribution: `&copy; Helsinki Region Transport ${new Date().getFullYear()}`
     };
 
     const geocoder = L.control.geocoder(apiKey, options).addTo(map);

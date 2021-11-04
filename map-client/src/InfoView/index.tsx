@@ -116,13 +116,13 @@ const InfoView = ({ mapRef }: Props) => {
 };
 
 const Container = styled.div`
-  margin-right: 15px;
-  margin-bottom: 15px;
+  margin: 10px 5px;
   line-height: 1.25;
 `;
 
 const TopContainer = styled.div`
   margin: 10px;
+  margin-top: 0;
 `;
 
 const FlexContainer = styled.div`

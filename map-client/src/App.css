@@ -1,51 +1,8 @@
-#App {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-
-.content {
-  flex: 1 1 400px;
-  display: flex;
-  margin: 0;
-  padding: 0;
-}
-
-.tabs-container {
-  flex: 1 0 100px;
-  display: flex;
-  align-items: stretch;
-  width: 100%;
-  margin: 0 0 0 5px;
-}
-
 #map-container {
   flex: 1 0 100px;
   width: 100%;
   min-height: 400px;
-}
-
-.tabs-display-flex {
-  display: flex;
-  align-items: stretch;
-}
-
-.tabs-flex-column {
-  flex-direction: column;
-}
-
-.tabs-flex-1 {
-  flex: 1;
-}
-
-.tabs-flex-none {
-  flex: none;
-}
-
-.tabs-selected-tab-panel {
-  display: flex !important;
-  align-items: stretch;
-  flex: 1;
+  margin: 0;
 }
 
 /**

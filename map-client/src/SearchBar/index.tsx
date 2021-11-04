@@ -11,12 +11,13 @@ import { MapHandle } from '../MapView/SetMapRef';
 import { Container, Header, Item } from './styles';
 import SearchBox from './SearchBox';
 import Area, { AREA_OPTION } from './Area';
+import FiltersBtn from './FiltersBtn';
 
 interface Props {
   mapRef: React.RefObject<MapHandle>;
 }
 
-const SearchView = ({ mapRef }: Props) => {
+const SearchBar = ({ mapRef }: Props) => {
   const dispatch = useAppDispatch();
   const status = useAppSelector(state => state.poiList.status);
   const feature = useAppSelector(state => state.search.feature);
@@ -102,7 +103,7 @@ const SearchView = ({ mapRef }: Props) => {
 
   return (
     <Container>
-      <Header>Search for</Header>
+      <Header>Search</Header>
       <Item>
         <SearchBox
           value={feature}
@@ -116,6 +117,9 @@ const SearchView = ({ mapRef }: Props) => {
           handleChange={handleAreaChange}
           isLoading={status === 'loading'}
         />
+      </Item>
+      <Item>
+        <FiltersBtn />
       </Item>
       {status === 'failed' &&
         <Item>{getErrorMsg(status)}</Item>
@@ -150,4 +154,4 @@ const getErrorMsg = (status: QueryStatus) => {
   return <span>Query failed</span>;
 };
 
-export default SearchView;
+export default SearchBar;
