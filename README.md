@@ -1,2 +1,3 @@
-# OpenPOIFinder
-A web service for discovering points of interest with the help of OpenStreetMap
+# POIGuru
+
+A web application for discovering points of interest, based on OpenStreetMap
