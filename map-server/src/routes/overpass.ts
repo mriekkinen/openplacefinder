@@ -7,7 +7,8 @@
  * this should be possible in the browser as well, but Chrome and Safari
  * don't support it.
  * 
- * In the future, we may add more advanced features such as rate limiting.
+ * The API maintainers also request additional measures, such as rate limiting.
+ * Currently, that isn't supported but we don't expect it to be an issue.
  */
 
 import express, { Request, Response } from 'express';
@@ -16,6 +17,7 @@ import { OverpassJson } from 'overpass-ts';
 
 const apiBaseUrl = 'https://overpass-api.de/api/interpreter';
 
+// TODO: Update the user agent string
 const config: AxiosRequestConfig = {
   headers: {
     'User-Agent': 'Testing (new app under development)',
