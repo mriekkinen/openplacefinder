@@ -9,7 +9,7 @@
     "lint": "eslint --ext .ts src",
     "build:api": "rm -rf build && npm run tsc",
     "build:ui": "rm -rf frontend && cd ../map-client && npm run build --prod && cp -r build ../map-server/frontend",
-    "build": "npm run build:api && npm run build:ui && cp -r frontend build",
+    "build": "npm run build:api && npm run build:ui",
     "start": "node build/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
