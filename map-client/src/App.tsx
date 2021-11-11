@@ -11,6 +11,7 @@ import ListView from './ListView';
 import InfoView from './InfoView';
 import SearchBar from './SearchBar';
 import FacetsView from './FacetsView';
+import ModalRenderer from './modals/ModalRenderer';
 
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-contextmenu/dist/leaflet.contextmenu.css';
@@ -56,6 +57,7 @@ const App = () => {
           </SidebarBoxes>
         }
       </Content>
+      <ModalRenderer />
     </AppContainer>
   );
 };

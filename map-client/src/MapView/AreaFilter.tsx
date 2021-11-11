@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { MdReplay } from 'react-icons/md';
 
 import {
-  setBBox, queryOverpass,
+  ModalType, setBBox, showModal, queryOverpass,
   useAppDispatch, useAppSelector
 } from '../state';
 import { buildBBoxQuery } from '../overpass';
@@ -17,26 +17,28 @@ const AreaFilter = () => {
   const map = useMap();
 
   const setArea = () => {
-    const bounds = map.getBounds();
-    const zoom = map.getZoom();
-
-    console.log('Zoom:', zoom);
-
-    if (!isZoomSufficient(zoom)) {
-      console.log('Please zoom in to view data!')
+    if (feature === null) {
+      // TODO: Consider showing a modal
+      // Something like: "no feature selected"
       return;
     }
 
-    dispatch(setBBox(bounds));
+    const bounds = map.getBounds();
+    const zoom = map.getZoom();
 
-    if (feature !== null) {
-      const query = buildBBoxQuery(
-        [feature.value],
-        bounds
-      );
-
-      dispatch(queryOverpass(query));
+    if (!isZoomSufficient(zoom)) {
+      console.log('Please zoom in to view data!')
+      dispatch(showModal(ModalType.ZoomInModal));
+      return;
     }
+
+    const query = buildBBoxQuery(
+      [feature.value],
+      bounds
+    );
+
+    dispatch(setBBox(bounds));
+    dispatch(queryOverpass(query));
   };
 
   return (

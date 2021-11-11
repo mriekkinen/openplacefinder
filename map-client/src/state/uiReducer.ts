@@ -1,4 +1,4 @@
-import { initialState, UiState } from './state';
+import { initialState, ModalType, UiState } from './state';
 import { Action } from './actions';
 
 export const setSelected = (id: number | null): Action => {
@@ -12,6 +12,13 @@ export const showFilters = (visible: boolean): Action => {
   return {
     type: 'ui/showFilters',
     data: visible
+  };
+};
+
+export const showModal = (modalType: ModalType | null): Action => {
+  return {
+    type: 'ui/showModal',
+    data: modalType
   };
 };
 
@@ -29,6 +36,11 @@ export const uiReducer = (
       return {
         ...state,
         filtersVisible: action.data
+      };
+    case 'ui/showModal':
+      return {
+        ...state,
+        modal: action.data
       };
     default:
       return state;

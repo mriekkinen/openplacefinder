@@ -1,8 +1,9 @@
 import React from 'react';
 
 import {
-  MapFeature, QueryStatus, SearchArea,
-  clearPoiList, queryOverpass, setBBox, setBoundary, setMapFeature, setSelected,
+  MapFeature, ModalType, QueryStatus, SearchArea,
+  clearPoiList, queryOverpass, setBBox, setBoundary,
+  setMapFeature, setSelected, showModal,
   useAppDispatch, useAppSelector
 } from '../state';
 import { assertNever } from '../utils';
@@ -49,10 +50,9 @@ const SearchBar = ({ mapRef }: Props) => {
       const newBounds = mapRef.current.getBounds();
       const zoom = mapRef.current.getZoom();
 
-      console.log('Zoom:', zoom);
-
       if (!isZoomSufficient(zoom)) {
         console.log('Please zoom in to view data!')
+        dispatch(showModal(ModalType.ZoomInModal));
         return;
       }
 

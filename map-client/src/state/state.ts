@@ -16,9 +16,14 @@ export interface PoiState {
   country: Country | undefined;
 }
 
+export enum ModalType {
+  ZoomInModal = 0
+}
+
 export interface UiState {
   selected: number | null;
   filtersVisible: boolean;
+  modal: ModalType | null;
 }
 
 export interface SearchBoundary {
@@ -81,7 +86,8 @@ export const initialState: State = {
   },
   ui: {
     selected: null,
-    filtersVisible: false
+    filtersVisible: false,
+    modal: null
   },
   search: {
     feature: null,
