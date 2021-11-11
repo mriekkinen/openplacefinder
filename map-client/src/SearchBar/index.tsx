@@ -7,6 +7,7 @@ import {
 } from '../state';
 import { assertNever } from '../utils';
 import { buildAreaQuery, buildBBoxQuery } from '../overpass';
+import { isZoomSufficient } from '../conf';
 import { MapHandle } from '../MapView/SetMapRef';
 import { Container, Header, Item } from './styles';
 import SearchBox from './SearchBox';
@@ -31,6 +32,8 @@ const SearchBar = ({ mapRef }: Props) => {
       return;
     }
 
+    dispatch(setMapFeature(newFeature));
+
     // Build the query (and update the bounding box)
     let query;
     if (area.type === 'boundary') {
@@ -39,11 +42,21 @@ const SearchBar = ({ mapRef }: Props) => {
         area.id
       );
     } else {
-      let newBounds = area.bbox;
-      if (mapRef.current !== null) {
-        newBounds = mapRef.current.getBounds();
-        dispatch(setBBox(newBounds));
+      if (mapRef.current === null) {
+        return;
       }
+
+      const newBounds = mapRef.current.getBounds();
+      const zoom = mapRef.current.getZoom();
+
+      console.log('Zoom:', zoom);
+
+      if (!isZoomSufficient(zoom)) {
+        console.log('Please zoom in to view data!')
+        return;
+      }
+
+      dispatch(setBBox(newBounds));
 
       query = buildBBoxQuery(
         [newFeature.value],
@@ -51,7 +64,6 @@ const SearchBar = ({ mapRef }: Props) => {
       );
     }
 
-    dispatch(setMapFeature(newFeature));
     dispatch(queryOverpass(query));
   };
 

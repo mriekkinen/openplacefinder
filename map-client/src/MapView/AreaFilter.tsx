@@ -8,6 +8,7 @@ import {
   useAppDispatch, useAppSelector
 } from '../state';
 import { buildBBoxQuery } from '../overpass';
+import { isZoomSufficient } from '../conf';
 
 const AreaFilter = () => {
   const dispatch = useAppDispatch();
@@ -17,6 +18,14 @@ const AreaFilter = () => {
 
   const setArea = () => {
     const bounds = map.getBounds();
+    const zoom = map.getZoom();
+
+    console.log('Zoom:', zoom);
+
+    if (!isZoomSufficient(zoom)) {
+      console.log('Please zoom in to view data!')
+      return;
+    }
 
     dispatch(setBBox(bounds));
 

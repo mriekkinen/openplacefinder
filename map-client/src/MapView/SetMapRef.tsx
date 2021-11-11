@@ -4,6 +4,7 @@ import { useMap } from 'react-leaflet';
 
 export interface MapHandle {
   getBounds: () => LatLngBounds;
+  getZoom: () => number;
   panTo: (lat: number | undefined, lon: number | undefined) => void;
 }
 
@@ -23,6 +24,10 @@ const SetMapRef = (
     return {
       getBounds: () => {
         return map.getBounds();
+      },
+
+      getZoom: () => {
+        return map.getZoom();
       },
 
       panTo: (lat: number | undefined, lon: number | undefined) => {
