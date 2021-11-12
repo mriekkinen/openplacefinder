@@ -4,8 +4,8 @@
  * 
  * Why? This service sets the User-Agent header to a unique value, as
  * requested by the API maintainers. According to the current specs,
- * this should be possible in the browser as well, but Chrome and Safari
- * don't support it.
+ * this should be possible in the browser as well, but unfortunately
+ * Chrome and Safari don't support it.
  * 
  * The API maintainers also request additional measures, such as rate limiting.
  * Currently, that isn't supported but we don't expect it to be an issue.
@@ -26,14 +26,14 @@ const config: AxiosRequestConfig = {
 };
 
 type RequestType = Request<{}, {}, string>;
-type ResponseType = Response<OverpassJson | { error: string }>;
+type ResponseType = Response<OverpassJson | string>;
 
 const router = express.Router();
 
 router.post('/', async (req: RequestType, res: ResponseType) => {
   const query = req.body;
   if (!query || typeof query !== 'string') {
-    return res.status(400).json({ error: 'Missing or invalid query' });
+    return res.status(400).send('Missing or invalid query');
   }
 
   console.log('---');
@@ -48,7 +48,7 @@ router.post('/', async (req: RequestType, res: ResponseType) => {
 });
 
 const handleError = (error: any, res: ResponseType) => {
-  console.log('Overpass API error:', error.toJSON());
+  console.log('Overpass API error:', error);
 
   if (!axios.isAxiosError(error)) {
     return handleUnexpectedError(error, res);
@@ -63,18 +63,18 @@ const handleAxiosError = (error: AxiosError, res: ResponseType) => {
     // The server responded with a status code outside the 2xx range
     return res
       .status(error.response.status)
-      .json({ error: error.response.data });
+      .send(error.response.data);
   } else if (error.request) {
     // The server produced no response
-    return res.status(504).json({ error: 'No response' });
+    return res.status(504).send('No response from the Overpass API');
   } else {
     // Setting up the request produced an error
-    return res.status(500).json({ error: error.message });
+    return res.status(500).send(error.message);
   }
 };
 
 const handleUnexpectedError = (_error: any, res: ResponseType) => {
-  res.status(500).json({ error: 'Something unexpected happened' });
+  res.status(500).send('Something unexpected happened');
 };
 
 export default router;
