@@ -29,6 +29,10 @@ const Button = styled.button`
   border-radius: 4px;
   display: flex;
   align-items: center;
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const Icon = styled(VscSettings)`

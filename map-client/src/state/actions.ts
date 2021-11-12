@@ -3,7 +3,7 @@ import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { LatLngBounds } from 'leaflet';
 
 import { Poi } from '../types';
-import { Country, MapFeature, ModalType, QueryStatus, State } from './state';
+import { Country, MapFeature, ModalData, QueryStatus, State } from './state';
 
 export type AppThunk = ThunkAction<void, State, unknown, AnyAction>;
 export type AppDispatch = ThunkDispatch<State, unknown, AnyAction>;
@@ -33,7 +33,7 @@ export type UiAction =
   }
 | {
     type: 'ui/showModal',
-    data: ModalType | null
+    data: ModalData | null
   };
 
 export type SearchAction =

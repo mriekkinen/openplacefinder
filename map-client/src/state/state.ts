@@ -16,14 +16,23 @@ export interface PoiState {
   country: Country | undefined;
 }
 
-export enum ModalType {
-  ZoomInModal = 0
+export interface ZoomInModalData {
+  type: 'ZoomInModal';
 }
+
+export interface OverpassErrorModalData {
+  type: 'OverpassErrorModal';
+  error: unknown;
+}
+
+export type ModalData =
+  | ZoomInModalData
+  | OverpassErrorModalData;
 
 export interface UiState {
   selected: number | null;
   filtersVisible: boolean;
-  modal: ModalType | null;
+  modal: ModalData | null;
 }
 
 export interface SearchBoundary {

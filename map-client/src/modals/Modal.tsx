@@ -64,6 +64,10 @@ export const MdHeader = styled.h3`
 
 export const MdParagraph = styled.p``;
 
+export const MdMutedParagraph = styled(MdParagraph)`
+  color: hsl(0, 0%, 50%);
+`;
+
 const Close = styled(MdClose)`
   position: absolute;
   top: 10px;

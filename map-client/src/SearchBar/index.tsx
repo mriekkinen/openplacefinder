@@ -1,9 +1,9 @@
 import React from 'react';
 
 import {
-  MapFeature, ModalType, QueryStatus, SearchArea,
+  MapFeature, SearchArea,
   clearPoiList, queryOverpass, setBBox, setBoundary,
-  setMapFeature, setSelected, showModal,
+  setMapFeature, setSelected, showZoomInModal,
   useAppDispatch, useAppSelector
 } from '../state';
 import { assertNever } from '../utils';
@@ -52,7 +52,7 @@ const SearchBar = ({ mapRef }: Props) => {
 
       if (!isZoomSufficient(zoom)) {
         console.log('Please zoom in to view data!')
-        dispatch(showModal(ModalType.ZoomInModal));
+        dispatch(showZoomInModal());
         return;
       }
 
@@ -133,9 +133,6 @@ const SearchBar = ({ mapRef }: Props) => {
       <Item>
         <FiltersBtn />
       </Item>
-      {status === 'failed' &&
-        <Item>{getErrorMsg(status)}</Item>
-      }
     </Container>
   );
 };
@@ -155,15 +152,6 @@ const toOption = (area: SearchArea): AREA_OPTION => {
     default:
       return assertNever(area);
   }
-};
-
-const getErrorMsg = (status: QueryStatus) => {
-  if (status !== 'failed') {
-    return null;
-  }
-
-  // TODO: Provide more info about the error
-  return <span>Query failed</span>;
 };
 
 export default SearchBar;

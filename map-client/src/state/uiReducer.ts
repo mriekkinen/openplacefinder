@@ -1,4 +1,4 @@
-import { initialState, ModalType, UiState } from './state';
+import { initialState, ModalData, UiState } from './state';
 import { Action } from './actions';
 
 export const setSelected = (id: number | null): Action => {
@@ -15,10 +15,22 @@ export const showFilters = (visible: boolean): Action => {
   };
 };
 
-export const showModal = (modalType: ModalType | null): Action => {
+export const showZoomInModal = (): Action => {
+  return showModal({ type: 'ZoomInModal' });
+};
+
+export const showOverpassErrorModal = (error: unknown): Action => {
+  return showModal({ type: 'OverpassErrorModal', error });
+};
+
+export const hideModal = (): Action => {
+  return showModal(null);
+};
+
+const showModal = (modalData: ModalData | null): Action => {
   return {
     type: 'ui/showModal',
-    data: modalType
+    data: modalData
   };
 };
 

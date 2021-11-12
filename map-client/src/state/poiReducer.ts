@@ -1,7 +1,10 @@
+import { OverpassJson } from 'overpass-ts';
+
 import { Poi } from '../types';
 import { Country, initialState, PoiState, QueryStatus } from './state';
 import { Action, AppThunk } from './actions';
 import { migrateFacets, resetFacets } from './facetReducer';
+import { showOverpassErrorModal } from './uiReducer';
 
 import { fetchOverpass, overpass2Poi } from '../overpass';
 import { presetSingleton } from '../presets';
@@ -9,9 +12,15 @@ import { presetSingleton } from '../presets';
 export const queryOverpass = (query: string): AppThunk => {
   return async dispatch => {
     dispatch(setStatus('loading'));
-    const overpassJson = await fetchOverpass(query);
-    if (overpassJson === null) {
-      return dispatch(setStatus('failed'));
+
+    let overpassJson: OverpassJson | null = null;
+    try {
+      overpassJson = await fetchOverpass(query);
+    } catch (error) {
+      console.log(error);
+      dispatch(setStatus('failed'));
+      dispatch(showOverpassErrorModal(error));
+      return;
     }
 
     const newData1 = overpass2Poi(overpassJson);

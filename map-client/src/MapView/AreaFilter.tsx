@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { MdReplay } from 'react-icons/md';
 
 import {
-  ModalType, setBBox, showModal, queryOverpass,
+  setBBox, showZoomInModal, queryOverpass,
   useAppDispatch, useAppSelector
 } from '../state';
 import { buildBBoxQuery } from '../overpass';
@@ -28,7 +28,7 @@ const AreaFilter = () => {
 
     if (!isZoomSufficient(zoom)) {
       console.log('Please zoom in to view data!')
-      dispatch(showModal(ModalType.ZoomInModal));
+      dispatch(showZoomInModal());
       return;
     }
 
