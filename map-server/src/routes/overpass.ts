@@ -20,7 +20,7 @@ const apiBaseUrl = 'https://overpass-api.de/api/interpreter';
 // TODO: Update the user agent string
 const config: AxiosRequestConfig = {
   headers: {
-    'User-Agent': 'Testing (new app under development)',
+    'User-Agent': 'POIGuru https://github.com/mriekkinen/poiguru',
     'Content-Type': 'text/plain'
   }
 };
