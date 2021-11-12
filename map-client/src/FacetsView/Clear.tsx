@@ -12,7 +12,7 @@ const Clear = () => {
       <Button
         type='button'
         onClick={() => dispatch(clearFacets())}>
-        Clear
+        Clear filters
       </Button>
     </Facet>
   );
