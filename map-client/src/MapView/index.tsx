@@ -1,6 +1,6 @@
 import React from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
-import L from 'leaflet';
+import L, { LatLng } from 'leaflet';
 import 'leaflet-contextmenu';
 
 import { Poi } from '../types';
@@ -12,7 +12,7 @@ import { filter } from '../search';
 import { presetSingleton } from '../presets';
 import SetMapRef, { MapHandle } from './SetMapRef';
 import HandleResize from './HandleResize';
-import HandleMapClick from './HandleMapClick';
+import HandleMapEvents from './HandleMapEvents';
 import IconMarker from './IconMarker';
 import LocationMarker from './LocationMarker';
 import RemoveMapOnUnmount from './RemoveMapOnUnmount';
@@ -25,12 +25,13 @@ import Geocoder from './Geocoder';
 const PREFER_CANVAS = false;
 
 interface Props {
-  center: L.LatLngExpression;
+  center: L.LatLngLiteral;
   zoom: number;
+  handleMoveZoom: (zoom: number, center: LatLng) => void;
 }
 
 const MapView = (
-  { center, zoom }: Props,
+  { center, zoom, handleMoveZoom }: Props,
   ref: React.Ref<MapHandle>
 ) => {
   const dispatch = useAppDispatch();
@@ -76,8 +77,9 @@ const MapView = (
     >
       <SetMapRef ref={ref} />
       <HandleResize />
-      <HandleMapClick
-        handleMapClick={handleMapClick} />
+      <HandleMapEvents
+        handleMapClick={handleMapClick}
+        handleMoveZoom={handleMoveZoom} />
       <Geocoder />
       <AreaFilter />
 

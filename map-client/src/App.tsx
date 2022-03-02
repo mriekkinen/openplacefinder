@@ -1,10 +1,13 @@
 import React, { useRef } from 'react';
-import { LatLngTuple } from 'leaflet';
 import styled from 'styled-components';
+import {
+  BrowserRouter as Router,
+  Routes, Route
+} from 'react-router-dom';
 
 import { useAppSelector } from './state';
 import { loadPresets } from './presets';
-import MapView from './MapView';
+import MapViewWithParams, { MapDefaults } from './MapView/MapViewWithParams';
 import { MapHandle } from './MapView/SetMapRef';
 import NavBar from './NavBar';
 import ListView from './ListView';
@@ -19,20 +22,38 @@ import 'pelias-leaflet-plugin/dist/leaflet-geocoder-mapzen.css';
 import './App.css';
 
 const App = () => {
+  loadPresets();
+
+  return (
+    <Router>
+      <AppContainer>
+        <NavBar />
+        <Routes>
+          <Route path='/' element={<Main />} />
+          <Route path='*' element={<PageNotFound />} />
+        </Routes>
+      </AppContainer>
+    </Router>
+  );
+};
+
+const Main = () => {
   const selected = useAppSelector(state => state.ui.selected);
   const filtersVisible = useAppSelector(state => state.ui.filtersVisible);
   const n = useAppSelector(state => state.poiList.data.length);
 
   const mapRef = useRef<MapHandle>(null);
 
-  const center: LatLngTuple = [60.1673, 24.9428];
-  const zoom = 13;
-
-  loadPresets();
+  const defaultView: MapDefaults = {
+    center: {
+      lat: 60.1673,
+      lng: 24.9428
+    },
+    zoom: 13
+  };
 
   return (
-    <AppContainer>
-      <NavBar />
+    <>
       <SearchBar mapRef={mapRef} />
       <Content>
         <SidebarBoxes>
@@ -45,9 +66,8 @@ const App = () => {
             </Results>
           }
         </SidebarBoxes>
-        <MapView
-          center={center}
-          zoom={zoom}
+        <MapViewWithParams
+          defaults={defaultView}
           ref={mapRef} />
         {filtersVisible &&
           <SidebarBoxes>
@@ -58,7 +78,13 @@ const App = () => {
         }
       </Content>
       <ModalRenderer />
-    </AppContainer>
+    </>
+  );
+};
+
+const PageNotFound = () => {
+  return (
+    <Message>Page not found</Message>
   );
 };
 
@@ -90,6 +116,10 @@ const Results = styled.div`
 
 const Filters = styled(Results)`
   background-color: hsl(0, 0%, 97%);
+`;
+
+const Message = styled.div`
+  margin: 10px;
 `;
 
 export default App;
