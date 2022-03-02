@@ -25,13 +25,12 @@ const config: AxiosRequestConfig = {
   }
 };
 
-type RequestType = Request<{}, {}, string>;
 type ResponseType = Response<OverpassJson | string>;
 
 const router = express.Router();
 
-router.post('/', async (req: RequestType, res: ResponseType) => {
-  const query = req.body;
+router.post('/', (req: Request, res: ResponseType) => {
+  const query: unknown = req.body;
   if (!query || typeof query !== 'string') {
     return res.status(400).send('Missing or invalid query');
   }
@@ -39,15 +38,14 @@ router.post('/', async (req: RequestType, res: ResponseType) => {
   console.log('---');
   console.log(query);
 
-  try {
-    const response = await axios.post<OverpassJson>(apiBaseUrl, query, config);
-    return res.json(response.data);
-  } catch (error) {
-    return handleError(error, res);
-  }
+  axios.post<OverpassJson>(apiBaseUrl, query, config)
+    .then(response => res.json(response.data))
+    .catch(error => handleError(error, res));
+
+  return;
 });
 
-const handleError = (error: any, res: ResponseType) => {
+const handleError = (error: unknown, res: ResponseType) => {
   console.log('Overpass API error:', error);
 
   if (!axios.isAxiosError(error)) {
@@ -61,9 +59,11 @@ const handleAxiosError = (error: AxiosError, res: ResponseType) => {
   // See https://axios-http.com/docs/handling_errors
   if (error.response) {
     // The server responded with a status code outside the 2xx range
+    const contentType = error.response.headers['content-type'];
+    const message = getErrorMessage(contentType, error.response.data);
     return res
       .status(error.response.status)
-      .send(error.response.data);
+      .send(message);
   } else if (error.request) {
     // The server produced no response
     return res.status(504).send('No response from the Overpass API');
@@ -73,8 +73,31 @@ const handleAxiosError = (error: AxiosError, res: ResponseType) => {
   }
 };
 
-const handleUnexpectedError = (_error: any, res: ResponseType) => {
-  res.status(500).send('Something unexpected happened');
+const getErrorMessage = (contentType: string, data: unknown): string => {
+  if (!data || typeof data !== 'string') {
+    return JSON.stringify(data);
+  }
+
+  if (!contentType.startsWith('text/html')) {
+    return data;
+  }
+
+  // Convert the HTML response into plain text
+  // (Overpass seems to send errors formatted as HTML)
+  const messages = data
+    .replace(/\n/g, ' ')
+    .split(/<p>/i).map(s =>
+      s.replace('</p>', '')
+       .replace(/&quot;/g, '"')
+       .replace('<strong style="color:#FF0000">Error</strong>', 'Error')
+       .replace('</body> </html>', '')
+    ).slice(2);
+
+  return messages.join('\n\n');
+};
+
+const handleUnexpectedError = (_error: unknown, res: ResponseType) => {
+  return res.status(500).send('Something unexpected happened');
 };
 
 export default router;
