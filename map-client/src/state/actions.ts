@@ -24,10 +24,6 @@ export type PoiAction =
 
 export type UiAction =
 | {
-    type: 'ui/setSelected',
-    data: number | null
-  }
-| {
     type: 'ui/showFilters',
     data: boolean
   }

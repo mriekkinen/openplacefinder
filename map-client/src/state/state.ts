@@ -30,7 +30,6 @@ export type ModalData =
   | OverpassErrorModalData;
 
 export interface UiState {
-  selected: number | null;
   filtersVisible: boolean;
   modal: ModalData | null;
 }
@@ -94,7 +93,6 @@ export const initialState: State = {
     }
   },
   ui: {
-    selected: null,
     filtersVisible: false,
     modal: null
   },

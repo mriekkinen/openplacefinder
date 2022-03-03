@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { setSelected, useAppDispatch, useAppSelector } from '../state';
+import { useAppSelector } from '../state';
 import { presetSingleton } from '../presets';
 import { MapHandle } from '../MapView/SetMapRef';
 import { PresetIcon } from '../icons';
@@ -22,12 +22,12 @@ import {
 } from './icons';
 
 interface Props {
+  id: number;
+  setId: (newId: number | undefined) => void;
   mapRef: React.RefObject<MapHandle>;
 }
 
-const InfoView = ({ mapRef }: Props) => {
-  const dispatch = useAppDispatch();
-  const id = useAppSelector(state => state.ui.selected);
+const InfoView = ({ id, setId, mapRef }: Props) => {
   const data = useAppSelector(state => state.poiList.data);
   const country = useAppSelector(state => state.poiList.country);
 
@@ -50,7 +50,7 @@ const InfoView = ({ mapRef }: Props) => {
   return (
     <Container>
       <TopContainer>
-        <ReturnBtn handleClick={() => dispatch(setSelected(null))} />
+        <ReturnBtn handleClick={() => setId(undefined)} />
       </TopContainer>
 
       <FlexContainer>

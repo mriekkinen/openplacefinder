@@ -3,7 +3,7 @@ import React from 'react';
 import {
   MapFeature, SearchArea,
   clearPoiList, queryOverpass, setBBox, setBoundary,
-  setMapFeature, setSelected, showZoomInModal,
+  setMapFeature, showZoomInModal,
   useAppDispatch, useAppSelector
 } from '../state';
 import { assertNever } from '../utils';
@@ -16,10 +16,11 @@ import Area, { AREA_OPTION } from './Area';
 import FiltersBtn from './FiltersBtn';
 
 interface Props {
+  setId: (newId: number | undefined) => void;
   mapRef: React.RefObject<MapHandle>;
 }
 
-const SearchBar = ({ mapRef }: Props) => {
+const SearchBar = ({ setId, mapRef }: Props) => {
   const dispatch = useAppDispatch();
   const status = useAppSelector(state => state.poiList.status);
   const feature = useAppSelector(state => state.search.feature);
@@ -28,7 +29,7 @@ const SearchBar = ({ mapRef }: Props) => {
   const handleFeatureChange = (newFeature: MapFeature | null) => {
     if (newFeature === null) {
       dispatch(setMapFeature(null));
-      dispatch(setSelected(null));
+      setId(undefined);
       dispatch(clearPoiList());
       return;
     }
@@ -70,7 +71,7 @@ const SearchBar = ({ mapRef }: Props) => {
   const handleAreaChange = (newOption: AREA_OPTION | null) => {
     if (newOption === null) {
       //dispatch(setBoundary(null));
-      dispatch(setSelected(null));
+      setId(undefined);
       dispatch(clearPoiList());
       return;
     }

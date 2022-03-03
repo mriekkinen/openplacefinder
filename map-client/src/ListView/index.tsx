@@ -1,17 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { setSelected, useAppDispatch, useAppSelector } from '../state';
+import { useAppSelector } from '../state';
 import { MapHandle } from '../MapView/SetMapRef';
 import ListElement from './ListElement';
 import { filter, addDistance, sortByDistance } from '../search';
 
 interface Props {
+  setId: (newId: number | undefined) => void;
   mapRef: React.RefObject<MapHandle>;
 }
 
-const ListView = ({ mapRef }: Props) => {
-  const dispatch = useAppDispatch();
+const ListView = ({ setId, mapRef }: Props) => {
   const data = useAppSelector(state => state.poiList.data);
   const country = useAppSelector(state => state.poiList.country);
   const facets = useAppSelector(state => state.facets);
@@ -32,7 +32,7 @@ const ListView = ({ mapRef }: Props) => {
           e={e}
           country={country}
           handleClick={() => {
-            dispatch(setSelected(e.id));
+            setId(e.id);
             //mapRef.current?.panTo(e.lat, e.lon);
           }}
         />

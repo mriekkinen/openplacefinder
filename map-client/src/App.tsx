@@ -1,13 +1,13 @@
-import React, { useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import styled from 'styled-components';
 import {
   BrowserRouter as Router,
-  Routes, Route
+  Routes, Route, useSearchParams, ParamKeyValuePair
 } from 'react-router-dom';
 
 import { useAppSelector } from './state';
 import { loadPresets } from './presets';
-import MapViewWithParams, { MapDefaults } from './MapView/MapViewWithParams';
+import MapView, { MapState } from './MapView';
 import { MapHandle } from './MapView/SetMapRef';
 import NavBar from './NavBar';
 import ListView from './ListView';
@@ -37,14 +37,67 @@ const App = () => {
   );
 };
 
+interface SearchParams {
+  id?: number;
+  map?: MapState;
+}
+
 const Main = () => {
-  const selected = useAppSelector(state => state.ui.selected);
   const filtersVisible = useAppSelector(state => state.ui.filtersVisible);
   const n = useAppSelector(state => state.poiList.data.length);
 
   const mapRef = useRef<MapHandle>(null);
 
-  const defaultView: MapDefaults = {
+  const [ searchParams, setSearchParams ] = useSearchParams();
+
+  const parseIdParam = (idStr: string | null): number | undefined => {
+    if (!idStr) {
+      return undefined;
+    }
+
+    return Number(idStr);
+  };
+
+  const parseMapParam = (mapStr: string | null, defaults: MapState): MapState => {
+    let { zoom } = defaults;
+    let { lat, lng } = defaults.center;
+
+    if (mapStr) {
+      // Parse the "map" URL search parameter
+      // Should be in the format: map=zoom_lat_lng
+      const pattern = /^(?<zoom>\d+)_(?<lat>-?\d+\.\d+)_(?<lng>-?\d+\.\d+)$/;
+      const match = mapStr.match(pattern);
+      if (match && match.groups) {
+        zoom = Number(match.groups.zoom) ?? zoom;
+        lat = Number(match.groups.lat) ?? lat;
+        lng = Number(match.groups.lng) ?? lng;
+      }
+    }
+
+    return {
+      center: { lat, lng },
+      zoom
+    };
+  };
+
+  const buildSearchParams = (params: SearchParams): ParamKeyValuePair[] => {
+    const list: [string, string][] = [];
+    if (params.id) {
+      list.push(['id', params.id.toString()]);
+    }
+
+    if (params.map) {
+      const nz = params.map.zoom.toFixed(0);
+      const nlat = params.map.center.lat.toFixed(4);
+      const nlng = params.map.center.lng.toFixed(4);
+
+      list.push(['map', `${nz}_${nlat}_${nlng}`]);
+    }
+
+    return list;
+  };
+
+  const DEFAULT_VIEW: MapState = {
     center: {
       lat: 60.1673,
       lng: 24.9428
@@ -52,22 +105,45 @@ const Main = () => {
     zoom: 13
   };
 
+  const params: SearchParams = {
+    id: parseIdParam(searchParams.get('id')),
+    map: parseMapParam(searchParams.get('map'), DEFAULT_VIEW)
+  };
+
+  const setId = useCallback((newId: number | undefined): void => {
+    setSearchParams(buildSearchParams({ ...params, id: newId }));
+  }, [setSearchParams, params]);
+
+  const setMap = useCallback((newMap: MapState | undefined): void => {
+    setSearchParams(buildSearchParams({ ...params, map: newMap }));
+  }, [setSearchParams, params]);
+
   return (
     <>
-      <SearchBar mapRef={mapRef} />
+      <SearchBar
+        setId={setId}
+        mapRef={mapRef} />
       <Content>
         <SidebarBoxes>
           {n !== 0 &&
             <Results>
-              {selected === null
-                ? <ListView mapRef={mapRef} />
-                : <InfoView mapRef={mapRef} />
+              {!params.id
+                ? <ListView
+                    setId={setId}
+                    mapRef={mapRef} />
+                : <InfoView
+                    id={params.id}
+                    setId={setId}
+                    mapRef={mapRef} />
               }
             </Results>
           }
         </SidebarBoxes>
-        <MapViewWithParams
-          defaults={defaultView}
+        <MapView
+          init={params.map ?? DEFAULT_VIEW}
+          id={params.id}
+          setId={setId}
+          setMap={setMap}
           ref={mapRef} />
         {filtersVisible &&
           <SidebarBoxes>

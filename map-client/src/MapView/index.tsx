@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import L, { LatLng } from 'leaflet';
 import 'leaflet-contextmenu';
 
 import { Poi } from '../types';
 import {
-  setLocation, setSelected,
+  setLocation,
   useAppDispatch, useAppSelector
 } from '../state';
 import { filter } from '../search';
@@ -24,21 +24,26 @@ import Geocoder from './Geocoder';
 // If false, renders markers using a SVG layer.
 const PREFER_CANVAS = false;
 
-interface Props {
+export interface MapState {
   center: L.LatLngLiteral;
   zoom: number;
-  handleMoveZoom: (zoom: number, center: LatLng) => void;
+}
+
+interface Props {
+  init: MapState;
+  id: number | undefined;
+  setId: (newId: number | undefined) => void;
+  setMap: (newMap: MapState | undefined) => void;
 }
 
 const MapView = (
-  { center, zoom, handleMoveZoom }: Props,
+  { init, id, setId, setMap }: Props,
   ref: React.Ref<MapHandle>
 ) => {
   const dispatch = useAppDispatch();
   const data = useAppSelector(state => state.poiList.data);
   const country = useAppSelector(state => state.poiList.country);
   const facets = useAppSelector(state => state.facets);
-  const selected = useAppSelector(state => state.ui.selected);
   const location = useAppSelector(state => state.location);
 
   const filteredData = filter(data, country, facets);
@@ -58,18 +63,28 @@ const MapView = (
   };
 
   const handleMapClick = () => {
-    dispatch(setSelected(null));
+    setId(undefined);
   };
 
   const handleMarkerClick = (e: Poi) => () => {
-    dispatch(setSelected(e.id));
+    setId(e.id);
   };
+
+  const handleMoveZoom = useCallback((newZoom: number, newCenter: LatLng) => {
+    setMap({
+      center: {
+        lat: newCenter.lat,
+        lng: newCenter.lng
+      },
+      zoom: newZoom
+    });
+  }, [setMap]);
 
   return (
     <MapContainer
       id='map-container'
-      center={center}
-      zoom={zoom}
+      center={init.center}
+      zoom={init.zoom}
       scrollWheelZoom={true}
       preferCanvas={PREFER_CANVAS}
       contextmenu={true}
@@ -89,7 +104,7 @@ const MapView = (
         <IconMarker
           key={`${e.type}-${e.id}`}
           e={e}
-          isSelected={e.id === selected}
+          isSelected={e.id === id}
           handleClick={handleMarkerClick(e)}
           preset={presetSingleton.getPreset(e.presetId)}
         />
