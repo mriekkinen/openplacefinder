@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { MdReplay } from 'react-icons/md';
 
 import {
-  setBBox, showZoomInModal, queryOverpass,
+  showZoomInModal, queryOverpass,
   useAppDispatch, useAppSelector
 } from '../state';
 import { buildBBoxQuery } from '../overpass';
@@ -37,7 +37,6 @@ const AreaFilter = () => {
       bounds
     );
 
-    dispatch(setBBox(bounds));
     dispatch(queryOverpass(query));
   };
 

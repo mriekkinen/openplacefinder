@@ -1,5 +1,3 @@
-import { LatLngBounds } from 'leaflet';
-
 import { Poi } from '../types';
 
 export type QueryStatus = 'idle' | 'loading' | 'succeeded' | 'failed';
@@ -34,19 +32,6 @@ export interface UiState {
   modal: ModalData | null;
 }
 
-export interface SearchBoundary {
-  type: 'boundary';
-  name: string;
-  id: number;
-}
-
-export interface SearchBBox {
-  type: 'bbox';
-  bbox: LatLngBounds;
-}
-
-export type SearchArea = SearchBoundary | SearchBBox;
-
 export interface MapFeature {
   readonly value: string;
   readonly label: string;
@@ -59,7 +44,6 @@ export interface MapFeatureGroup {
 
 export interface SearchState {
   feature: MapFeature | null;
-  area: SearchArea;
 }
 
 export interface LocationState {
@@ -97,11 +81,7 @@ export const initialState: State = {
     modal: null
   },
   search: {
-    feature: null,
-    area: {
-      type: 'bbox',
-      bbox: new LatLngBounds([0, 0], [1, 1])
-    }
+    feature: null
   },
   location: {
     lat: 60.1673,

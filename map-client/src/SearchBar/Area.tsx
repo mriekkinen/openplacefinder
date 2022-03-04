@@ -4,28 +4,17 @@ import { LatLngBounds } from 'leaflet';
 import Select, { components, ControlProps } from 'react-select';
 import { GoLocation } from 'react-icons/go';
 
-import { SearchArea, SearchBoundary } from '../state';
-import { assertNever } from '../utils';
-
 export interface AREA_OPTION  {
-  value: SearchBoundary | null;
+  value: LatLngBounds | null;
   label: string;
 }
 
-const OPTIONS: AREA_OPTION[] = [
-  {
-    value: null,
-    label: 'Current map view'
-  },
-  // {
-  //   value: {
-  //     type: 'boundary',
-  //     name: 'Helsinki',
-  //     id: 3600034914
-  //   },
-  //   label: 'Helsinki'
-  // }
-];
+export const CURRENT_MAP_VIEW: AREA_OPTION = {
+  value: null,
+  label: 'Current map view'  
+};
+
+const OPTIONS: AREA_OPTION[] = [ CURRENT_MAP_VIEW ];
 
 interface Props {
   value: AREA_OPTION;
@@ -64,18 +53,6 @@ const Icon = styled(GoLocation)`
   height: 1.25em;
   color: hsl(0, 0%, 50%);
 `;
-
-const getAreaString = (area: SearchArea) => {
-  switch (area.type) {
-    case 'boundary':
-      return area.name;
-    case 'bbox':
-      console.log('bbox:', getApproximateBBox(area.bbox));
-      return 'Current map view';
-    default:
-      return assertNever(area);
-  }
-};
 
 const getApproximateBBox = (bounds: LatLngBounds) => {
   const values = [

@@ -1,6 +1,5 @@
 import { AnyAction } from 'redux';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
-import { LatLngBounds } from 'leaflet';
 
 import { Poi } from '../types';
 import { Country, MapFeature, ModalData, QueryStatus, State } from './state';
@@ -36,19 +35,6 @@ export type SearchAction =
   | {
       type: 'search/setMapFeature',
       data: MapFeature | null
-    }
-  | {
-      type: 'search/setBoundary',
-      data: {
-        name: string,
-        id: number
-      }
-    }
-  | {
-      type: 'search/setBBox',
-      data: {
-        bbox: LatLngBounds
-      }
     };
 
 export type LocationAction =

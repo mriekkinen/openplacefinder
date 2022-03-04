@@ -1,18 +1,17 @@
 import React from 'react';
 
 import {
-  MapFeature, SearchArea,
-  clearPoiList, queryOverpass, setBBox, setBoundary,
+  MapFeature,
+  clearPoiList, queryOverpass,
   setMapFeature, showZoomInModal,
   useAppDispatch, useAppSelector
 } from '../state';
-import { assertNever } from '../utils';
-import { buildAreaQuery, buildBBoxQuery } from '../overpass';
+import { buildBBoxQuery } from '../overpass';
 import { isZoomSufficient } from '../conf';
 import { MapHandle } from '../MapView/SetMapRef';
 import { Container, Header, Item } from './styles';
 import SearchBox from './SearchBox';
-import Area, { AREA_OPTION } from './Area';
+import Area, { CURRENT_MAP_VIEW } from './Area';
 import FiltersBtn from './FiltersBtn';
 
 interface Props {
@@ -24,7 +23,6 @@ const SearchBar = ({ setId, mapRef }: Props) => {
   const dispatch = useAppDispatch();
   const status = useAppSelector(state => state.poiList.status);
   const feature = useAppSelector(state => state.search.feature);
-  const area = useAppSelector(state => state.search.area);
 
   const handleFeatureChange = (newFeature: MapFeature | null) => {
     if (newFeature === null) {
@@ -37,81 +35,25 @@ const SearchBar = ({ setId, mapRef }: Props) => {
     dispatch(setMapFeature(newFeature));
 
     // Build the query (and update the bounding box)
-    let query;
-    if (area.type === 'boundary') {
-      query = buildAreaQuery(
-        [newFeature.value],
-        area.id
-      );
-    } else {
-      if (mapRef.current === null) {
-        return;
-      }
-
-      const newBounds = mapRef.current.getBounds();
-      const zoom = mapRef.current.getZoom();
-
-      if (!isZoomSufficient(zoom)) {
-        console.log('Please zoom in to view data!')
-        dispatch(showZoomInModal());
-        return;
-      }
-
-      dispatch(setBBox(newBounds));
-
-      query = buildBBoxQuery(
-        [newFeature.value],
-        newBounds
-      );
-    }
-
-    dispatch(queryOverpass(query));
-  };
-
-  const handleAreaChange = (newOption: AREA_OPTION | null) => {
-    if (newOption === null) {
-      //dispatch(setBoundary(null));
-      setId(undefined);
-      dispatch(clearPoiList());
+    if (mapRef.current === null) {
       return;
     }
 
-    const newArea = newOption.value;
+    const newBounds = mapRef.current.getBounds();
+    const zoom = mapRef.current.getZoom();
 
-    console.log('handleAreaChange');
-    console.log('newOption:', newOption);
-    console.log('newArea:', newArea);
-
-    let query;
-    if (newArea !== null) {
-      dispatch(setBoundary(newArea.name, newArea.id));
-
-      if (feature !== null) {
-        query = buildAreaQuery(
-          [feature.value],
-          newArea.id
-        );
-      }
-    } else {
-      let newBounds = area.type === 'bbox' ? area.bbox : null;
-      if (mapRef.current !== null) {
-        console.log('newBounds:', newBounds);
-
-        newBounds = mapRef.current.getBounds();
-        dispatch(setBBox(newBounds));
-      }
-
-      if (newBounds !== null && feature !== null) {
-        query = buildBBoxQuery(
-          [feature.value],
-          newBounds
-        );
-      }
+    if (!isZoomSufficient(zoom)) {
+      console.log('Please zoom in to view data!')
+      dispatch(showZoomInModal());
+      return;
     }
 
-    if (query !== undefined) {
-      dispatch(queryOverpass(query));
-    }
+    const query = buildBBoxQuery(
+      [newFeature.value],
+      newBounds
+    );
+
+    dispatch(queryOverpass(query));
   };
 
   return (
@@ -126,8 +68,8 @@ const SearchBar = ({ setId, mapRef }: Props) => {
       </Item>
       <Item>
         <Area
-          value={toOption(area)}
-          handleChange={handleAreaChange}
+          value={CURRENT_MAP_VIEW}
+          handleChange={() => undefined}
           isLoading={status === 'loading'}
         />
       </Item>
@@ -136,23 +78,6 @@ const SearchBar = ({ setId, mapRef }: Props) => {
       </Item>
     </Container>
   );
-};
-
-const toOption = (area: SearchArea): AREA_OPTION => {
-  switch (area.type) {
-    case 'boundary':
-      return {
-        value: area,
-        label: area.name
-      };
-    case 'bbox':
-      return {
-        value: null,
-        label: 'Current map view' // TODO: Not good... string might change elsewhere
-      }
-    default:
-      return assertNever(area);
-  }
 };
 
 export default SearchBar;
