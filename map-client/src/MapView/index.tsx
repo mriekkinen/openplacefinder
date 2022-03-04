@@ -12,32 +12,29 @@ import { filter } from '../search';
 import { presetSingleton } from '../presets';
 import SetMapRef, { MapHandle } from './SetMapRef';
 import HandleResize from './HandleResize';
+import HandleBackFwd from './HandleBackFwd';
 import HandleMapEvents from './HandleMapEvents';
 import IconMarker from './IconMarker';
 import LocationMarker from './LocationMarker';
 import RemoveMapOnUnmount from './RemoveMapOnUnmount';
 import AreaFilter from './AreaFilter';
 import Geocoder from './Geocoder';
+import { MapState } from './types';
 
 // Option: whether to use raster instead of vector graphics?
 // If true, renders markers using an HTML canvas element.
 // If false, renders markers using a SVG layer.
 const PREFER_CANVAS = false;
 
-export interface MapState {
-  center: L.LatLngLiteral;
-  zoom: number;
-}
-
 interface Props {
-  init: MapState;
-  id: number | undefined;
+  idParam: number | undefined;
+  mapParam: MapState;
   setId: (newId: number | undefined) => void;
   setMap: (newMap: MapState | undefined) => void;
 }
 
 const MapView = (
-  { init, id, setId, setMap }: Props,
+  { idParam, mapParam, setId, setMap }: Props,
   ref: React.Ref<MapHandle>
 ) => {
   const dispatch = useAppDispatch();
@@ -71,6 +68,20 @@ const MapView = (
   };
 
   const handleMoveZoom = useCallback((newZoom: number, newCenter: LatLng) => {
+    if (newZoom === mapParam.zoom
+        && newCenter.lat.toFixed(4) === mapParam.center.lat.toFixed(4)
+        && newCenter.lng.toFixed(4) === mapParam.center.lng.toFixed(4)) {
+      return;
+    }
+
+    console.log(
+      'handleMoveZoom:',
+      'from:', `${mapParam.zoom}/${mapParam.center.lat.toFixed(4)}/${mapParam.center.lng.toFixed(4)}`,
+      'to:', `${newZoom}/${newCenter.lat.toFixed(4)}/${newCenter.lng.toFixed(4)}`
+    );
+
+    // Update the URL to reflect changes in map state
+    // (i.e., the user has either moved the map or zoomed in/out)
     setMap({
       center: {
         lat: newCenter.lat,
@@ -83,8 +94,8 @@ const MapView = (
   return (
     <MapContainer
       id='map-container'
-      center={init.center}
-      zoom={init.zoom}
+      center={mapParam.center}
+      zoom={mapParam.zoom}
       scrollWheelZoom={true}
       preferCanvas={PREFER_CANVAS}
       contextmenu={true}
@@ -95,6 +106,8 @@ const MapView = (
       <HandleMapEvents
         handleMapClick={handleMapClick}
         handleMoveZoom={handleMoveZoom} />
+      <HandleBackFwd
+        mapParam={mapParam} />
       <Geocoder />
       <AreaFilter />
 
@@ -104,7 +117,7 @@ const MapView = (
         <IconMarker
           key={`${e.type}-${e.id}`}
           e={e}
-          isSelected={e.id === id}
+          isSelected={e.id === idParam}
           handleClick={handleMarkerClick(e)}
           preset={presetSingleton.getPreset(e.presetId)}
         />

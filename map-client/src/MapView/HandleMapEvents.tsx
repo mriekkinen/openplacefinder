@@ -10,13 +10,25 @@ interface Props {
 const HandleMapEvents = ({ handleMapClick, handleMoveZoom }: Props) => {
   const map = useMap();
 
-  const onMove = useCallback(() => {
+  const handleMZ = useCallback(() => {
     handleMoveZoom(map.getZoom(), map.getCenter());
   }, [map, handleMoveZoom]);
 
+  // Clear possible selection when the user clicks on the background map
+  // (i.e., if the user has selected a marker, this will unselect that)
   useMapEvent('click', handleMapClick);
-  useMapEvent('moveend', onMove);
-  useMapEvent('zoomend', onMove);
+
+  // Update the "map" URL search parameter on view change
+  // (i.e., when the user either zooms or pans the map)
+  //
+  // NB: We use the "dragend" event instead of "moveend"
+  // Zooming (even by using the zoom control) tends to modify the map center
+  // as well. Hence, zooming fires two events ("zoomend" and "moveend"),
+  // instead of just one, and this creates a problem. Ignoring the "moveend"
+  // event and listening to "dragend", instead, seems to work.
+  //useMapEvent('moveend', onMove);
+  useMapEvent('dragend', handleMZ);
+  useMapEvent('zoomend', handleMZ);
 
   return null;
 };

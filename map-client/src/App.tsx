@@ -7,7 +7,8 @@ import {
 
 import { useAppSelector } from './state';
 import { loadPresets } from './presets';
-import MapView, { MapState } from './MapView';
+import MapView from './MapView';
+import { MapState } from './MapView/types';
 import { MapHandle } from './MapView/SetMapRef';
 import NavBar from './NavBar';
 import ListView from './ListView';
@@ -140,8 +141,8 @@ const Main = () => {
           }
         </SidebarBoxes>
         <MapView
-          init={params.map ?? DEFAULT_VIEW}
-          id={params.id}
+          idParam={params.id}
+          mapParam={params.map ?? DEFAULT_VIEW}
           setId={setId}
           setMap={setMap}
           ref={mapRef} />
