@@ -1,6 +1,6 @@
-import { MapFeatureGroup } from '../state';
+import { MapFeature, MapFeatureGroup } from '../state';
 
-export const mapFeatures: readonly MapFeatureGroup[] = [
+export const MAP_FEATURES: readonly MapFeatureGroup[] = [
   {
     label: 'Sustenance',
     options: [
@@ -53,3 +53,9 @@ export const mapFeatures: readonly MapFeatureGroup[] = [
     ]
   }
 ];
+
+export const FEATURES = MAP_FEATURES.reduce(
+  (acc, group) => [
+    ...acc,
+    ...group.options
+  ], [] as MapFeature[]);

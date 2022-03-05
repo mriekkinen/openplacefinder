@@ -4,7 +4,7 @@ import Select, { components, ControlProps } from 'react-select';
 import { MdSearch } from 'react-icons/md';
 
 import { MapFeature } from '../state';
-import { mapFeatures } from '../data/mapFeatures';
+import { MAP_FEATURES } from '../data/mapFeatures';
 
 interface Props {
   value: MapFeature | null;
@@ -17,7 +17,7 @@ const SearchBox = ({ value, handleChange, isLoading }: Props) => {
     <Select
       placeholder='What are you looking for?'
       value={value}
-      options={mapFeatures}
+      options={MAP_FEATURES}
       onChange={handleChange}
       isLoading={isLoading}
       isDisabled={isLoading}

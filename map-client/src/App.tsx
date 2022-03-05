@@ -5,6 +5,7 @@ import {
   Routes, Route, useSearchParams, ParamKeyValuePair
 } from 'react-router-dom';
 
+import { FEATURES } from './data/mapFeatures';
 import { useAppSelector } from './state';
 import { loadPresets } from './presets';
 import MapView from './MapView';
@@ -39,6 +40,7 @@ const App = () => {
 };
 
 interface SearchParams {
+  q?: string;
   id?: number;
   map?: MapState;
 }
@@ -51,12 +53,12 @@ const Main = () => {
 
   const [ searchParams, setSearchParams ] = useSearchParams();
 
-  const parseIdParam = (idStr: string | null): number | undefined => {
-    if (!idStr) {
-      return undefined;
-    }
+  const parseQueryParam = (queryStr: string | null): string | undefined => {
+    return queryStr ? queryStr : undefined;
+  }
 
-    return Number(idStr);
+  const parseIdParam = (idStr: string | null): number | undefined => {
+    return idStr ? Number(idStr) : undefined;
   };
 
   const parseMapParam = (mapStr: string | null, defaults: MapState): MapState => {
@@ -83,6 +85,10 @@ const Main = () => {
 
   const buildSearchParams = (params: SearchParams): ParamKeyValuePair[] => {
     const list: [string, string][] = [];
+    if (params.q) {
+      list.push(['q', params.q]);
+    }
+
     if (params.id) {
       list.push(['id', params.id.toString()]);
     }
@@ -106,10 +112,24 @@ const Main = () => {
     zoom: 13
   };
 
+  const findFeature = (q: string | undefined) => {
+    return FEATURES.find(
+      f => f.label.toLowerCase() === q?.toLowerCase().replace('+', ' ')
+    );
+  };
+
   const params: SearchParams = {
+    q: parseQueryParam(searchParams.get('q')),
     id: parseIdParam(searchParams.get('id')),
     map: parseMapParam(searchParams.get('map'), DEFAULT_VIEW)
   };
+
+  const setQuery = useCallback((newQuery: string | undefined): void => {
+    setSearchParams(buildSearchParams({
+      ...params,
+      q: newQuery?.toLowerCase().replace(' ', '+')
+    }));
+  }, [setSearchParams, params]);
 
   const setId = useCallback((newId: number | undefined): void => {
     setSearchParams(buildSearchParams({ ...params, id: newId }));
@@ -122,8 +142,10 @@ const Main = () => {
   return (
     <>
       <SearchBar
+        query={params.q}
+        setQuery={setQuery}
         setId={setId}
-        mapRef={mapRef} />
+        findFeature={findFeature} />
       <Content>
         <SidebarBoxes>
           {n !== 0 &&
@@ -141,10 +163,12 @@ const Main = () => {
           }
         </SidebarBoxes>
         <MapView
+          queryParam={params.q}
           idParam={params.id}
           mapParam={params.map ?? DEFAULT_VIEW}
           setId={setId}
           setMap={setMap}
+          findFeature={findFeature}
           ref={mapRef} />
         {filtersVisible &&
           <SidebarBoxes>

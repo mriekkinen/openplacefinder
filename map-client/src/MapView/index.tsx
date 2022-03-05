@@ -1,11 +1,12 @@
 import React, { useCallback } from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
-import L, { LatLng } from 'leaflet';
+import L, { LatLng, LatLngBounds } from 'leaflet';
 import 'leaflet-contextmenu';
 
 import { Poi } from '../types';
 import {
-  setLocation,
+  MapFeature,
+  queryOverpass, showZoomInModal, setLocation,
   useAppDispatch, useAppSelector
 } from '../state';
 import { filter } from '../search';
@@ -14,12 +15,15 @@ import SetMapRef, { MapHandle } from './SetMapRef';
 import HandleResize from './HandleResize';
 import HandleBackFwd from './HandleBackFwd';
 import HandleMapEvents from './HandleMapEvents';
+import QueryOverpass from './QueryOverpass';
 import IconMarker from './IconMarker';
 import LocationMarker from './LocationMarker';
 import RemoveMapOnUnmount from './RemoveMapOnUnmount';
 import AreaFilter from './AreaFilter';
 import Geocoder from './Geocoder';
 import { MapState } from './types';
+import { isZoomSufficient } from '../conf';
+import { buildBBoxQuery } from '../overpass';
 
 // Option: whether to use raster instead of vector graphics?
 // If true, renders markers using an HTML canvas element.
@@ -27,14 +31,16 @@ import { MapState } from './types';
 const PREFER_CANVAS = false;
 
 interface Props {
+  queryParam: string | undefined;
   idParam: number | undefined;
   mapParam: MapState;
   setId: (newId: number | undefined) => void;
   setMap: (newMap: MapState | undefined) => void;
+  findFeature: (q: string | undefined) => MapFeature | undefined;
 }
 
 const MapView = (
-  { idParam, mapParam, setId, setMap }: Props,
+  { queryParam, idParam, mapParam, setId, setMap, findFeature }: Props,
   ref: React.Ref<MapHandle>
 ) => {
   const dispatch = useAppDispatch();
@@ -91,6 +97,25 @@ const MapView = (
     });
   }, [setMap]);
 
+  const makeQuery = (
+    feature: MapFeature,
+    bounds: LatLngBounds,
+    zoom: number
+  ) => {
+    if (!isZoomSufficient(zoom)) {
+      console.log('Please zoom in to view data!')
+      dispatch(showZoomInModal());
+      return;
+    }
+
+    const query = buildBBoxQuery(
+      [feature.value],
+      bounds
+    );
+
+    dispatch(queryOverpass(query));
+  };
+
   return (
     <MapContainer
       id='map-container'
@@ -108,8 +133,15 @@ const MapView = (
         handleMoveZoom={handleMoveZoom} />
       <HandleBackFwd
         mapParam={mapParam} />
+      <QueryOverpass
+        q={queryParam}
+        findFeature={findFeature}
+        makeQuery={makeQuery} />
+      <AreaFilter
+        q={queryParam}
+        findFeature={findFeature}
+        makeQuery={makeQuery} />
       <Geocoder />
-      <AreaFilter />
 
       <TileLayer {...tileProps} />
 

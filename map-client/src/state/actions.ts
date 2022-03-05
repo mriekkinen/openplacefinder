@@ -31,12 +31,6 @@ export type UiAction =
     data: ModalData | null
   };
 
-export type SearchAction =
-  | {
-      type: 'search/setMapFeature',
-      data: MapFeature | null
-    };
-
 export type LocationAction =
   | {
       type: 'location/setLocation',
@@ -80,6 +74,5 @@ export type FacetAction =
 export type Action =
   | PoiAction
   | UiAction
-  | SearchAction
   | LocationAction
   | FacetAction;

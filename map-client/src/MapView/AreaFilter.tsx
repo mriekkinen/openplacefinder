@@ -1,48 +1,43 @@
 import React from 'react';
+import { LatLngBounds } from 'leaflet';
 import { useMap } from 'react-leaflet';
 import styled from 'styled-components';
 import { MdReplay } from 'react-icons/md';
 
-import {
-  showZoomInModal, queryOverpass,
-  useAppDispatch, useAppSelector
-} from '../state';
-import { buildBBoxQuery } from '../overpass';
-import { isZoomSufficient } from '../conf';
+import { MapFeature } from '../state';
 
-const AreaFilter = () => {
-  const dispatch = useAppDispatch();
-  const feature = useAppSelector(state => state.search.feature);
+interface Props {
+  q: string | undefined;
+  findFeature: (q: string | undefined) => MapFeature | undefined;
+  makeQuery: (
+    feature: MapFeature,
+    bounds: LatLngBounds,
+    zoom: number
+  ) => void;
+}
 
+const AreaFilter = ({ q, findFeature, makeQuery }: Props) => {
   const map = useMap();
 
-  const setArea = () => {
-    if (feature === null) {
+  // Make a new query using the current bounding box
+  const setBBox = () => {
+    const feature = findFeature(q);
+    if (!feature) {
       // TODO: Consider showing a modal
       // Something like: "no feature selected"
       return;
     }
 
-    const bounds = map.getBounds();
-    const zoom = map.getZoom();
-
-    if (!isZoomSufficient(zoom)) {
-      console.log('Please zoom in to view data!')
-      dispatch(showZoomInModal());
-      return;
-    }
-
-    const query = buildBBoxQuery(
-      [feature.value],
-      bounds
+    makeQuery(
+      feature,
+      map.getBounds(),
+      map.getZoom()
     );
-
-    dispatch(queryOverpass(query));
   };
 
   return (
     <div className='leaflet-top leaflet-right'>
-      <div className='leaflet-control leaflet-bar' onClick={setArea}>
+      <div className='leaflet-control leaflet-bar' onClick={setBBox}>
         <a
           href='#'
           title='Search in this area'

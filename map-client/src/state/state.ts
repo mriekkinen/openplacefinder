@@ -42,10 +42,6 @@ export interface MapFeatureGroup {
   readonly options: readonly MapFeature[];
 }
 
-export interface SearchState {
-  feature: MapFeature | null;
-}
-
 export interface LocationState {
   lat: number;
   lon: number;
@@ -61,7 +57,6 @@ export interface FacetState {
 export interface State {
   poiList: PoiState;
   ui: UiState;
-  search: SearchState;
   location: LocationState;
   facets: FacetState;
 }
@@ -79,9 +74,6 @@ export const initialState: State = {
   ui: {
     filtersVisible: false,
     modal: null
-  },
-  search: {
-    feature: null
   },
   location: {
     lat: 60.1673,

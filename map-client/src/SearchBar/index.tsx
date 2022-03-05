@@ -2,58 +2,36 @@ import React from 'react';
 
 import {
   MapFeature,
-  clearPoiList, queryOverpass,
-  setMapFeature, showZoomInModal,
+  clearPoiList,
   useAppDispatch, useAppSelector
 } from '../state';
-import { buildBBoxQuery } from '../overpass';
-import { isZoomSufficient } from '../conf';
-import { MapHandle } from '../MapView/SetMapRef';
 import { Container, Header, Item } from './styles';
 import SearchBox from './SearchBox';
 import Area, { CURRENT_MAP_VIEW } from './Area';
 import FiltersBtn from './FiltersBtn';
 
 interface Props {
+  query: string | undefined;
+  setQuery: (newQuery: string | undefined) => void;
   setId: (newId: number | undefined) => void;
-  mapRef: React.RefObject<MapHandle>;
+  findFeature: (q: string | undefined) => MapFeature | undefined;
 }
 
-const SearchBar = ({ setId, mapRef }: Props) => {
+const SearchBar = ({ query, setQuery, setId, findFeature }: Props) => {
   const dispatch = useAppDispatch();
   const status = useAppSelector(state => state.poiList.status);
-  const feature = useAppSelector(state => state.search.feature);
+
+  const feature = findFeature(query);
 
   const handleFeatureChange = (newFeature: MapFeature | null) => {
     if (newFeature === null) {
-      dispatch(setMapFeature(null));
+      setQuery(undefined);
       setId(undefined);
       dispatch(clearPoiList());
       return;
     }
 
-    dispatch(setMapFeature(newFeature));
-
-    // Build the query (and update the bounding box)
-    if (mapRef.current === null) {
-      return;
-    }
-
-    const newBounds = mapRef.current.getBounds();
-    const zoom = mapRef.current.getZoom();
-
-    if (!isZoomSufficient(zoom)) {
-      console.log('Please zoom in to view data!')
-      dispatch(showZoomInModal());
-      return;
-    }
-
-    const query = buildBBoxQuery(
-      [newFeature.value],
-      newBounds
-    );
-
-    dispatch(queryOverpass(query));
+    setQuery(newFeature.label);
   };
 
   return (
@@ -61,7 +39,7 @@ const SearchBar = ({ setId, mapRef }: Props) => {
       <Header>Search</Header>
       <Item>
         <SearchBox
-          value={feature}
+          value={feature ?? null}
           handleChange={handleFeatureChange}
           isLoading={status === 'loading'}
         />
