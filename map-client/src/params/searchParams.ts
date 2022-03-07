@@ -15,33 +15,31 @@ export interface SetSearchParams {
   setMap: (newMap: MapState | undefined) => void;
 }
 
-export const useAppSearchParams = (
-  defaultView: MapState
-): [SearchParams, SetSearchParams] => {
+export const useAppSearchParams = (): [SearchParams, SetSearchParams] => {
   const [ searchParams, setSearchParams ] = useSearchParams();
 
   const parseQueryParam = (queryStr: string | null): string | undefined => {
-    return queryStr?.replace('+', ' ');
+    return queryStr ?? undefined;
   }
 
   const parseIdParam = (idStr: string | null): number | undefined => {
     return idStr ? Number(idStr) : undefined;
   };
 
-  const parseMapParam = (mapStr: string | null, defaults: MapState): MapState => {
-    let { zoom } = defaults;
-    let { lat, lng } = defaults.center;
+  const parseMapParam = (mapStr: string | null): MapState | undefined => {
+    // Parse the "map" URL search parameter
+    // Should be in the format: map=zoom_lat_lng
+    const pattern = /^(?<zoom>\d+)_(?<lat>-?\d+\.\d+)_(?<lng>-?\d+\.\d+)$/;
+    const match = mapStr?.match(pattern);
+    if (!match || !match.groups) {
+      return undefined;
+    }
 
-    if (mapStr) {
-      // Parse the "map" URL search parameter
-      // Should be in the format: map=zoom_lat_lng
-      const pattern = /^(?<zoom>\d+)_(?<lat>-?\d+\.\d+)_(?<lng>-?\d+\.\d+)$/;
-      const match = mapStr.match(pattern);
-      if (match && match.groups) {
-        zoom = Number(match.groups.zoom) ?? zoom;
-        lat = Number(match.groups.lat) ?? lat;
-        lng = Number(match.groups.lng) ?? lng;
-      }
+    const zoom = Number(match.groups.zoom);
+    const lat = Number(match.groups.lat);
+    const lng = Number(match.groups.lng);
+    if (isNaN(zoom) || isNaN(lat) || isNaN(lng)) {
+      return undefined;
     }
 
     return {
@@ -53,7 +51,7 @@ export const useAppSearchParams = (
   const params: SearchParams = {
     q: parseQueryParam(searchParams.get('q')),
     id: parseIdParam(searchParams.get('id')),
-    map: parseMapParam(searchParams.get('map'), defaultView)
+    map: parseMapParam(searchParams.get('map'))
   };
 
   const buildSearchParams = (newParams: SearchParams): ParamKeyValuePair[] => {
@@ -80,7 +78,7 @@ export const useAppSearchParams = (
   const setQuery = useCallback((newQuery: string | undefined): void => {
     setSearchParams(buildSearchParams({
       ...params,
-      q: newQuery?.toLowerCase().replace(' ', '+')
+      q: newQuery?.toLowerCase()
     }));
   }, [setSearchParams, params]);
 

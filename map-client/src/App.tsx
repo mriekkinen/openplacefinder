@@ -44,6 +44,8 @@ const Main = () => {
   const filtersVisible = useAppSelector(state => state.ui.filtersVisible);
   const n = useAppSelector(state => state.poiList.data.length);
 
+  const [params, setters] = useAppSearchParams();
+
   const mapRef = useRef<MapHandle>(null);
 
   const DEFAULT_VIEW: MapState = {
@@ -53,8 +55,6 @@ const Main = () => {
     },
     zoom: 13
   };
-
-  const [params, setters] = useAppSearchParams(DEFAULT_VIEW);
 
   const findFeature = (q: string | undefined) => {
     return FEATURES.find(
