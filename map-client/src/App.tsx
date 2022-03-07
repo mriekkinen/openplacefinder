@@ -54,7 +54,7 @@ const Main = () => {
   const [ searchParams, setSearchParams ] = useSearchParams();
 
   const parseQueryParam = (queryStr: string | null): string | undefined => {
-    return queryStr ? queryStr : undefined;
+    return queryStr?.replace('+', ' ');
   }
 
   const parseIdParam = (idStr: string | null): number | undefined => {
@@ -114,7 +114,7 @@ const Main = () => {
 
   const findFeature = (q: string | undefined) => {
     return FEATURES.find(
-      f => f.label.toLowerCase() === q?.toLowerCase().replace('+', ' ')
+      f => f.label.toLowerCase() === q?.toLowerCase()
     );
   };
 
