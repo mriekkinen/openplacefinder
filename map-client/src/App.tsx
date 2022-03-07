@@ -1,12 +1,13 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import {
   BrowserRouter as Router,
-  Routes, Route, useSearchParams, ParamKeyValuePair
+  Routes, Route
 } from 'react-router-dom';
 
 import { FEATURES } from './data/mapFeatures';
 import { useAppSelector } from './state';
+import { useAppSearchParams } from './params';
 import { loadPresets } from './presets';
 import MapView from './MapView';
 import { MapState } from './MapView/types';
@@ -39,70 +40,11 @@ const App = () => {
   );
 };
 
-interface SearchParams {
-  q?: string;
-  id?: number;
-  map?: MapState;
-}
-
 const Main = () => {
   const filtersVisible = useAppSelector(state => state.ui.filtersVisible);
   const n = useAppSelector(state => state.poiList.data.length);
 
   const mapRef = useRef<MapHandle>(null);
-
-  const [ searchParams, setSearchParams ] = useSearchParams();
-
-  const parseQueryParam = (queryStr: string | null): string | undefined => {
-    return queryStr?.replace('+', ' ');
-  }
-
-  const parseIdParam = (idStr: string | null): number | undefined => {
-    return idStr ? Number(idStr) : undefined;
-  };
-
-  const parseMapParam = (mapStr: string | null, defaults: MapState): MapState => {
-    let { zoom } = defaults;
-    let { lat, lng } = defaults.center;
-
-    if (mapStr) {
-      // Parse the "map" URL search parameter
-      // Should be in the format: map=zoom_lat_lng
-      const pattern = /^(?<zoom>\d+)_(?<lat>-?\d+\.\d+)_(?<lng>-?\d+\.\d+)$/;
-      const match = mapStr.match(pattern);
-      if (match && match.groups) {
-        zoom = Number(match.groups.zoom) ?? zoom;
-        lat = Number(match.groups.lat) ?? lat;
-        lng = Number(match.groups.lng) ?? lng;
-      }
-    }
-
-    return {
-      center: { lat, lng },
-      zoom
-    };
-  };
-
-  const buildSearchParams = (params: SearchParams): ParamKeyValuePair[] => {
-    const list: [string, string][] = [];
-    if (params.q) {
-      list.push(['q', params.q]);
-    }
-
-    if (params.id) {
-      list.push(['id', params.id.toString()]);
-    }
-
-    if (params.map) {
-      const nz = params.map.zoom.toFixed(0);
-      const nlat = params.map.center.lat.toFixed(4);
-      const nlng = params.map.center.lng.toFixed(4);
-
-      list.push(['map', `${nz}_${nlat}_${nlng}`]);
-    }
-
-    return list;
-  };
 
   const DEFAULT_VIEW: MapState = {
     center: {
@@ -112,39 +54,20 @@ const Main = () => {
     zoom: 13
   };
 
+  const [params, setters] = useAppSearchParams(DEFAULT_VIEW);
+
   const findFeature = (q: string | undefined) => {
     return FEATURES.find(
       f => f.label.toLowerCase() === q?.toLowerCase()
     );
   };
 
-  const params: SearchParams = {
-    q: parseQueryParam(searchParams.get('q')),
-    id: parseIdParam(searchParams.get('id')),
-    map: parseMapParam(searchParams.get('map'), DEFAULT_VIEW)
-  };
-
-  const setQuery = useCallback((newQuery: string | undefined): void => {
-    setSearchParams(buildSearchParams({
-      ...params,
-      q: newQuery?.toLowerCase().replace(' ', '+')
-    }));
-  }, [setSearchParams, params]);
-
-  const setId = useCallback((newId: number | undefined): void => {
-    setSearchParams(buildSearchParams({ ...params, id: newId }));
-  }, [setSearchParams, params]);
-
-  const setMap = useCallback((newMap: MapState | undefined): void => {
-    setSearchParams(buildSearchParams({ ...params, map: newMap }));
-  }, [setSearchParams, params]);
-
   return (
     <>
       <SearchBar
         query={params.q}
-        setQuery={setQuery}
-        setId={setId}
+        setQuery={setters.setQuery}
+        setId={setters.setId}
         findFeature={findFeature} />
       <Content>
         <SidebarBoxes>
@@ -152,11 +75,11 @@ const Main = () => {
             <Results>
               {!params.id
                 ? <ListView
-                    setId={setId}
+                    setId={setters.setId}
                     mapRef={mapRef} />
                 : <InfoView
                     id={params.id}
-                    setId={setId}
+                    setId={setters.setId}
                     mapRef={mapRef} />
               }
             </Results>
@@ -166,8 +89,8 @@ const Main = () => {
           queryParam={params.q}
           idParam={params.id}
           mapParam={params.map ?? DEFAULT_VIEW}
-          setId={setId}
-          setMap={setMap}
+          setId={setters.setId}
+          setMap={setters.setMap}
           findFeature={findFeature}
           ref={mapRef} />
         {filtersVisible &&
