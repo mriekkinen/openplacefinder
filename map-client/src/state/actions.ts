@@ -13,6 +13,10 @@ export type PoiAction =
     data: Poi[]
   }
 | {
+    type: 'poiList/setFields',
+    data: Set<string>
+  }
+| {
     type: 'poiList/setStatus',
     data: QueryStatus
   }
@@ -41,7 +45,7 @@ export type LocationAction =
     };
 
 export type FacetAction =
-  | {
+| {
       type: 'facets/setName',
       data: string
     }

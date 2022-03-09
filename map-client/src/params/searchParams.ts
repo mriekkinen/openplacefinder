@@ -2,17 +2,20 @@ import { useCallback } from "react";
 import { useSearchParams, ParamKeyValuePair } from "react-router-dom";
 
 import { MapState } from "../MapView/types";
+import { FacetState } from "../state";
 
 export interface SearchParams {
   q?: string;
   id?: number;
   map?: MapState;
+  facets: FacetState;
 }
 
 export interface SetSearchParams {
   setQuery: (newQuery: string | undefined) => void;
   setId: (newId: number | undefined) => void;
   setMap: (newMap: MapState | undefined) => void;
+  setFacets: (newFacets: FacetState) => void;
 }
 
 export const useAppSearchParams = (): [SearchParams, SetSearchParams] => {
@@ -48,10 +51,27 @@ export const useAppSearchParams = (): [SearchParams, SetSearchParams] => {
     };
   };
 
+  const parseFacetParams = (
+    name: string | null,
+    openingHours: boolean,
+    openNow: boolean
+  ): FacetState => {
+    return {
+      name: name || undefined,
+      openingHours: openingHours || undefined,
+      openNow: openNow || undefined,
+    };
+  };
+
   const params: SearchParams = {
     q: parseQueryParam(searchParams.get('q')),
     id: parseIdParam(searchParams.get('id')),
-    map: parseMapParam(searchParams.get('map'))
+    map: parseMapParam(searchParams.get('map')),
+    facets: parseFacetParams(
+      searchParams.get('name'),
+      searchParams.has('openingHours'),
+      searchParams.has('openNow')
+    )
   };
 
   const buildSearchParams = (newParams: SearchParams): ParamKeyValuePair[] => {
@@ -64,6 +84,18 @@ export const useAppSearchParams = (): [SearchParams, SetSearchParams] => {
       list.push(['id', newParams.id.toString()]);
     }
 
+    if (newParams.facets.name) {
+      list.push(['name', newParams.facets.name]);
+    }
+
+    if (newParams.facets.openingHours) {
+      list.push(['openingHours', '']);
+    }
+
+    if (newParams.facets.openNow) {
+      list.push(['openNow', '']);
+    }
+
     if (newParams.map) {
       const nz = newParams.map.zoom.toFixed(0);
       const nlat = newParams.map.center.lat.toFixed(4);
@@ -71,6 +103,8 @@ export const useAppSearchParams = (): [SearchParams, SetSearchParams] => {
 
       list.push(['map', `${nz}_${nlat}_${nlng}`]);
     }
+
+    console.log('buildSearchParams: newParams:', newParams, ' list:', list);
 
     return list;
   };
@@ -90,10 +124,15 @@ export const useAppSearchParams = (): [SearchParams, SetSearchParams] => {
     setSearchParams(buildSearchParams({ ...params, map: newMap }));
   }, [setSearchParams, params]);
 
+  const setFacets = useCallback((newFacets: FacetState): void => {
+    setSearchParams(buildSearchParams({ ...params, facets: newFacets}));
+  }, [setSearchParams, params]);
+
   const setters = {
     setQuery,
     setId,
-    setMap
+    setMap,
+    setFacets
   };
 
   return [params, setters];

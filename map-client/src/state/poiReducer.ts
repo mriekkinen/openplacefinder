@@ -27,7 +27,10 @@ export const queryOverpass = (query: string): AppThunk => {
     const newData2 = presetSingleton.extend(newData1);
     const newFields = presetSingleton.enumerateFields(newData2);
     dispatch(setPoiList(newData2));
-    dispatch(migrateFacets(newFields));
+
+    //dispatch(migrateFacets(newFields));
+    dispatch(setFields(newFields));
+
     dispatch(setStatus('succeeded'));
   };
 };
@@ -35,7 +38,10 @@ export const queryOverpass = (query: string): AppThunk => {
 export const clearPoiList = (): AppThunk => {
   return async dispatch => {
     dispatch(setPoiList([]));
-    dispatch(resetFacets());
+
+    //dispatch(resetFacets());
+    dispatch(setFields(new Set<string>()));
+
     dispatch(setStatus('idle'));
   };
 };
@@ -44,6 +50,13 @@ const setPoiList = (pois: Poi[]): Action => {
   return {
     type: 'poiList/setData',
     data: pois
+  };
+};
+
+const setFields = (fields: Set<string>): Action => {
+  return {
+    type: 'poiList/setFields',
+    data: fields
   };
 };
 
@@ -70,6 +83,11 @@ export const poiReducer = (
       return {
         ...state,
         data: action.data
+      };
+    case 'poiList/setFields':
+      return {
+        ...state,
+        fields: action.data
       };
     case 'poiList/setStatus':
       return {

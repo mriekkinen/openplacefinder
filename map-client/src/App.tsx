@@ -6,7 +6,7 @@ import {
 } from 'react-router-dom';
 
 import { FEATURES } from './data/mapFeatures';
-import { useAppSelector } from './state';
+import { initialState, useAppSelector } from './state';
 import { useAppSearchParams } from './params';
 import { loadPresets } from './presets';
 import MapView from './MapView';
@@ -68,6 +68,7 @@ const Main = () => {
         query={params.q}
         setQuery={setters.setQuery}
         setId={setters.setId}
+        setFacets={setters.setFacets}
         findFeature={findFeature} />
       <Content>
         <SidebarBoxes>
@@ -75,6 +76,7 @@ const Main = () => {
             <Results>
               {!params.id
                 ? <ListView
+                    facets={params.facets}
                     setId={setters.setId}
                     mapRef={mapRef} />
                 : <InfoView
@@ -88,6 +90,7 @@ const Main = () => {
         <MapView
           queryParam={params.q}
           idParam={params.id}
+          facetParams={params.facets}
           mapParam={params.map ?? DEFAULT_VIEW}
           setId={setters.setId}
           setMap={setters.setMap}
@@ -96,7 +99,9 @@ const Main = () => {
         {filtersVisible &&
           <SidebarBoxes>
             <Filters>
-              <FacetsView />
+              <FacetsView
+                facets={params.facets}
+                setFacets={setters.setFacets} />
             </Filters>
           </SidebarBoxes>
         }

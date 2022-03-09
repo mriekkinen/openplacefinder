@@ -1,21 +1,22 @@
 import React from 'react';
-import {
-  useAppDispatch, useAppSelector,
-  requireOpeningHours, requireOpenNow
-} from '../state';
+import { FacetState, useAppSelector } from '../state';
 
 import { Facet } from './styles';
 
-export const OpeningHours = () => {
-  const dispatch = useAppDispatch();
-  const openingHours = useAppSelector(state => state.facets.openingHours);
+interface OpeningHoursProps {
+  facets: FacetState;
+  setFacets: (newFacets: FacetState) => void;
+}
 
-  if (openingHours === undefined) {
+export const OpeningHours = ({ facets, setFacets }: OpeningHoursProps) => {
+  const fields = useAppSelector(state => state.poiList.fields);
+
+  if (!facets.openingHours && !fields.has('opening_hours')) {
     return null;
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(requireOpeningHours(e.target.checked));
+    setFacets({ ...facets, openingHours: e.target.checked })
   };
 
   return (
@@ -24,7 +25,7 @@ export const OpeningHours = () => {
         <input
           type='checkbox'
           name='requireOpeningHours'
-          checked={openingHours}
+          checked={facets.openingHours ?? false}
           onChange={handleChange} />
         Only places with opening hours
       </label>
@@ -32,16 +33,20 @@ export const OpeningHours = () => {
   );
 };
 
-export const OpenNow = () => {
-  const dispatch = useAppDispatch();
-  const openNow = useAppSelector(state => state.facets.openNow);
+interface OpenNowProps {
+  facets: FacetState;
+  setFacets: (newFacets: FacetState) => void;
+}
 
-  if (openNow === undefined) {
+export const OpenNow = ({ facets, setFacets }: OpenNowProps) => {
+  const fields = useAppSelector(state => state.poiList.fields);
+
+  if (!facets.openNow && !fields.has('opening_hours')) {
     return null;
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(requireOpenNow(e.target.checked));
+    setFacets({ ...facets, openNow: e.target.checked })
   };
 
   return (
@@ -50,7 +55,7 @@ export const OpenNow = () => {
         <input
           type='checkbox'
           name='requireOpenNow'
-          checked={openNow}
+          checked={facets.openNow ?? false}
           onChange={handleChange} />
         Only places which are now open
       </label>

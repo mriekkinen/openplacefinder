@@ -17,9 +17,14 @@ interface Props {
   data: Poi[];
   country: Country | undefined;
   facets: FacetState;
+  setFacets: (newFacets: FacetState) => void;
 }
 
-const Cuisines = ({ data, country, facets }: Props) => {
+//
+// TODO: Work in progress -- will work on this next
+//
+
+const Cuisines = ({ data, country, facets, setFacets }: Props) => {
   const dispatch = useAppDispatch();
 
   const [showAll, setShowAll] = useState<boolean>(false);

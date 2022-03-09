@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {
-  MapFeature,
+  FacetState, MapFeature,
   clearPoiList,
   useAppDispatch, useAppSelector
 } from '../state';
@@ -14,10 +14,13 @@ interface Props {
   query: string | undefined;
   setQuery: (newQuery: string | undefined) => void;
   setId: (newId: number | undefined) => void;
+  setFacets: (newFacets: FacetState) => void;
   findFeature: (q: string | undefined) => MapFeature | undefined;
 }
 
-const SearchBar = ({ query, setQuery, setId, findFeature }: Props) => {
+const SearchBar = (
+  { query, setQuery, setId, setFacets, findFeature }: Props
+) => {
   const dispatch = useAppDispatch();
   const status = useAppSelector(state => state.poiList.status);
 
@@ -27,11 +30,14 @@ const SearchBar = ({ query, setQuery, setId, findFeature }: Props) => {
     if (newFeature === null) {
       setQuery(undefined);
       setId(undefined);
+      setFacets({});
       dispatch(clearPoiList());
       return;
     }
 
     setQuery(newFeature.label);
+    //setId(undefined);
+    //setFacets({});
   };
 
   return (

@@ -1,17 +1,19 @@
 import React from 'react';
 
-import { useAppDispatch, clearFacets } from '../state';
+import { FacetState } from '../state';
 
 import { Facet, Button } from './styles';
 
-const Clear = () => {
-  const dispatch = useAppDispatch();
+interface Props {
+  setFacets: (newFacets: FacetState) => void;
+}
 
+const Clear = ({ setFacets }: Props) => {
   return (
     <Facet>
       <Button
         type='button'
-        onClick={() => dispatch(clearFacets())}>
+        onClick={() => setFacets({})}>
         Clear filters
       </Button>
     </Facet>

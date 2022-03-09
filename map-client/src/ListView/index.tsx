@@ -1,20 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { useAppSelector } from '../state';
+import { FacetState, useAppSelector } from '../state';
 import { MapHandle } from '../MapView/SetMapRef';
 import ListElement from './ListElement';
 import { filter, addDistance, sortByDistance } from '../search';
 
 interface Props {
+  facets: FacetState;
   setId: (newId: number | undefined) => void;
   mapRef: React.RefObject<MapHandle>;
 }
 
-const ListView = ({ setId, mapRef }: Props) => {
+const ListView = ({ facets, setId, mapRef }: Props) => {
   const data = useAppSelector(state => state.poiList.data);
   const country = useAppSelector(state => state.poiList.country);
-  const facets = useAppSelector(state => state.facets);
   const location = useAppSelector(state => state.location);
 
   // Apply filters

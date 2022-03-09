@@ -11,6 +11,7 @@ export interface Country {
 export interface PoiState {
   status: QueryStatus;
   data: Poi[];
+  fields: Set<string>;
   country: Country | undefined;
 }
 
@@ -65,6 +66,7 @@ export const initialState: State = {
   poiList: {
     status: 'idle',
     data: [],
+    fields: new Set<string>(),
     country: {
       country: 'Finland',
       countryCode: 'fi',

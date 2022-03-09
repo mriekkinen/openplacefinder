@@ -5,7 +5,7 @@ import 'leaflet-contextmenu';
 
 import { Poi } from '../types';
 import {
-  MapFeature,
+  FacetState, MapFeature,
   queryOverpass, showZoomInModal, setLocation,
   useAppDispatch, useAppSelector
 } from '../state';
@@ -33,23 +33,24 @@ const PREFER_CANVAS = false;
 interface Props {
   queryParam: string | undefined;
   idParam: number | undefined;
+  facetParams: FacetState;
   mapParam: MapState;
   setId: (newId: number | undefined) => void;
   setMap: (newMap: MapState | undefined) => void;
   findFeature: (q: string | undefined) => MapFeature | undefined;
 }
 
-const MapView = (
-  { queryParam, idParam, mapParam, setId, setMap, findFeature }: Props,
-  ref: React.Ref<MapHandle>
+const MapView = ({
+    queryParam, idParam, facetParams, mapParam,
+    setId, setMap, findFeature
+  }: Props, ref: React.Ref<MapHandle>
 ) => {
   const dispatch = useAppDispatch();
   const data = useAppSelector(state => state.poiList.data);
   const country = useAppSelector(state => state.poiList.country);
-  const facets = useAppSelector(state => state.facets);
   const location = useAppSelector(state => state.location);
 
-  const filteredData = filter(data, country, facets);
+  const filteredData = filter(data, country, facetParams);
 
   const contextmenuItems = [
     {
