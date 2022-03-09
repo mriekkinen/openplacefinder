@@ -1,19 +1,22 @@
 import React from 'react';
 
-import { FacetState } from '../state';
+import { SearchParams } from '../params';
 
 import { Facet, Button } from './styles';
 
 interface Props {
-  setFacets: (newFacets: FacetState) => void;
+  params: SearchParams
 }
 
-const Clear = ({ setFacets }: Props) => {
+const Clear = ({ params }: Props) => {
   return (
     <Facet>
       <Button
         type='button'
-        onClick={() => setFacets({})}>
+        onClick={() => {
+          params.facets = {};
+          params.commit();
+        }}>
         Clear filters
       </Button>
     </Facet>

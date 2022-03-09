@@ -1,1 +1,1 @@
-export * from './searchParams';
+export * from './SearchParams';

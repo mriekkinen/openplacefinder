@@ -5,7 +5,7 @@ import 'leaflet-contextmenu';
 
 import { Poi } from '../types';
 import {
-  FacetState, MapFeature,
+  MapFeature,
   queryOverpass, showZoomInModal, setLocation,
   useAppDispatch, useAppSelector
 } from '../state';
@@ -24,6 +24,7 @@ import Geocoder from './Geocoder';
 import { MapState } from './types';
 import { isZoomSufficient } from '../conf';
 import { buildBBoxQuery } from '../overpass';
+import { SearchParams } from '../params';
 
 // Option: whether to use raster instead of vector graphics?
 // If true, renders markers using an HTML canvas element.
@@ -31,26 +32,23 @@ import { buildBBoxQuery } from '../overpass';
 const PREFER_CANVAS = false;
 
 interface Props {
-  queryParam: string | undefined;
-  idParam: number | undefined;
-  facetParams: FacetState;
-  mapParam: MapState;
-  setId: (newId: number | undefined) => void;
-  setMap: (newMap: MapState | undefined) => void;
+  params: SearchParams;
+  defaultView: MapState;
   findFeature: (q: string | undefined) => MapFeature | undefined;
 }
 
-const MapView = ({
-    queryParam, idParam, facetParams, mapParam,
-    setId, setMap, findFeature
-  }: Props, ref: React.Ref<MapHandle>
+const MapView = (
+  { params, defaultView, findFeature }: Props,
+  ref: React.Ref<MapHandle>
 ) => {
   const dispatch = useAppDispatch();
   const data = useAppSelector(state => state.poiList.data);
   const country = useAppSelector(state => state.poiList.country);
   const location = useAppSelector(state => state.location);
 
-  const filteredData = filter(data, country, facetParams);
+  const filteredData = filter(data, country, params.facets);
+
+  const mapParam = params.map ?? defaultView;
 
   const contextmenuItems = [
     {
@@ -67,11 +65,13 @@ const MapView = ({
   };
 
   const handleMapClick = () => {
-    setId(undefined);
+    params.id = undefined;
+    params.commit();
   };
 
   const handleMarkerClick = (e: Poi) => () => {
-    setId(e.id);
+    params.id = e.id;
+    params.commit();
   };
 
   const handleMoveZoom = useCallback((newZoom: number, newCenter: LatLng) => {
@@ -89,14 +89,15 @@ const MapView = ({
 
     // Update the URL to reflect changes in map state
     // (i.e., the user has either moved the map or zoomed in/out)
-    setMap({
+    params.map = {
       center: {
         lat: newCenter.lat,
         lng: newCenter.lng
       },
       zoom: newZoom
-    });
-  }, [setMap]);
+    };
+    params.commit();
+  }, [params, mapParam]);
 
   const makeQuery = (
     feature: MapFeature,
@@ -135,11 +136,11 @@ const MapView = ({
       <HandleBackFwd
         mapParam={mapParam} />
       <QueryOverpass
-        q={queryParam}
+        q={params.q}
         findFeature={findFeature}
         makeQuery={makeQuery} />
       <AreaFilter
-        q={queryParam}
+        q={params.q}
         findFeature={findFeature}
         makeQuery={makeQuery} />
       <Geocoder />
@@ -150,7 +151,7 @@ const MapView = ({
         <IconMarker
           key={`${e.type}-${e.id}`}
           e={e}
-          isSelected={e.id === idParam}
+          isSelected={e.id === params.id}
           handleClick={handleMarkerClick(e)}
           preset={presetSingleton.getPreset(e.presetId)}
         />

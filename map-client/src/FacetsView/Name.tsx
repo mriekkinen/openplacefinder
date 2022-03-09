@@ -1,17 +1,17 @@
 import React from 'react';
 
 import { Facet } from './styles';
-import { FacetState, useAppSelector } from '../state';
+import { useAppSelector } from '../state';
+import { SearchParams } from '../params';
 
 interface Props {
-  facets: FacetState;
-  setFacets: (newFacets: FacetState) => void;
+  params: SearchParams;
 }
 
-const Name = ({ facets, setFacets }: Props) => {
+const Name = ({ params }: Props) => {
   const fields = useAppSelector(state => state.poiList.fields);
 
-  if (!facets.name && !fields.has('name')) {
+  if (!params.facets.name && !fields.has('name')) {
     return null;
   }
 
@@ -20,8 +20,11 @@ const Name = ({ facets, setFacets }: Props) => {
       Name: {' '}
       <input
         type='text'
-        value={facets.name ?? ''}
-        onChange={e => setFacets({ ...facets, name: e.target.value })} />
+        value={params.facets.name ?? ''}
+        onChange={e => {
+          params.facets.name = e.target.value;
+          params.commit();
+        }} />
     </Facet>
   )
 };

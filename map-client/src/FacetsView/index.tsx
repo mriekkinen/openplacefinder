@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { FacetState, useAppSelector } from '../state';
+import { useAppSelector } from '../state';
+import { SearchParams } from '../params';
 import { filter } from '../search';
 
 import { Container, Header } from './styles';
@@ -11,15 +12,14 @@ import MatchCount from './MatchCount';
 import Clear from './Clear';
 
 interface Props {
-  facets: FacetState;
-  setFacets: (newFacets: FacetState) => void;
+  params: SearchParams;
 }
 
-const Facets = ({ facets, setFacets }: Props) => {
+const Facets = ({ params }: Props) => {
   const data = useAppSelector(state => state.poiList.data);
   const country = useAppSelector(state => state.poiList.country);
 
-  const filteredData = filter(data, country, facets);
+  const filteredData = filter(data, country, params.facets);
 
   /*
   const filteredData = useAppSelector(state => {
@@ -31,23 +31,19 @@ const Facets = ({ facets, setFacets }: Props) => {
     <Container>
       <Header>Filter by</Header>
       <Name
-        facets={facets}
-        setFacets={setFacets} />
+        params={params} />
       <OpeningHours
-        facets={facets}
-        setFacets={setFacets} />
+        params={params} />
       <OpenNow
-        facets={facets}
-        setFacets={setFacets} />
+        params={params} />
       <Cuisines
         data={data}
         country={country}
-        facets={facets}
-        setFacets={setFacets} />
+        params={params} />
       <MatchCount
         filteredData={filteredData} />
       <Clear
-        setFacets={setFacets} />
+        params={params} />
     </Container>
   );
 };

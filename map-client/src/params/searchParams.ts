@@ -1,35 +1,42 @@
-import { useCallback } from "react";
-import { useSearchParams, ParamKeyValuePair } from "react-router-dom";
+import { ParamKeyValuePair, URLSearchParamsInit } from "react-router-dom";
 
 import { MapState } from "../MapView/types";
 import { FacetState } from "../state";
 
-export interface SearchParams {
+type SetSearchParams = (nextInit: URLSearchParamsInit) => void;
+
+export class SearchParams {
   q?: string;
   id?: number;
   map?: MapState;
   facets: FacetState;
-}
+  private setSearchParams: SetSearchParams;
 
-export interface SetSearchParams {
-  setQuery: (newQuery: string | undefined) => void;
-  setId: (newId: number | undefined) => void;
-  setMap: (newMap: MapState | undefined) => void;
-  setFacets: (newFacets: FacetState) => void;
-}
+  constructor(
+    searchParams: URLSearchParams,
+    setSearchParams: SetSearchParams
+  ) {
+    this.q = this.parseQueryParam(searchParams.get('q'));
+    this.id = this.parseIdParam(searchParams.get('id'));
+    this.map = this.parseMapParam(searchParams.get('map'));
+    this.facets = this.parseFacetParams(
+      searchParams.get('name'),
+      searchParams.has('openingHours'),
+      searchParams.has('openNow'),
+      searchParams.get('cuisine')
+    );
+    this.setSearchParams = setSearchParams;
+  }
 
-export const useAppSearchParams = (): [SearchParams, SetSearchParams] => {
-  const [ searchParams, setSearchParams ] = useSearchParams();
-
-  const parseQueryParam = (queryStr: string | null): string | undefined => {
+  private parseQueryParam = (queryStr: string | null): string | undefined => {
     return queryStr ?? undefined;
   }
 
-  const parseIdParam = (idStr: string | null): number | undefined => {
+  private parseIdParam = (idStr: string | null): number | undefined => {
     return idStr ? Number(idStr) : undefined;
   };
 
-  const parseMapParam = (mapStr: string | null): MapState | undefined => {
+  private parseMapParam = (mapStr: string | null): MapState | undefined => {
     // Parse the "map" URL search parameter
     // Should be in the format: map=zoom_lat_lng
     const pattern = /^(?<zoom>\d+)_(?<lat>-?\d+\.\d+)_(?<lng>-?\d+\.\d+)$/;
@@ -51,7 +58,7 @@ export const useAppSearchParams = (): [SearchParams, SetSearchParams] => {
     };
   };
 
-  const parseFacetParams = (
+  private parseFacetParams = (
     name: string | null,
     openingHours: boolean,
     openNow: boolean,
@@ -65,83 +72,47 @@ export const useAppSearchParams = (): [SearchParams, SetSearchParams] => {
     };
   };
 
-  const params: SearchParams = {
-    q: parseQueryParam(searchParams.get('q')),
-    id: parseIdParam(searchParams.get('id')),
-    map: parseMapParam(searchParams.get('map')),
-    facets: parseFacetParams(
-      searchParams.get('name'),
-      searchParams.has('openingHours'),
-      searchParams.has('openNow'),
-      searchParams.get('cuisines')
-    )
-  };
+  public commit() {
+    this.setSearchParams(this.build());
+  }
 
-  const buildSearchParams = (newParams: SearchParams): ParamKeyValuePair[] => {
+  public build(): ParamKeyValuePair[] {
     const list: [string, string][] = [];
-    if (newParams.q) {
-      list.push(['q', newParams.q]);
+    if (this.q) {
+      list.push(['q', this.q.toLowerCase()]);
     }
 
-    if (newParams.id) {
-      list.push(['id', newParams.id.toString()]);
+    if (this.id) {
+      list.push(['id', this.id.toString()]);
     }
 
-    if (newParams.facets.name) {
-      list.push(['name', newParams.facets.name]);
+    if (this.facets.name) {
+      list.push(['name', this.facets.name]);
     }
 
-    if (newParams.facets.openingHours) {
+    if (this.facets.openingHours) {
       list.push(['openingHours', '']);
     }
 
-    if (newParams.facets.openNow) {
+    if (this.facets.openNow) {
       list.push(['openNow', '']);
     }
 
-    if (newParams.facets.cuisines?.size) {
-      const cuisines = Array.from(newParams.facets.cuisines);
-      list.push(['cuisines', cuisines.join(';')])
+    if (this.facets.cuisines?.size) {
+      const cuisines = Array.from(this.facets.cuisines);
+      list.push(['cuisine', cuisines.join(';')])
     }
 
-    if (newParams.map) {
-      const nz = newParams.map.zoom.toFixed(0);
-      const nlat = newParams.map.center.lat.toFixed(4);
-      const nlng = newParams.map.center.lng.toFixed(4);
+    if (this.map) {
+      const nz = this.map.zoom.toFixed(0);
+      const nlat = this.map.center.lat.toFixed(4);
+      const nlng = this.map.center.lng.toFixed(4);
 
       list.push(['map', `${nz}_${nlat}_${nlng}`]);
     }
 
-    console.log('buildSearchParams: newParams:', newParams, ' list:', list);
+    console.log('buildSearchParams: this:', this, ' list:', list);
 
     return list;
-  };
-
-  const setQuery = useCallback((newQuery: string | undefined): void => {
-    setSearchParams(buildSearchParams({
-      ...params,
-      q: newQuery?.toLowerCase()
-    }));
-  }, [setSearchParams, params]);
-
-  const setId = useCallback((newId: number | undefined): void => {
-    setSearchParams(buildSearchParams({ ...params, id: newId }));
-  }, [setSearchParams, params]);
-
-  const setMap = useCallback((newMap: MapState | undefined): void => {
-    setSearchParams(buildSearchParams({ ...params, map: newMap }));
-  }, [setSearchParams, params]);
-
-  const setFacets = useCallback((newFacets: FacetState): void => {
-    setSearchParams(buildSearchParams({ ...params, facets: newFacets}));
-  }, [setSearchParams, params]);
-
-  const setters = {
-    setQuery,
-    setId,
-    setMap,
-    setFacets
-  };
-
-  return [params, setters];
-};
+  }
+}

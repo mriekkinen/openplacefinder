@@ -1,22 +1,23 @@
 import React from 'react';
-import { FacetState, useAppSelector } from '../state';
 
+import { useAppSelector } from '../state';
+import { SearchParams } from '../params';
 import { Facet } from './styles';
 
 interface OpeningHoursProps {
-  facets: FacetState;
-  setFacets: (newFacets: FacetState) => void;
+  params: SearchParams;
 }
 
-export const OpeningHours = ({ facets, setFacets }: OpeningHoursProps) => {
+export const OpeningHours = ({ params }: OpeningHoursProps) => {
   const fields = useAppSelector(state => state.poiList.fields);
 
-  if (!facets.openingHours && !fields.has('opening_hours')) {
+  if (!params.facets.openingHours && !fields.has('opening_hours')) {
     return null;
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFacets({ ...facets, openingHours: e.target.checked })
+    params.facets.openingHours = e.target.checked;
+    params.commit();
   };
 
   return (
@@ -25,7 +26,7 @@ export const OpeningHours = ({ facets, setFacets }: OpeningHoursProps) => {
         <input
           type='checkbox'
           name='requireOpeningHours'
-          checked={facets.openingHours ?? false}
+          checked={params.facets.openingHours ?? false}
           onChange={handleChange} />
         Only places with opening hours
       </label>
@@ -34,19 +35,19 @@ export const OpeningHours = ({ facets, setFacets }: OpeningHoursProps) => {
 };
 
 interface OpenNowProps {
-  facets: FacetState;
-  setFacets: (newFacets: FacetState) => void;
+  params: SearchParams;
 }
 
-export const OpenNow = ({ facets, setFacets }: OpenNowProps) => {
+export const OpenNow = ({ params }: OpenNowProps) => {
   const fields = useAppSelector(state => state.poiList.fields);
 
-  if (!facets.openNow && !fields.has('opening_hours')) {
+  if (!params.facets.openNow && !fields.has('opening_hours')) {
     return null;
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFacets({ ...facets, openNow: e.target.checked })
+    params.facets.openNow = e.target.checked;
+    params.commit();
   };
 
   return (
@@ -55,7 +56,7 @@ export const OpenNow = ({ facets, setFacets }: OpenNowProps) => {
         <input
           type='checkbox'
           name='requireOpenNow'
-          checked={facets.openNow ?? false}
+          checked={params.facets.openNow ?? false}
           onChange={handleChange} />
         Only places which are now open
       </label>

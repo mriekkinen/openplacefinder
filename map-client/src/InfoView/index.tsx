@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { useAppSelector } from '../state';
 import { presetSingleton } from '../presets';
+import { SearchParams } from '../params';
 import { MapHandle } from '../MapView/SetMapRef';
 import { PresetIcon } from '../icons';
 import Address from './Address';
@@ -22,16 +23,15 @@ import {
 } from './icons';
 
 interface Props {
-  id: number;
-  setId: (newId: number | undefined) => void;
+  params: SearchParams
   mapRef: React.RefObject<MapHandle>;
 }
 
-const InfoView = ({ id, setId, mapRef }: Props) => {
+const InfoView = ({ params, mapRef }: Props) => {
   const data = useAppSelector(state => state.poiList.data);
   const country = useAppSelector(state => state.poiList.country);
 
-  const poi = data.find(e => e.id === id);
+  const poi = data.find(e => e.id === params.id);
 
   if (!poi) {
     return (
@@ -50,7 +50,10 @@ const InfoView = ({ id, setId, mapRef }: Props) => {
   return (
     <Container>
       <TopContainer>
-        <ReturnBtn handleClick={() => setId(undefined)} />
+        <ReturnBtn handleClick={() => {
+          params.id = undefined;
+          params.commit();
+        }} />
       </TopContainer>
 
       <FlexContainer>

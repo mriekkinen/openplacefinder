@@ -2,12 +2,13 @@ import React, { useRef } from 'react';
 import styled from 'styled-components';
 import {
   BrowserRouter as Router,
-  Routes, Route
+  Routes, Route,
+  useSearchParams
 } from 'react-router-dom';
 
 import { FEATURES } from './data/mapFeatures';
 import { useAppSelector } from './state';
-import { useAppSearchParams } from './params';
+import { SearchParams } from './params';
 import { loadPresets } from './presets';
 import MapView from './MapView';
 import { MapState } from './MapView/types';
@@ -44,7 +45,8 @@ const Main = () => {
   const filtersVisible = useAppSelector(state => state.ui.filtersVisible);
   const n = useAppSelector(state => state.poiList.data.length);
 
-  const [params, setters] = useAppSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const params = new SearchParams(searchParams, setSearchParams);
 
   const mapRef = useRef<MapHandle>(null);
 
@@ -65,10 +67,7 @@ const Main = () => {
   return (
     <>
       <SearchBar
-        query={params.q}
-        setQuery={setters.setQuery}
-        setId={setters.setId}
-        setFacets={setters.setFacets}
+        params={params}
         findFeature={findFeature} />
       <Content>
         <SidebarBoxes>
@@ -76,32 +75,25 @@ const Main = () => {
             <Results>
               {!params.id
                 ? <ListView
-                    facets={params.facets}
-                    setId={setters.setId}
+                    params={params}
                     mapRef={mapRef} />
                 : <InfoView
-                    id={params.id}
-                    setId={setters.setId}
+                    params={params}
                     mapRef={mapRef} />
               }
             </Results>
           }
         </SidebarBoxes>
         <MapView
-          queryParam={params.q}
-          idParam={params.id}
-          facetParams={params.facets}
-          mapParam={params.map ?? DEFAULT_VIEW}
-          setId={setters.setId}
-          setMap={setters.setMap}
+          params={params}
+          defaultView={DEFAULT_VIEW}
           findFeature={findFeature}
           ref={mapRef} />
         {filtersVisible &&
           <SidebarBoxes>
             <Filters>
               <FacetsView
-                facets={params.facets}
-                setFacets={setters.setFacets} />
+                params={params} />
             </Filters>
           </SidebarBoxes>
         }

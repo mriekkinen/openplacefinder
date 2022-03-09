@@ -1,43 +1,41 @@
 import React from 'react';
 
 import {
-  FacetState, MapFeature,
+  MapFeature,
   clearPoiList,
   useAppDispatch, useAppSelector
 } from '../state';
+import { SearchParams } from '../params';
 import { Container, Header, Item } from './styles';
 import SearchBox from './SearchBox';
 import Area, { CURRENT_MAP_VIEW } from './Area';
 import FiltersBtn from './FiltersBtn';
 
 interface Props {
-  query: string | undefined;
-  setQuery: (newQuery: string | undefined) => void;
-  setId: (newId: number | undefined) => void;
-  setFacets: (newFacets: FacetState) => void;
+  params: SearchParams;
   findFeature: (q: string | undefined) => MapFeature | undefined;
 }
 
-const SearchBar = (
-  { query, setQuery, setId, setFacets, findFeature }: Props
-) => {
+const SearchBar = ({ params, findFeature }: Props) => {
   const dispatch = useAppDispatch();
   const status = useAppSelector(state => state.poiList.status);
 
-  const feature = findFeature(query);
+  const feature = findFeature(params.q);
 
   const handleFeatureChange = (newFeature: MapFeature | null) => {
     if (newFeature === null) {
-      setQuery(undefined);
-      setId(undefined);
-      setFacets({});
+      params.q = undefined;
+      params.id = undefined;
+      params.facets = {};
+      params.commit()
       dispatch(clearPoiList());
       return;
     }
 
-    setQuery(newFeature.label);
-    //setId(undefined);
-    //setFacets({});
+    params.q = newFeature.label;
+    params.id = undefined;
+    params.facets = {};
+    params.commit();
   };
 
   return (
