@@ -59,7 +59,6 @@ export interface State {
   poiList: PoiState;
   ui: UiState;
   location: LocationState;
-  facets: FacetState;
 }
 
 export const initialState: State = {
@@ -80,20 +79,5 @@ export const initialState: State = {
   location: {
     lat: 60.1673,
     lon: 24.9428
-  },
-  facets: {
-    name: '',
-    openingHours: false,
-    openNow: false,
-    //cuisines: new Set<string>()
   }
-};
-
-// Initial values for all facets
-// (including those not in the initial state)
-export const facetClear: FacetState = {
-  name: '',
-  openingHours: false,
-  openNow: false,
-  cuisines: new Set<string>()
 };

@@ -5,13 +5,11 @@ import thunk from 'redux-thunk';
 import { poiReducer } from './poiReducer';
 import { uiReducer } from './uiReducer';
 import { locationReducer } from './locationReducer';
-import { facetReducer } from './facetReducer';
 
 const reducer = combineReducers({
   poiList: poiReducer,
   ui: uiReducer,
-  location: locationReducer,
-  facets: facetReducer
+  location: locationReducer
 });
 
 export const store = createStore(

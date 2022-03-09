@@ -3,7 +3,6 @@ import { OverpassJson } from 'overpass-ts';
 import { Poi } from '../types';
 import { Country, initialState, PoiState, QueryStatus } from './state';
 import { Action, AppThunk } from './actions';
-import { migrateFacets, resetFacets } from './facetReducer';
 import { showOverpassErrorModal } from './uiReducer';
 
 import { fetchOverpass, overpass2Poi } from '../overpass';
@@ -27,10 +26,7 @@ export const queryOverpass = (query: string): AppThunk => {
     const newData2 = presetSingleton.extend(newData1);
     const newFields = presetSingleton.enumerateFields(newData2);
     dispatch(setPoiList(newData2));
-
-    //dispatch(migrateFacets(newFields));
     dispatch(setFields(newFields));
-
     dispatch(setStatus('succeeded'));
   };
 };
@@ -38,10 +34,7 @@ export const queryOverpass = (query: string): AppThunk => {
 export const clearPoiList = (): AppThunk => {
   return async dispatch => {
     dispatch(setPoiList([]));
-
-    //dispatch(resetFacets());
     dispatch(setFields(new Set<string>()));
-
     dispatch(setStatus('idle'));
   };
 };
