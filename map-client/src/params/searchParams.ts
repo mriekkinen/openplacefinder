@@ -54,12 +54,14 @@ export const useAppSearchParams = (): [SearchParams, SetSearchParams] => {
   const parseFacetParams = (
     name: string | null,
     openingHours: boolean,
-    openNow: boolean
+    openNow: boolean,
+    cuisines: string | null
   ): FacetState => {
     return {
       name: name || undefined,
       openingHours: openingHours || undefined,
       openNow: openNow || undefined,
+      cuisines: cuisines ? new Set(cuisines.split(';')) : undefined
     };
   };
 
@@ -70,7 +72,8 @@ export const useAppSearchParams = (): [SearchParams, SetSearchParams] => {
     facets: parseFacetParams(
       searchParams.get('name'),
       searchParams.has('openingHours'),
-      searchParams.has('openNow')
+      searchParams.has('openNow'),
+      searchParams.get('cuisines')
     )
   };
 
@@ -94,6 +97,11 @@ export const useAppSearchParams = (): [SearchParams, SetSearchParams] => {
 
     if (newParams.facets.openNow) {
       list.push(['openNow', '']);
+    }
+
+    if (newParams.facets.cuisines?.size) {
+      const cuisines = Array.from(newParams.facets.cuisines);
+      list.push(['cuisines', cuisines.join(';')])
     }
 
     if (newParams.map) {

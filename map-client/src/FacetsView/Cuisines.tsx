@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 
-import {
-  useAppDispatch,
-  checkCuisine, FacetState, Country
-} from '../state';
+import { FacetState, Country, useAppSelector } from '../state';
 import { filter, countCuisines, sortByCount } from '../search';
 import { Poi } from '../types';
 
@@ -20,20 +17,16 @@ interface Props {
   setFacets: (newFacets: FacetState) => void;
 }
 
-//
-// TODO: Work in progress -- will work on this next
-//
-
 const Cuisines = ({ data, country, facets, setFacets }: Props) => {
-  const dispatch = useAppDispatch();
+  const fields = useAppSelector(state => state.poiList.fields);
 
   const [showAll, setShowAll] = useState<boolean>(false);
 
-  if (facets.cuisines === undefined) {
+  if (!facets.cuisines && !fields.has('cuisine')) {
     return null;
   }
 
-  const checkedCuisines = facets.cuisines;
+  const checkedCuisines = new Set(facets.cuisines);
 
   // Apply filters excluding cuisine, and
   // compute the number of appearances (in that list)
@@ -59,7 +52,13 @@ const Cuisines = ({ data, country, facets, setFacets }: Props) => {
 
   const handleChange = (cuisine: string)
   : React.ChangeEventHandler<HTMLInputElement> => (e) => {
-    dispatch(checkCuisine(cuisine, e.target.checked));
+    if (e.target.checked) {
+      checkedCuisines.add(cuisine);
+    } else {
+      checkedCuisines.delete(cuisine);
+    }
+
+    setFacets({ ...facets, cuisines: checkedCuisines })
   };
 
   const isChecked = (cuisine: string) => {

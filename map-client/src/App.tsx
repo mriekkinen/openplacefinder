@@ -6,7 +6,7 @@ import {
 } from 'react-router-dom';
 
 import { FEATURES } from './data/mapFeatures';
-import { initialState, useAppSelector } from './state';
+import { useAppSelector } from './state';
 import { useAppSearchParams } from './params';
 import { loadPresets } from './presets';
 import MapView from './MapView';
