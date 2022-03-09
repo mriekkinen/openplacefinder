@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { GoLocation } from 'react-icons/go';
 
@@ -6,9 +7,9 @@ import { GoLocation } from 'react-icons/go';
 
 const Logo = () => (
   <LogoContainer>
-    <Link href='#'>
+    <LogoLink to='/'>
       <GoLocation /> POIGuru
-    </Link>
+    </LogoLink>
   </LogoContainer>
 );
 
@@ -17,7 +18,7 @@ const LogoContainer = styled.div`
   font-size: 1.1rem;
 `;
 
-const Link = styled.a`
+const LogoLink = styled(Link)`
   color: inherit;
   text-decoration: none;
 `;
