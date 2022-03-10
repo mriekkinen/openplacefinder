@@ -19,7 +19,7 @@ import QueryOverpass from './QueryOverpass';
 import IconMarker from './IconMarker';
 import LocationMarker from './LocationMarker';
 import RemoveMapOnUnmount from './RemoveMapOnUnmount';
-import AreaFilter from './AreaFilter';
+import SearchInArea from './SearchInArea';
 import Geocoder from './Geocoder';
 import { MapState } from './types';
 import { isZoomSufficient } from '../conf';
@@ -139,7 +139,7 @@ const MapView = (
         q={params.q}
         findFeature={findFeature}
         makeQuery={makeQuery} />
-      <AreaFilter
+      <SearchInArea
         q={params.q}
         findFeature={findFeature}
         makeQuery={makeQuery} />

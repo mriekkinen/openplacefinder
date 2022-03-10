@@ -27,7 +27,7 @@ const SearchBar = ({ params, findFeature }: Props) => {
       params.q = undefined;
       params.id = undefined;
       params.facets = {};
-      params.commit()
+      params.commit();
       dispatch(clearPoiList());
       return;
     }

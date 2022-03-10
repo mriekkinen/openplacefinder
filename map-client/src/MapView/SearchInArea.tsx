@@ -16,7 +16,7 @@ interface Props {
   ) => void;
 }
 
-const AreaFilter = ({ q, findFeature, makeQuery }: Props) => {
+const SearchInArea = ({ q, findFeature, makeQuery }: Props) => {
   const map = useMap();
 
   // Make a new query using the current bounding box
@@ -55,4 +55,4 @@ const Icon = styled(MdReplay)`
   vertical-align: middle;
 `;
 
-export default AreaFilter;
+export default SearchInArea;
