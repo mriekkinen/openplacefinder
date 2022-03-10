@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { LatLngBounds } from 'leaflet';
 import { useMap } from 'react-leaflet';
 
-import { MapFeature } from '../state';
+import { MapFeature, clearPoiList, useAppDispatch } from '../state';
 
 interface Props {
   q: string | undefined;
@@ -15,12 +15,14 @@ interface Props {
 }
 
 const QueryOverpass = ({ q, findFeature, makeQuery }: Props) => {
+  const dispatch = useAppDispatch();
   const map = useMap();
 
   // Request data from Overpass, if the query has changed
   useEffect(() => {
     const feature = findFeature(q);
     if (!feature) {
+      dispatch(clearPoiList());
       return;
     }
 

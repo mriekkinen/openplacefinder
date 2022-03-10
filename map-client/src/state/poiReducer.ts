@@ -17,6 +17,8 @@ export const queryOverpass = (query: string): AppThunk => {
       overpassJson = await fetchOverpass(query);
     } catch (error) {
       console.log(error);
+      dispatch(setPoiList([]));
+      dispatch(setFields(new Set<string>()));
       dispatch(setStatus('failed'));
       dispatch(showOverpassErrorModal(error));
       return;
