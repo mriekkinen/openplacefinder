@@ -81,6 +81,8 @@ const MapView = (
       return;
     }
 
+    console.log('handleMoveZoom');
+
     // Update the URL to reflect changes in map state
     // (i.e., the user has either moved the map or zoomed in/out)
     params.map = {
@@ -122,7 +124,9 @@ const MapView = (
       contextmenu={true}
       contextmenuItems={contextmenuItems}
     >
-      <SetMapRef ref={ref} />
+      <SetMapRef
+        handleMoveZoom={handleMoveZoom}
+        ref={ref} />
       <AddAttribution />
       <HandleResize />
       <HandleMapEvents
