@@ -1,24 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
   MapFeature,
-  clearPoiList,
+  clearPoiList, setLocation,
   useAppDispatch, useAppSelector
 } from '../state';
 import { SearchParams } from '../params';
 import { Container, Header, Item } from './styles';
 import SearchBox from './SearchBox';
-import Area, { CURRENT_MAP_VIEW } from './Area';
 import FiltersBtn from './FiltersBtn';
+import { MapHandle } from '../MapView/SetMapRef';
+import Geocoder, { AREA_OPTION } from './Geocoder';
 
 interface Props {
   params: SearchParams;
   findFeature: (q: string | undefined) => MapFeature | undefined;
+  mapRef: React.RefObject<MapHandle>;
 }
 
-const SearchBar = ({ params, findFeature }: Props) => {
+const SearchBar = ({ params, findFeature, mapRef }: Props) => {
   const dispatch = useAppDispatch();
   const status = useAppSelector(state => state.poiList.status);
+
+  const [ area, setArea ] = useState<AREA_OPTION | null>(null);
 
   const feature = findFeature(params.q);
 
@@ -38,6 +42,20 @@ const SearchBar = ({ params, findFeature }: Props) => {
     params.commit();
   };
 
+  const handleAreaChange = (newArea: AREA_OPTION | null) => {
+    console.log('handleAreaChange: newArea:', newArea);
+    setArea(newArea);
+    if (newArea === null) {
+      return;
+    }
+
+    if (mapRef.current) {
+      const [lng, lat] = newArea.value.geometry.coordinates;
+      dispatch(setLocation(lat, lng));
+      mapRef.current.panTo(lat, lng);
+    }
+  };
+
   return (
     <Container>
       <Header>Search</Header>
@@ -49,11 +67,9 @@ const SearchBar = ({ params, findFeature }: Props) => {
         />
       </Item>
       <Item>
-        <Area
-          value={CURRENT_MAP_VIEW}
-          handleChange={() => undefined}
-          isLoading={status === 'loading'}
-        />
+        <Geocoder
+          value={area}
+          handleChange={handleAreaChange} />
       </Item>
       <Item>
         <FiltersBtn />

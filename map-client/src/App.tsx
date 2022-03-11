@@ -68,7 +68,8 @@ const Main = () => {
     <>
       <SearchBar
         params={params}
-        findFeature={findFeature} />
+        findFeature={findFeature}
+        mapRef={mapRef} />
       <Content>
         <SidebarBoxes>
           {n !== 0 &&

@@ -111,8 +111,6 @@ export class SearchParams {
       list.push(['map', `${nz}_${nlat}_${nlng}`]);
     }
 
-    console.log('buildSearchParams: this:', this, ' list:', list);
-
     return list;
   }
 }

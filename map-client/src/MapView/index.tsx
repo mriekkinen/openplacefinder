@@ -20,7 +20,7 @@ import IconMarker from './IconMarker';
 import LocationMarker from './LocationMarker';
 import RemoveMapOnUnmount from './RemoveMapOnUnmount';
 import SearchInArea from './SearchInArea';
-import Geocoder from './Geocoder';
+import AddAttribution from './AddAttribution';
 import { MapState } from './types';
 import { isZoomSufficient } from '../conf';
 import { buildBBoxQuery } from '../overpass';
@@ -81,12 +81,6 @@ const MapView = (
       return;
     }
 
-    console.log(
-      'handleMoveZoom:',
-      'from:', `${mapParam.zoom}/${mapParam.center.lat.toFixed(4)}/${mapParam.center.lng.toFixed(4)}`,
-      'to:', `${newZoom}/${newCenter.lat.toFixed(4)}/${newCenter.lng.toFixed(4)}`
-    );
-
     // Update the URL to reflect changes in map state
     // (i.e., the user has either moved the map or zoomed in/out)
     params.map = {
@@ -129,6 +123,7 @@ const MapView = (
       contextmenuItems={contextmenuItems}
     >
       <SetMapRef ref={ref} />
+      <AddAttribution />
       <HandleResize />
       <HandleMapEvents
         handleMapClick={handleMapClick}
@@ -143,7 +138,6 @@ const MapView = (
         q={params.q}
         findFeature={findFeature}
         makeQuery={makeQuery} />
-      <Geocoder />
 
       <TileLayer {...tileProps} />
 

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@geocodeearth/core-js": "file:../packages/geocodeearth-core-js-0.0.8",
     "@openstreetmap/id-tagging-schema": "^3.0.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.1.3",
@@ -15,6 +16,7 @@
     "clsx": "^1.1.1",
     "leaflet": "^1.7.1",
     "leaflet-contextmenu": "^1.4.0",
+    "lodash": "^4.17.21",
     "opening_hours": "^3.7.0",
     "pelias-leaflet-plugin": "^1.12.0",
     "react": "^17.0.2",
@@ -59,6 +61,7 @@
   "devDependencies": {
     "@types/leaflet": "^1.7.4",
     "@types/leaflet-geocoder-mapzen": "^1.6.10",
+    "@types/lodash": "^4.14.179",
     "@types/react-modal": "^3.13.1",
     "@types/styled-components": "^5.1.12",
     "overpass-ts": "^4.2.4",
