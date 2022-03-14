@@ -1,4 +1,5 @@
 import React from 'react';
+import { LatLngBounds } from 'leaflet';
 
 import {
   AreaOption, MapFeature,
@@ -15,10 +16,15 @@ import Geocoder from './Geocoder';
 interface Props {
   params: SearchParams;
   findFeature: (q: string | undefined) => MapFeature | undefined;
+  makeQuery: (
+    feature: MapFeature,
+    bounds: LatLngBounds,
+    zoom: number
+  ) => void;
   mapRef: React.RefObject<MapHandle>;
 }
 
-const SearchBar = ({ params, findFeature, mapRef }: Props) => {
+const SearchBar = ({ params, findFeature, makeQuery, mapRef }: Props) => {
   const dispatch = useAppDispatch();
   const status = useAppSelector(state => state.poiList.status);
   const area = useAppSelector(state => state.ui.area);
@@ -50,8 +56,21 @@ const SearchBar = ({ params, findFeature, mapRef }: Props) => {
 
     if (mapRef.current) {
       const [lng, lat] = newArea.value.geometry.coordinates;
+
+      // Update the user's location
       dispatch(setLocation(lat, lng));
+
+      // Pan the map to the new location
       mapRef.current.panTo(lat, lng, false);
+
+      // Submit a new query using the current bounding box
+      if (feature) {
+        makeQuery(
+          feature,
+          mapRef.current.getBounds(),
+          mapRef.current.getZoom()
+        );
+      }
     }
   };
 

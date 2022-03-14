@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { LatLngBounds } from 'leaflet';
 import styled from 'styled-components';
 import {
   BrowserRouter as Router,
@@ -7,7 +8,11 @@ import {
 } from 'react-router-dom';
 
 import { FEATURES } from './data/mapFeatures';
-import { useAppSelector } from './state';
+import {
+  MapFeature,
+  queryOverpass, showZoomInModal,
+  useAppDispatch, useAppSelector
+} from './state';
 import { SearchParams } from './params';
 import { loadPresets } from './presets';
 import MapView from './MapView';
@@ -19,6 +24,8 @@ import InfoView from './InfoView';
 import SearchBar from './SearchBar';
 import FacetsView from './FacetsView';
 import ModalRenderer from './modals/ModalRenderer';
+import { isZoomSufficient } from './conf';
+import { buildBBoxQuery } from './overpass';
 
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-contextmenu/dist/leaflet.contextmenu.css';
@@ -42,6 +49,7 @@ const App = () => {
 };
 
 const Main = () => {
+  const dispatch = useAppDispatch();
   const filtersVisible = useAppSelector(state => state.ui.filtersVisible);
   const n = useAppSelector(state => state.poiList.data.length);
 
@@ -64,11 +72,31 @@ const Main = () => {
     );
   };
 
+  const makeQuery = (
+    feature: MapFeature,
+    bounds: LatLngBounds,
+    zoom: number
+  ) => {
+    if (!isZoomSufficient(zoom)) {
+      console.log('Please zoom in to view data!')
+      dispatch(showZoomInModal());
+      return;
+    }
+
+    const query = buildBBoxQuery(
+      [feature.value],
+      bounds
+    );
+
+    dispatch(queryOverpass(query));
+  };
+
   return (
     <>
       <SearchBar
         params={params}
         findFeature={findFeature}
+        makeQuery={makeQuery}
         mapRef={mapRef} />
       <Content>
         <SidebarBoxes>
@@ -89,6 +117,7 @@ const Main = () => {
           params={params}
           defaultView={DEFAULT_VIEW}
           findFeature={findFeature}
+          makeQuery={makeQuery}
           ref={mapRef} />
         {filtersVisible &&
           <SidebarBoxes>

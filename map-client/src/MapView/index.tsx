@@ -6,7 +6,7 @@ import 'leaflet-contextmenu';
 import { Poi } from '../types';
 import {
   MapFeature,
-  queryOverpass, showZoomInModal, setLocation, setArea,
+  setLocation, setArea,
   useAppDispatch, useAppSelector
 } from '../state';
 import { filter } from '../search';
@@ -22,8 +22,6 @@ import RemoveMapOnUnmount from './RemoveMapOnUnmount';
 import SearchInArea from './SearchInArea';
 import AddAttribution from './AddAttribution';
 import { MapState } from './types';
-import { isZoomSufficient } from '../conf';
-import { buildBBoxQuery } from '../overpass';
 import { SearchParams } from '../params';
 
 // Option: whether to use raster instead of vector graphics?
@@ -35,10 +33,15 @@ interface Props {
   params: SearchParams;
   defaultView: MapState;
   findFeature: (q: string | undefined) => MapFeature | undefined;
+  makeQuery: (
+    feature: MapFeature,
+    bounds: LatLngBounds,
+    zoom: number
+  ) => void;
 }
 
 const MapView = (
-  { params, defaultView, findFeature }: Props,
+  { params, defaultView, findFeature, makeQuery }: Props,
   ref: React.Ref<MapHandle>
 ) => {
   const dispatch = useAppDispatch();
@@ -99,25 +102,6 @@ const MapView = (
       dispatch(setArea(null));
     }
   }, [params, mapParam]);
-
-  const makeQuery = (
-    feature: MapFeature,
-    bounds: LatLngBounds,
-    zoom: number
-  ) => {
-    if (!isZoomSufficient(zoom)) {
-      console.log('Please zoom in to view data!')
-      dispatch(showZoomInModal());
-      return;
-    }
-
-    const query = buildBBoxQuery(
-      [feature.value],
-      bounds
-    );
-
-    dispatch(queryOverpass(query));
-  };
 
   return (
     <MapContainer
