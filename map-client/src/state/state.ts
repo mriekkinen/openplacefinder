@@ -1,4 +1,5 @@
 import { Feature as PeliasFeature } from '@geocodeearth/core-js/dist/geojson';
+import { LatLngLiteral } from 'leaflet';
 
 import { Poi } from '../types';
 
@@ -51,11 +52,6 @@ export interface UiState {
   modal: ModalData | null;
 }
 
-export interface LocationState {
-  lat: number;
-  lon: number;
-}
-
 export interface FacetState {
   name?: string;
   openingHours?: boolean;
@@ -66,7 +62,7 @@ export interface FacetState {
 export interface State {
   poiList: PoiState;
   ui: UiState;
-  location: LocationState;
+  location: LatLngLiteral;
 }
 
 export const initialState: State = {
@@ -87,6 +83,6 @@ export const initialState: State = {
   },
   location: {
     lat: 60.1673,
-    lon: 24.9428
+    lng: 24.9428
   }
 };

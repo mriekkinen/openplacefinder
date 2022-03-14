@@ -146,7 +146,7 @@ const MapView = (
 
       <LocationMarker
         lat={location.lat}
-        lon={location.lon} />
+        lng={location.lng} />
 
       <RemoveMapOnUnmount />
     </MapContainer>

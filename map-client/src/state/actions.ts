@@ -44,7 +44,7 @@ export type LocationAction =
       type: 'location/setLocation',
       data: {
         lat: number,
-        lon: number
+        lng: number
       }
     };
 

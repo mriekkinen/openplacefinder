@@ -5,7 +5,7 @@ import { useMap } from 'react-leaflet';
 export interface MapHandle {
   getBounds: () => LatLngBounds;
   getZoom: () => number;
-  panTo: (lat: number | undefined, lon: number | undefined, clearArea?: boolean) => void;
+  panTo: (lat: number, lng: number, clearArea?: boolean) => void;
 }
 
 interface Props {
@@ -31,8 +31,7 @@ const SetMapRef = (
         return map.getZoom();
       },
 
-      panTo: (lat: number | undefined, lng: number | undefined, clearArea = true) => {
-        if (lat === undefined || lng === undefined) return;
+      panTo: (lat: number, lng: number, clearArea = true) => {
         map.panTo([lat, lng]);
 
         // TODO: Keep an eye on the next line! This is a hack!

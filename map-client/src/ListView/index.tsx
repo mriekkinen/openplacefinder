@@ -21,7 +21,7 @@ const ListView = ({ params, mapRef }: Props) => {
   const filteredData = filter(data, country, params.facets);
 
   // Sort by distance
-  const dataWithDistances = addDistance(filteredData, location.lat, location.lon);
+  const dataWithDistances = addDistance(filteredData, location.lat, location.lng);
   sortByDistance(dataWithDistances);
 
   return (
@@ -34,7 +34,7 @@ const ListView = ({ params, mapRef }: Props) => {
           handleClick={() => {
             params.id = e.id;
             params.commit();
-            //mapRef.current?.panTo(e.lat, e.lon);
+            //mapRef.current?.panTo(e.lat, e.lng);
           }}
         />
       )}

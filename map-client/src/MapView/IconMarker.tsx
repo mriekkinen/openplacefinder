@@ -15,10 +15,6 @@ interface Props {
 }
 
 const IconMarker = ({ e, isSelected, handleClick, preset }: Props) => {
-  if (e.lat === undefined || e.lon === undefined) {
-    return null;
-  }
-
   const icon = getDivIcon(preset, isSelected) ?? getDefaultDivIcon(isSelected);
 
   const zIndexOffset = isSelected ? 10000: 0;
@@ -29,7 +25,7 @@ const IconMarker = ({ e, isSelected, handleClick, preset }: Props) => {
 
   return (
     <LeafletMarker
-      position={[e.lat, e.lon]}
+      position={[e.lat, e.lng]}
       icon={icon}
       zIndexOffset={zIndexOffset}
       eventHandlers={eventHandlers}

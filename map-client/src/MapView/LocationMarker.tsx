@@ -3,13 +3,13 @@ import { CircleMarker as LeafletCircleMarker } from 'react-leaflet';
 
 interface Props {
   lat: number;
-  lon: number;
+  lng: number;
 }
 
-const LocationMarker = ({ lat, lon }: Props) => {
+const LocationMarker = ({ lat, lng }: Props) => {
   return (
     <LeafletCircleMarker
-      center={{ lat, lng: lon }}
+      center={{ lat, lng }}
       color='#388E3C'
       pane='markerPane'
     />

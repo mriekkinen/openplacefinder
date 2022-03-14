@@ -1,25 +1,27 @@
-import { initialState, LocationState } from './state';
+import { LatLngLiteral } from 'leaflet';
+
+import { initialState } from './state';
 import { Action } from './actions';
 
-export const setLocation = (lat: number, lon: number): Action => {
+export const setLocation = (lat: number, lng: number): Action => {
   return {
     type: 'location/setLocation',
     data: {
-      lat, lon
+      lat, lng
     }
   };
 };
 
 export const locationReducer = (
-  state: LocationState = initialState.location,
+  state: LatLngLiteral = initialState.location,
   action: Action
-): LocationState => {
+): LatLngLiteral => {
   switch (action.type) {
     case 'location/setLocation':
       return {
         ...state,
         lat: action.data.lat,
-        lon: action.data.lon
+        lng: action.data.lng
       };
     default:
       return state;
