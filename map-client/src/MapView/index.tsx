@@ -6,7 +6,7 @@ import 'leaflet-contextmenu';
 import { Poi } from '../types';
 import {
   MapFeature,
-  queryOverpass, showZoomInModal, setLocation,
+  queryOverpass, showZoomInModal, setLocation, setArea,
   useAppDispatch, useAppSelector
 } from '../state';
 import { filter } from '../search';
@@ -74,7 +74,7 @@ const MapView = (
     params.commit();
   };
 
-  const handleMoveZoom = useCallback((newZoom: number, newCenter: LatLng) => {
+  const handleMoveZoom = useCallback((newZoom: number, newCenter: LatLng, clearArea = true) => {
     if (newZoom === mapParam.zoom
         && newCenter.lat.toFixed(4) === mapParam.center.lat.toFixed(4)
         && newCenter.lng.toFixed(4) === mapParam.center.lng.toFixed(4)) {
@@ -93,6 +93,11 @@ const MapView = (
       zoom: newZoom
     };
     params.commit();
+
+    // Clear the area selection box
+    if (clearArea) {
+      dispatch(setArea(null));
+    }
   }, [params, mapParam]);
 
   const makeQuery = (

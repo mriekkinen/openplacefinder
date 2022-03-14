@@ -1,5 +1,12 @@
-import { initialState, ModalData, UiState } from './state';
+import { AreaOption, initialState, ModalData, UiState } from './state';
 import { Action } from './actions';
+
+export const setArea = (newArea: AreaOption | null): Action => {
+  return {
+    type: 'ui/setArea',
+    data: newArea
+  };
+};
 
 export const showFilters = (visible: boolean): Action => {
   return {
@@ -32,6 +39,11 @@ export const uiReducer = (
   action: Action
 ): UiState => {
   switch (action.type) {
+    case 'ui/setArea':
+      return {
+        ...state,
+        area: action.data
+      };
     case 'ui/showFilters':
       return {
         ...state,

@@ -5,21 +5,17 @@ import { GoLocation } from 'react-icons/go';
 import styled from 'styled-components';
 
 import { createAutocomplete } from '@geocodeearth/core-js';
-import { Feature } from '@geocodeearth/core-js/dist/geojson';
 import throttle from 'lodash/throttle';
 import debounce from 'lodash/debounce';
 
-export interface AREA_OPTION  {
-  value: Feature;
-  label: string;
-}
+import { AreaOption } from '../state';
 
 interface Props {
-  value: AREA_OPTION | null;
-  handleChange: (newArea: AREA_OPTION | null) => void;
+  value: AreaOption | null;
+  handleChange: (newArea: AreaOption | null) => void;
 }
 
-const Geocoder = ({ value, handleChange}: Props) => {
+const Geocoder = ({ value, handleChange }: Props) => {
   const autocomplete = useMemo(() =>
     createAutocomplete({}, {
       host: 'api.digitransit.fi'
@@ -27,7 +23,7 @@ const Geocoder = ({ value, handleChange}: Props) => {
 
   const search = (
     inputValue: string,
-    cb: (opt: AREA_OPTION[]) => void
+    cb: (opt: AreaOption[]) => void
   ): void => {
     if (inputValue === '') {
       cb([]);
@@ -87,7 +83,7 @@ const Geocoder = ({ value, handleChange}: Props) => {
   );
 };
 
-const Control = ({ children, ...props }: ControlProps<AREA_OPTION, false>) => (
+const Control = ({ children, ...props }: ControlProps<AreaOption, false>) => (
   <components.Control {...props}>
     <Icon /> {children}
   </components.Control>

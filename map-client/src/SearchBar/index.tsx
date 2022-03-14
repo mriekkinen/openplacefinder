@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import {
-  MapFeature,
-  clearPoiList, setLocation,
+  AreaOption, MapFeature,
+  clearPoiList, setArea, setLocation,
   useAppDispatch, useAppSelector
 } from '../state';
 import { SearchParams } from '../params';
@@ -10,7 +10,7 @@ import { Container, Header, Item } from './styles';
 import SearchBox from './SearchBox';
 import FiltersBtn from './FiltersBtn';
 import { MapHandle } from '../MapView/SetMapRef';
-import Geocoder, { AREA_OPTION } from './Geocoder';
+import Geocoder from './Geocoder';
 
 interface Props {
   params: SearchParams;
@@ -21,8 +21,7 @@ interface Props {
 const SearchBar = ({ params, findFeature, mapRef }: Props) => {
   const dispatch = useAppDispatch();
   const status = useAppSelector(state => state.poiList.status);
-
-  const [ area, setArea ] = useState<AREA_OPTION | null>(null);
+  const area = useAppSelector(state => state.ui.area);
 
   const feature = findFeature(params.q);
 
@@ -42,9 +41,9 @@ const SearchBar = ({ params, findFeature, mapRef }: Props) => {
     params.commit();
   };
 
-  const handleAreaChange = (newArea: AREA_OPTION | null) => {
+  const handleAreaChange = (newArea: AreaOption | null) => {
     console.log('handleAreaChange: newArea:', newArea);
-    setArea(newArea);
+    dispatch(setArea(newArea));
     if (newArea === null) {
       return;
     }
@@ -52,7 +51,7 @@ const SearchBar = ({ params, findFeature, mapRef }: Props) => {
     if (mapRef.current) {
       const [lng, lat] = newArea.value.geometry.coordinates;
       dispatch(setLocation(lat, lng));
-      mapRef.current.panTo(lat, lng);
+      mapRef.current.panTo(lat, lng, false);
     }
   };
 

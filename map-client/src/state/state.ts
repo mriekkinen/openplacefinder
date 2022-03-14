@@ -1,3 +1,5 @@
+import { Feature as PeliasFeature } from '@geocodeearth/core-js/dist/geojson';
+
 import { Poi } from '../types';
 
 export type QueryStatus = 'idle' | 'loading' | 'succeeded' | 'failed';
@@ -28,11 +30,6 @@ export type ModalData =
   | ZoomInModalData
   | OverpassErrorModalData;
 
-export interface UiState {
-  filtersVisible: boolean;
-  modal: ModalData | null;
-}
-
 export interface MapFeature {
   readonly value: string;
   readonly label: string;
@@ -41,6 +38,17 @@ export interface MapFeature {
 export interface MapFeatureGroup {
   readonly label: string;
   readonly options: readonly MapFeature[];
+}
+
+export interface AreaOption  {
+  readonly value: PeliasFeature;
+  readonly label: string;
+}
+
+export interface UiState {
+  area: AreaOption | null;
+  filtersVisible: boolean;
+  modal: ModalData | null;
 }
 
 export interface LocationState {
@@ -73,6 +81,7 @@ export const initialState: State = {
     }
   },
   ui: {
+    area: null,
     filtersVisible: false,
     modal: null
   },
