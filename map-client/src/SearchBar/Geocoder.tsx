@@ -13,9 +13,10 @@ import { AreaOption } from '../state';
 interface Props {
   value: AreaOption | null;
   handleChange: (newArea: AreaOption | null) => void;
+  isDisabled: boolean;
 }
 
-const Geocoder = ({ value, handleChange }: Props) => {
+const Geocoder = ({ value, handleChange, isDisabled }: Props) => {
   const autocomplete = useMemo(() =>
     createAutocomplete({}, {
       host: 'api.digitransit.fi'
@@ -74,6 +75,7 @@ const Geocoder = ({ value, handleChange }: Props) => {
       value={value}
       onChange={handleChange}
       isClearable={true}
+      isDisabled={isDisabled}
       noOptionsMessage={noOptionsMessage}
       components={{ Control }}
       styles={{

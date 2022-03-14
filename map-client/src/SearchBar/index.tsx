@@ -87,7 +87,8 @@ const SearchBar = ({ params, findFeature, makeQuery, mapRef }: Props) => {
       <Item>
         <Geocoder
           value={area}
-          handleChange={handleAreaChange} />
+          handleChange={handleAreaChange}
+          isDisabled={status === 'loading'} />
       </Item>
       <Item>
         <FiltersBtn />
