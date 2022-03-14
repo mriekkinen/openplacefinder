@@ -16,8 +16,8 @@ const OverpassErrorModal = ({ isOpen, handleClose, error }: Props) => {
     <Modal isOpen={isOpen} handleClose={handleClose}>
       <MdHeader>Query error</MdHeader>
       <MdParagraph>
-        Unfortunately, we were unable to produce an answer to your query,
-        because there was an error.
+        We were unable to produce an answer to your query
+        due to an error.
       </MdParagraph>
       {content}
     </Modal>
