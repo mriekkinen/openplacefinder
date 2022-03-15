@@ -29,7 +29,6 @@ import { buildBBoxQuery } from './overpass';
 
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-contextmenu/dist/leaflet.contextmenu.css';
-import 'pelias-leaflet-plugin/dist/leaflet-geocoder-mapzen.css';
 import './App.css';
 
 const App = () => {

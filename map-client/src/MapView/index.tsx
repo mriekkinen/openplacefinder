@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
-import L, { LatLng, LatLngBounds } from 'leaflet';
+import { LatLng, LatLngBounds, LeafletMouseEvent } from 'leaflet';
 import 'leaflet-contextmenu';
 
 import { Poi } from '../types';
@@ -56,7 +56,7 @@ const MapView = (
   const contextmenuItems = [
     {
       text: 'Set location',
-      callback: (e: L.LeafletMouseEvent) => {
+      callback: (e: LeafletMouseEvent) => {
         dispatch(setLocation(e.latlng.lat, e.latlng.lng));
       }
     }

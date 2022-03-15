@@ -1,4 +1,6 @@
+import { LatLngLiteral } from 'leaflet';
+
 export interface MapState {
-  center: L.LatLngLiteral;
+  center: LatLngLiteral;
   zoom: number;
 }
