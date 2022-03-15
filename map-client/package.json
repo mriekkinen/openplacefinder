@@ -18,7 +18,6 @@
     "leaflet-contextmenu": "^1.4.0",
     "lodash": "^4.17.21",
     "opening_hours": "^3.7.0",
-    "pelias-leaflet-plugin": "^1.12.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-icons": "^4.2.0",
@@ -60,7 +59,6 @@
   },
   "devDependencies": {
     "@types/leaflet": "^1.7.4",
-    "@types/leaflet-geocoder-mapzen": "^1.6.10",
     "@types/lodash": "^4.14.179",
     "@types/react-modal": "^3.13.1",
     "@types/styled-components": "^5.1.12",
