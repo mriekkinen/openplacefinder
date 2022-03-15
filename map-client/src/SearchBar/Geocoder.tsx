@@ -16,6 +16,17 @@ interface Props {
   isDisabled: boolean;
 }
 
+/**
+ * An autocomplete component for translating place names into geographic features.
+ * Queries a Pelias server repeatedly to provide suggestions while the user types.
+ * 
+ * Uses React Select for the UI, and an open source library for interacting
+ * with a Pelias server.
+ * 
+ * Credit:
+ * - Based on https://github.com/geocodeearth/autocomplete-element
+ * - Uses a modified version of https://github.com/geocodeearth/core-js
+ */
 const Geocoder = ({ value, handleChange, isDisabled }: Props) => {
   const autocomplete = useMemo(() =>
     createAutocomplete({}, {
@@ -32,14 +43,21 @@ const Geocoder = ({ value, handleChange, isDisabled }: Props) => {
     }
 
     autocomplete(inputValue)
-      .then(res => {
-        if (!res.features) {
+      .then(({ features, discard }) => {
+        console.log(`Received a response for "${inputValue}":`, {features, discard});
+
+        if (discard) {
+          console.log('discarding an out-of-order response');
+          return;
+        }
+
+        if (!features) {
           console.log('search succeeded BUT returned NO features');
           cb([]);
           return;
         }
 
-        const options = res.features.map(f => ({
+        const options = features.map(f => ({
           value: f,
           label: f.properties.label
         }));
@@ -61,16 +79,16 @@ const Geocoder = ({ value, handleChange, isDisabled }: Props) => {
   };
 
   const throttledSearch = useCallback(throttle(
-    search, 1000, { leading: true, trailing: true }
+    search, 200, { leading: true, trailing: true }
   ), []);
 
-  const debouncedSearch = useCallback(debounce(search, 1000), []);
+  const debouncedSearch = useCallback(debounce(search, 200), []);
 
   return (
     <AsyncSelect
       cacheOptions
       defaultOptions={false}
-      loadOptions={debouncedSearch}
+      loadOptions={throttledSearch}
       placeholder='Current map view'
       value={value}
       onChange={handleChange}
