@@ -8,7 +8,7 @@ import { GoLocation } from 'react-icons/go';
 const Logo = () => (
   <LogoContainer>
     <LogoLink to='/'>
-      <GoLocation /> POIGuru
+      <GoLocation /> OpenPlaceFinder
     </LogoLink>
   </LogoContainer>
 );
