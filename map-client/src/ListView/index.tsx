@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { useAppSelector } from '../state';
 import { MapHandle } from '../MapView/SetMapRef';
+import ListHeader from './ListHeader';
 import ListElement from './ListElement';
 import { filter, addDistance, sortByDistance } from '../search';
 import { SearchParams } from '../params';
@@ -26,6 +27,10 @@ const ListView = ({ params, mapRef }: Props) => {
 
   return (
     <Container>
+      <ListHeader
+        params={params}
+        data={data}
+        filteredData={filteredData} />
       {dataWithDistances.map(e =>
         <ListElement
           key={`${e.type}-${e.id}`}
