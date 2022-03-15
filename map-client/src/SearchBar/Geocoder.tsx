@@ -9,6 +9,7 @@ import throttle from 'lodash/throttle';
 import debounce from 'lodash/debounce';
 
 import { AreaOption } from '../state';
+import { getGeocoderHost, getGeocoderWait } from '../conf';
 
 interface Props {
   value: AreaOption | null;
@@ -30,8 +31,10 @@ interface Props {
 const Geocoder = ({ value, handleChange, isDisabled }: Props) => {
   const autocomplete = useMemo(() =>
     createAutocomplete({}, {
-      host: 'api.digitransit.fi'
+      host: getGeocoderHost()
     }), []);
+
+  const wait = getGeocoderWait();
 
   const search = (
     inputValue: string,
@@ -79,10 +82,10 @@ const Geocoder = ({ value, handleChange, isDisabled }: Props) => {
   };
 
   const throttledSearch = useCallback(throttle(
-    search, 200, { leading: true, trailing: true }
+    search, wait, { leading: true, trailing: true }
   ), []);
 
-  const debouncedSearch = useCallback(debounce(search, 200), []);
+  const debouncedSearch = useCallback(debounce(search, wait), []);
 
   return (
     <AsyncSelect
