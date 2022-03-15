@@ -91,7 +91,8 @@ const SearchBar = ({ params, findFeature, makeQuery, mapRef }: Props) => {
           isDisabled={status === 'loading'} />
       </Item>
       <Item>
-        <FiltersBtn />
+        <FiltersBtn
+          facets={params.facets} />
       </Item>
     </Container>
   );

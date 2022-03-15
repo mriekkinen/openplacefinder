@@ -2,9 +2,23 @@ import React from 'react';
 import styled from 'styled-components';
 import { VscSettings } from 'react-icons/vsc';
 
-import { showFilters, useAppDispatch, useAppSelector } from '../state';
+import {
+  FacetState,
+  showFilters,
+  useAppDispatch, useAppSelector
+} from '../state';
 
-const FiltersBtn = () => {
+type FacetCounts = Required<{
+  [Property in keyof FacetState]: number;
+}> & {
+  total: number;
+};
+
+interface Props {
+  facets: FacetState;
+}
+
+const FiltersBtn = ({ facets }: Props) => {
   const dispatch = useAppDispatch();
   const status = useAppSelector(state => state.ui.filtersVisible);
 
@@ -12,10 +26,32 @@ const FiltersBtn = () => {
     dispatch(showFilters(!status));
   };
 
+  const countFacets = (f: FacetState): FacetCounts => {
+    const counts: Omit<FacetCounts, 'total'> = {
+      name: f.name ? 1 : 0,
+      openingHours: f.openingHours? 1 : 0,
+      openNow: f.openNow ? 1 : 0,
+      cuisines: f.cuisines ? f.cuisines.size : 0
+    };
+
+    const total = Object.values(counts).reduce((sum, x) => sum + x, 0);
+
+    return {
+      ...counts,
+      total
+    };
+  };
+
+  const counts = countFacets(facets);
+
+  const totalSpan = counts.total !== 0
+    ? <>&nbsp;<FilterCount>{counts.total}</FilterCount></>
+    : null;
+
   return (
     <Button onClick={handleClick}>
       <Icon />
-      <span>&nbsp;Filters</span>
+      <span>&nbsp;Filter{totalSpan}</span>
     </Button>
   );
 };
@@ -40,6 +76,17 @@ const Icon = styled(VscSettings)`
   height: 1.5em;
   padding: 2px 0;
   color: hsl(0, 0%, 50%);
+`;
+
+const FilterCount = styled.span`
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 1.15em;
+  height: 1.15em;
+  border-radius: 50%;
+  color: white;
+  background-color: #1976D2;
 `;
 
 export default FiltersBtn;
