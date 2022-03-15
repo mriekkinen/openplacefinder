@@ -47,15 +47,12 @@ const Geocoder = ({ value, handleChange, isDisabled }: Props) => {
 
     autocomplete(inputValue)
       .then(({ features, discard }) => {
-        console.log(`Received a response for "${inputValue}":`, {features, discard});
-
+        // Discard out-of-order responses
         if (discard) {
-          console.log('discarding an out-of-order response');
           return;
         }
 
         if (!features) {
-          console.log('search succeeded BUT returned NO features');
           cb([]);
           return;
         }
@@ -65,10 +62,9 @@ const Geocoder = ({ value, handleChange, isDisabled }: Props) => {
           label: f.properties.label
         }));
 
-        console.log('search succeeded, returning', options);
         cb(options);
       }).catch(err => {
-        console.log('search failed, err:', err);
+        console.log('Search failed, err:', err);
         cb([]);
       })
   };
