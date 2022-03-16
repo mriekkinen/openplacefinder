@@ -5,11 +5,11 @@ import { useMap } from 'react-leaflet';
 export interface MapHandle {
   getBounds: () => LatLngBounds;
   getZoom: () => number;
-  panTo: (lat: number, lng: number, clearArea?: boolean) => void;
+  panTo: (lat: number, lng: number, clearArea?: boolean, commitChanges?: boolean) => void;
 }
 
 interface Props {
-  handleMoveZoom: (zoom: number, center: LatLng, clearArea?: boolean) => void;
+  handleMoveZoom: (zoom: number, center: LatLng, clearArea?: boolean, commitChanges?: boolean) => void;
 }
 
 const SetMapRef = (
@@ -31,7 +31,7 @@ const SetMapRef = (
         return map.getZoom();
       },
 
-      panTo: (lat: number, lng: number, clearArea = true) => {
+      panTo: (lat: number, lng: number, clearArea = true, commitChanges = true) => {
         map.panTo([lat, lng]);
 
         // TODO: Keep an eye on the next line! This is a hack!
@@ -42,7 +42,7 @@ const SetMapRef = (
         // Hence, in this case we have to call the event handler manually.
         // (This won't work properly if we do a zoom as well, because zooming
         // is a separate event whose handler would be triggered twice.)
-        handleMoveZoom(map.getZoom(), new LatLng(lat, lng), clearArea);
+        handleMoveZoom(map.getZoom(), new LatLng(lat, lng), clearArea, commitChanges);
       }
     };
   });

@@ -16,13 +16,12 @@ interface Props {
 const ListView = ({ params, mapRef }: Props) => {
   const data = useAppSelector(state => state.poiList.data);
   const country = useAppSelector(state => state.poiList.country);
-  const location = useAppSelector(state => state.location);
 
   // Apply filters
   const filteredData = filter(data, country, params.facets);
 
   // Sort by distance
-  const dataWithDistances = addDistance(filteredData, location.lat, location.lng);
+  const dataWithDistances = addDistance(filteredData, params.loc.lat, params.loc.lng);
   sortByDistance(dataWithDistances);
 
   return (

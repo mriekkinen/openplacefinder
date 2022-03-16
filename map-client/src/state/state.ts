@@ -1,5 +1,4 @@
 import { Feature as PeliasFeature } from '@geocodeearth/core-js/dist/geojson';
-import { LatLngLiteral } from 'leaflet';
 
 import { Poi } from '../types';
 
@@ -62,7 +61,6 @@ export interface FacetState {
 export interface State {
   poiList: PoiState;
   ui: UiState;
-  location: LatLngLiteral;
 }
 
 export const initialState: State = {
@@ -80,9 +78,5 @@ export const initialState: State = {
     area: null,
     filtersVisible: false,
     modal: null
-  },
-  location: {
-    lat: 60.1673,
-    lng: 24.9428
   }
 };

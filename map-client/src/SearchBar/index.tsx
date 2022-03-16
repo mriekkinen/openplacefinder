@@ -3,7 +3,7 @@ import { LatLngBounds } from 'leaflet';
 
 import {
   AreaOption, MapFeature,
-  clearPoiList, setArea, setLocation,
+  clearPoiList, setArea,
   useAppDispatch, useAppSelector
 } from '../state';
 import { SearchParams } from '../params';
@@ -57,11 +57,15 @@ const SearchBar = ({ params, findFeature, makeQuery, mapRef }: Props) => {
     if (mapRef.current) {
       const [lng, lat] = newArea.value.geometry.coordinates;
 
-      // Update the user's location
-      dispatch(setLocation(lat, lng));
-
       // Pan the map to the new location
-      mapRef.current.panTo(lat, lng, false);
+      // Note: this is the only place where we need the 2 last parameters
+      // 1. Don't clear the area selection box (we want the value to stay)
+      // 2. Don't commit changes to search parameters (because we commit below)
+      mapRef.current.panTo(lat, lng, false, false);
+
+      // Update the user's location
+      params.loc = { lat, lng };
+      params.commit();
 
       // Submit a new query using the current bounding box
       if (feature) {

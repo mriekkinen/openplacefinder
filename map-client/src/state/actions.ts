@@ -39,16 +39,6 @@ export type UiAction =
     data: ModalData | null
   };
 
-export type LocationAction =
-  | {
-      type: 'location/setLocation',
-      data: {
-        lat: number,
-        lng: number
-      }
-    };
-
 export type Action =
   | PoiAction
-  | UiAction
-  | LocationAction;
+  | UiAction;

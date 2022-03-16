@@ -1,24 +1,33 @@
+import { LatLngLiteral } from "leaflet";
 import { ParamKeyValuePair, URLSearchParamsInit } from "react-router-dom";
 
 import { MapState } from "../MapView/types";
 import { FacetState } from "../state";
+
+export interface SearchParamDefaults {
+  loc: LatLngLiteral;
+  map: MapState;
+}
 
 type SetSearchParams = (nextInit: URLSearchParamsInit) => void;
 
 export class SearchParams {
   q?: string;
   id?: number;
-  map?: MapState;
+  loc: LatLngLiteral;
+  map: MapState;
   facets: FacetState;
   private setSearchParams: SetSearchParams;
 
   constructor(
     searchParams: URLSearchParams,
-    setSearchParams: SetSearchParams
+    setSearchParams: SetSearchParams,
+    defaults: SearchParamDefaults
   ) {
     this.q = this.parseQueryParam(searchParams.get('q'));
     this.id = this.parseIdParam(searchParams.get('id'));
-    this.map = this.parseMapParam(searchParams.get('map'));
+    this.loc = this.parseLocationParam(searchParams.get('loc')) ?? defaults.loc;
+    this.map = this.parseMapParam(searchParams.get('map')) ?? defaults.map;
     this.facets = this.parseFacetParams(
       searchParams.get('name'),
       searchParams.has('openingHours'),
@@ -34,6 +43,24 @@ export class SearchParams {
 
   private parseIdParam = (idStr: string | null): number | undefined => {
     return idStr ? Number(idStr) : undefined;
+  };
+
+  private parseLocationParam = (locationStr: string | null): LatLngLiteral | undefined => {
+    // Parse the "location" URL search parameter
+    // Should be in the format: loc=lat_lng
+    const pattern = /^(?<lat>-?\d+\.\d+)_(?<lng>-?\d+\.\d+)$/;
+    const match = locationStr?.match(pattern);
+    if (!match || !match.groups) {
+      return undefined;
+    }
+
+    const lat = Number(match.groups.lat);
+    const lng = Number(match.groups.lng);
+    if (isNaN(lat) || isNaN(lng)) {
+      return undefined;
+    }
+
+    return { lat, lng };
   };
 
   private parseMapParam = (mapStr: string | null): MapState | undefined => {
@@ -101,6 +128,13 @@ export class SearchParams {
     if (this.facets.cuisines?.size) {
       const cuisines = Array.from(this.facets.cuisines);
       list.push(['cuisine', cuisines.join(';')])
+    }
+
+    if (this.loc) {
+      const nlat = this.loc.lat.toFixed(4);
+      const nlng = this.loc.lng.toFixed(4);
+
+      list.push(['loc', `${nlat}_${nlng}`]);
     }
 
     if (this.map) {

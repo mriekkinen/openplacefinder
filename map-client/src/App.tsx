@@ -13,7 +13,7 @@ import {
   queryOverpass, showZoomInModal,
   useAppDispatch, useAppSelector
 } from './state';
-import { SearchParams } from './params';
+import { SearchParams, SearchParamDefaults } from './params';
 import { loadPresets } from './presets';
 import MapView from './MapView';
 import { MapState } from './MapView/types';
@@ -55,11 +55,6 @@ const Main = () => {
   const filtersVisible = useAppSelector(state => state.ui.filtersVisible);
   const n = useAppSelector(state => state.poiList.data.length);
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const params = new SearchParams(searchParams, setSearchParams);
-
-  const mapRef = useRef<MapHandle>(null);
-
   const DEFAULT_VIEW: MapState = {
     center: {
       lat: 60.1673,
@@ -67,6 +62,16 @@ const Main = () => {
     },
     zoom: 13
   };
+
+  const defaults: SearchParamDefaults = {
+    loc: DEFAULT_VIEW.center,
+    map: DEFAULT_VIEW
+  };
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const params = new SearchParams(searchParams, setSearchParams, defaults);
+
+  const mapRef = useRef<MapHandle>(null);
 
   const findFeature = (q: string | undefined) => {
     return FEATURES.find(
@@ -117,7 +122,6 @@ const Main = () => {
         </SidebarBoxes>
         <MapView
           params={params}
-          defaultView={DEFAULT_VIEW}
           findFeature={findFeature}
           makeQuery={makeQuery}
           ref={mapRef} />

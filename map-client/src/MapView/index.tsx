@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
-import { LatLng, LatLngBounds, LeafletMouseEvent } from 'leaflet';
+import { LatLng, LatLngBounds } from 'leaflet';
 import 'leaflet-contextmenu';
 
 import { Poi } from '../types';
 import {
   MapFeature,
-  setLocation, setArea,
+  setArea,
   useAppDispatch, useAppSelector
 } from '../state';
 import { filter } from '../search';
@@ -21,7 +21,7 @@ import LocationMarker from './LocationMarker';
 import RemoveMapOnUnmount from './RemoveMapOnUnmount';
 import SearchInArea from './SearchInArea';
 import AddAttribution from './AddAttribution';
-import { MapState } from './types';
+import AddContextMenu from './AddContextMenu';
 import { SearchParams } from '../params';
 
 // Option: whether to use raster instead of vector graphics?
@@ -31,7 +31,6 @@ const PREFER_CANVAS = false;
 
 interface Props {
   params: SearchParams;
-  defaultView: MapState;
   findFeature: (q: string | undefined) => MapFeature | undefined;
   makeQuery: (
     feature: MapFeature,
@@ -41,26 +40,14 @@ interface Props {
 }
 
 const MapView = (
-  { params, defaultView, findFeature, makeQuery }: Props,
+  { params, findFeature, makeQuery }: Props,
   ref: React.Ref<MapHandle>
 ) => {
   const dispatch = useAppDispatch();
   const data = useAppSelector(state => state.poiList.data);
   const country = useAppSelector(state => state.poiList.country);
-  const location = useAppSelector(state => state.location);
 
   const filteredData = filter(data, country, params.facets);
-
-  const mapParam = params.map ?? defaultView;
-
-  const contextmenuItems = [
-    {
-      text: 'Set location',
-      callback: (e: LeafletMouseEvent) => {
-        dispatch(setLocation(e.latlng.lat, e.latlng.lng));
-      }
-    }
-  ];
 
   const tileProps = {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
@@ -77,10 +64,10 @@ const MapView = (
     params.commit();
   };
 
-  const handleMoveZoom = useCallback((newZoom: number, newCenter: LatLng, clearArea = true) => {
-    if (newZoom === mapParam.zoom
-        && newCenter.lat.toFixed(4) === mapParam.center.lat.toFixed(4)
-        && newCenter.lng.toFixed(4) === mapParam.center.lng.toFixed(4)) {
+  const handleMoveZoom = useCallback((newZoom: number, newCenter: LatLng, clearArea = true, commitChanges = true) => {
+    if (newZoom === params.map.zoom
+        && newCenter.lat.toFixed(4) === params.map.center.lat.toFixed(4)
+        && newCenter.lng.toFixed(4) === params.map.center.lng.toFixed(4)) {
       return;
     }
 
@@ -95,34 +82,37 @@ const MapView = (
       },
       zoom: newZoom
     };
-    params.commit();
+    if (commitChanges) {
+      params.commit();
+    }
 
     // Clear the area selection box
     if (clearArea) {
       dispatch(setArea(null));
     }
-  }, [params, mapParam]);
+  }, [params, params.map]);
 
   return (
     <MapContainer
       id='map-container'
-      center={mapParam.center}
-      zoom={mapParam.zoom}
+      center={params.map.center}
+      zoom={params.map.zoom}
       scrollWheelZoom={true}
       preferCanvas={PREFER_CANVAS}
       contextmenu={true}
-      contextmenuItems={contextmenuItems}
     >
       <SetMapRef
         handleMoveZoom={handleMoveZoom}
         ref={ref} />
       <AddAttribution />
+      <AddContextMenu
+        params={params} />
       <HandleResize />
       <HandleMapEvents
         handleMapClick={handleMapClick}
         handleMoveZoom={handleMoveZoom} />
       <HandleBackFwd
-        mapParam={mapParam} />
+        mapParam={params.map} />
       <QueryOverpass
         q={params.q}
         findFeature={findFeature}
@@ -145,8 +135,8 @@ const MapView = (
       )}
 
       <LocationMarker
-        lat={location.lat}
-        lng={location.lng} />
+        lat={params.loc.lat}
+        lng={params.loc.lng} />
 
       <RemoveMapOnUnmount />
     </MapContainer>
