@@ -55,13 +55,17 @@ const MapView = (
   };
 
   const handleMapClick = () => {
-    params.id = undefined;
-    params.commit();
+    if (params.id !== undefined) {
+      params.id = undefined;
+      params.commit();
+    }
   };
 
   const handleMarkerClick = (e: Poi) => () => {
-    params.id = e.id;
-    params.commit();
+    if (params.id !== e.id) {
+      params.id = e.id;
+      params.commit();
+    }
   };
 
   const handleMoveZoom = useCallback((newZoom: number, newCenter: LatLng, clearArea = true, commitChanges = true) => {
