@@ -2,12 +2,14 @@ import { useEffect } from 'react';
 import { useMap } from 'react-leaflet';
 
 import { MapState } from './types';
+import { setArea, useAppDispatch } from '../state';
 
 interface Props {
   mapParam: MapState;
 }
 
 const HandleBackFwd = ({ mapParam }: Props) => {
+  const dispatch = useAppDispatch();
   const map = useMap();
   useEffect(() => {
     if (map.getZoom() !== mapParam.zoom
@@ -27,6 +29,10 @@ const HandleBackFwd = ({ mapParam }: Props) => {
       // which would otherwise become out of sync with the URL
       // (on the other hand, we don't need to worry about the "id" parameter)
       map.setView(mapParam.center, mapParam.zoom);
+
+      // Clear the area selection box
+      // since it's no longer up-to-date
+      dispatch(setArea(null));
     }
   }, [
     map,
