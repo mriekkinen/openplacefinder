@@ -2,37 +2,39 @@ import React from 'react';
 import { LatLngBounds } from 'leaflet';
 
 import {
-  AreaOption, MapFeature,
+  PresetOption, AreaOption,
   clearPoiList, setArea,
   useAppDispatch, useAppSelector
 } from '../state';
 import { SearchParams } from '../params';
+import { Preset } from '../presets';
 import { Container, Header, Item } from './styles';
 import SearchBox from './SearchBox';
+import Geocoder from './Geocoder';
 import FiltersBtn from './FiltersBtn';
 import { MapHandle } from '../MapView/SetMapRef';
-import Geocoder from './Geocoder';
 
 interface Props {
   params: SearchParams;
-  findFeature: (q: string | undefined) => MapFeature | undefined;
+  findPreset: (q: string | undefined) => PresetOption | undefined;
   makeQuery: (
-    feature: MapFeature,
+    preset: Preset,
     bounds: LatLngBounds,
     zoom: number
   ) => void;
   mapRef: React.RefObject<MapHandle>;
 }
 
-const SearchBar = ({ params, findFeature, makeQuery, mapRef }: Props) => {
+const SearchBar = ({ params, findPreset, makeQuery, mapRef }: Props) => {
   const dispatch = useAppDispatch();
   const status = useAppSelector(state => state.poiList.status);
   const area = useAppSelector(state => state.ui.area);
 
-  const feature = findFeature(params.q);
+  const presetOption = findPreset(params.q);
+  const preset = presetOption?.value;
 
-  const handleFeatureChange = (newFeature: MapFeature | null) => {
-    if (newFeature === null) {
+  const handlePresetChange = (newPreset: PresetOption | null) => {
+    if (newPreset === null) {
       params.q = undefined;
       params.id = undefined;
       params.facets = {};
@@ -41,7 +43,7 @@ const SearchBar = ({ params, findFeature, makeQuery, mapRef }: Props) => {
       return;
     }
 
-    params.q = newFeature.label;
+    params.q = newPreset.value.id;
     params.id = undefined;
     params.facets = {};
     params.commit();
@@ -68,9 +70,9 @@ const SearchBar = ({ params, findFeature, makeQuery, mapRef }: Props) => {
       params.commit();
 
       // Submit a new query using the current bounding box
-      if (feature) {
+      if (preset) {
         makeQuery(
-          feature,
+          preset,
           mapRef.current.getBounds(),
           mapRef.current.getZoom()
         );
@@ -83,9 +85,9 @@ const SearchBar = ({ params, findFeature, makeQuery, mapRef }: Props) => {
       <Header>Search</Header>
       <Item>
         <SearchBox
-          value={feature ?? null}
-          handleChange={handleFeatureChange}
-          isLoading={status === 'loading'}
+          value={presetOption ?? null}
+          handleChange={handlePresetChange}
+          isDisabled={status === 'loading'}
         />
       </Item>
       <Item>

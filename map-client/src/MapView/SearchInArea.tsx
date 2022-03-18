@@ -4,32 +4,33 @@ import { useMap } from 'react-leaflet';
 import styled from 'styled-components';
 import { MdReplay } from 'react-icons/md';
 
-import { MapFeature } from '../state';
+import { PresetOption } from '../state';
+import { Preset } from '../presets';
 
 interface Props {
   q: string | undefined;
-  findFeature: (q: string | undefined) => MapFeature | undefined;
+  findPreset: (q: string | undefined) => PresetOption | undefined;
   makeQuery: (
-    feature: MapFeature,
+    preset: Preset,
     bounds: LatLngBounds,
     zoom: number
   ) => void;
 }
 
-const SearchInArea = ({ q, findFeature, makeQuery }: Props) => {
+const SearchInArea = ({ q, findPreset, makeQuery }: Props) => {
   const map = useMap();
 
   // Make a new query using the current bounding box
   const setBBox = () => {
-    const feature = findFeature(q);
-    if (!feature) {
+    const preset = findPreset(q)?.value;
+    if (!preset) {
       // TODO: Consider showing a modal
-      // Something like: "no feature selected"
+      // Something like: "no feature type selected"
       return;
     }
 
     makeQuery(
-      feature,
+      preset,
       map.getBounds(),
       map.getZoom()
     );

@@ -7,14 +7,12 @@ import {
   useSearchParams
 } from 'react-router-dom';
 
-import { FEATURES } from './data/mapFeatures';
 import {
-  MapFeature,
   queryOverpass, showZoomInModal,
   useAppDispatch, useAppSelector
 } from './state';
 import { SearchParams, SearchParamDefaults } from './params';
-import { loadPresets } from './presets';
+import { Preset, loadPresets, presetSingleton } from './presets';
 import MapView from './MapView';
 import { MapState } from './MapView/types';
 import { MapHandle } from './MapView/SetMapRef';
@@ -26,6 +24,7 @@ import FacetsView from './FacetsView';
 import ModalRenderer from './modals/ModalRenderer';
 import { isZoomSufficient } from './conf';
 import { buildBBoxQuery } from './overpass';
+import { Tags } from './types';
 
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-contextmenu/dist/leaflet.contextmenu.css';
@@ -73,14 +72,32 @@ const Main = () => {
 
   const mapRef = useRef<MapHandle>(null);
 
-  const findFeature = (q: string | undefined) => {
-    return FEATURES.find(
-      f => f.label.toLowerCase() === q?.toLowerCase()
-    );
+  const findPreset = (q: string | undefined) => {
+    const preset = presetSingleton.getPreset(q);
+    if (!preset) {
+      return undefined;
+    }
+
+    return {
+      value: preset,
+      label: presetSingleton.getName(preset.id) ?? preset.id
+    };
+  };
+
+  const toList = (tags: Tags) => {
+    const tagList: string[] = [];
+    for (const key in tags) {
+      const value = tags[key];
+      if (key && value) {
+        tagList.push(`${key}=${value}`);
+      }
+    }
+
+    return tagList;
   };
 
   const makeQuery = (
-    feature: MapFeature,
+    preset: Preset,
     bounds: LatLngBounds,
     zoom: number
   ) => {
@@ -91,7 +108,7 @@ const Main = () => {
     }
 
     const query = buildBBoxQuery(
-      [feature.value],
+      toList(preset.tags),
       bounds
     );
 
@@ -102,7 +119,7 @@ const Main = () => {
     <>
       <SearchBar
         params={params}
-        findFeature={findFeature}
+        findPreset={findPreset}
         makeQuery={makeQuery}
         mapRef={mapRef} />
       <Content>
@@ -122,7 +139,7 @@ const Main = () => {
         </SidebarBoxes>
         <MapView
           params={params}
-          findFeature={findFeature}
+          findPreset={findPreset}
           makeQuery={makeQuery}
           ref={mapRef} />
         {filtersVisible &&

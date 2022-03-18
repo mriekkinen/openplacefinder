@@ -98,7 +98,8 @@ const Geocoder = ({ value, handleChange, isDisabled }: Props) => {
       styles={{
         menu: css => ({ ...css, zIndex: 99999 }),
         valueContainer: css => ({ ...css, paddingLeft: 6, paddingRight: 6 })
-      }} />
+      }}
+    />
   );
 };
 

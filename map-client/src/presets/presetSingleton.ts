@@ -2,6 +2,7 @@ import { Presets } from './presets';
 import { PresetParser } from './presetService';
 import { PresetMatcher } from './presetService';
 import { PresetNames } from './presetNames';
+import { PresetSearch } from './presetSearch';
 
 import presetData from '@openstreetmap/id-tagging-schema/dist/presets.min.json';
 //import presetNamesEn from '@openstreetmap/id-tagging-schema/dist/translations/en.min.json';
@@ -13,6 +14,7 @@ export const loadPresets = () => {
   const parser = new PresetParser(presetData);
   const matcher = new PresetMatcher(parser);
   const names = new PresetNames(presetNamesFi, 'fi');
+  const search = new PresetSearch(parser, names);
 
-  presetSingleton = new Presets(parser, matcher, names);
+  presetSingleton = new Presets(parser, matcher, names, search);
 }

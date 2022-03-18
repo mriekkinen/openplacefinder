@@ -1,27 +1,55 @@
 import React from 'react';
 import styled from 'styled-components';
-import Select, { components, ControlProps } from 'react-select';
+import { components, ControlProps } from 'react-select';
+import AsyncSelect from 'react-select/async';
 import { MdSearch } from 'react-icons/md';
 
-import { MapFeature } from '../state';
-import { MAP_FEATURES } from '../data/mapFeatures';
+import { PresetOption } from '../state';
+import { presetSingleton } from '../presets';
 
 interface Props {
-  value: MapFeature | null;
-  handleChange: (newValue: MapFeature | null) => void;
-  isLoading: boolean;
+  value: PresetOption | null;
+  handleChange: (newValue: PresetOption | null) => void;
+  isDisabled: boolean;
 }
 
-const SearchBox = ({ value, handleChange, isLoading }: Props) => {
+const SearchBox = ({ value, handleChange, isDisabled }: Props) => {
+  const search = (
+    inputValue: string,
+    cb: (opt: PresetOption[]) => void
+  ): void => {
+    if (inputValue === '') {
+      cb([]);
+      return;
+    }
+
+    const presets = presetSingleton.search(inputValue);
+    const options = presets.map(p => ({
+      value: p,
+      label: presetSingleton.getName(p.id) ?? p.id
+    }));
+    cb(options);
+  };
+
+  const noOptionsMessage = ({ inputValue }: { inputValue: string}): string => {
+    if (inputValue === '') {
+      return 'Type a feature type...'
+    }
+
+    return 'No results';
+  };
+
   return (
-    <Select
+    <AsyncSelect
+      cacheOptions
+      defaultOptions={false}
+      loadOptions={search}
       placeholder='What are you looking for?'
       value={value}
-      options={MAP_FEATURES}
       onChange={handleChange}
-      isLoading={isLoading}
-      isDisabled={isLoading}
       isClearable={true}
+      isDisabled={isDisabled}
+      noOptionsMessage={noOptionsMessage}
       components={{ Control }}
       styles={{
         menu: css => ({ ...css, zIndex: 99999 }),
@@ -31,7 +59,7 @@ const SearchBox = ({ value, handleChange, isLoading }: Props) => {
   );
 };
 
-const Control = ({ children, ...props }: ControlProps<MapFeature, false>) => (
+const Control = ({ children, ...props }: ControlProps<PresetOption, false>) => (
   <components.Control {...props}>
     <Icon /> {children}
   </components.Control>

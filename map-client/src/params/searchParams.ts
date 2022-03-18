@@ -38,7 +38,7 @@ export class SearchParams {
   }
 
   private parseQueryParam = (queryStr: string | null): string | undefined => {
-    return queryStr ?? undefined;
+    return queryStr?.replaceAll(' ', '/');
   }
 
   private parseIdParam = (idStr: string | null): number | undefined => {
@@ -106,7 +106,7 @@ export class SearchParams {
   public build(): ParamKeyValuePair[] {
     const list: [string, string][] = [];
     if (this.q) {
-      list.push(['q', this.q.toLowerCase()]);
+      list.push(['q', this.q.replaceAll('/', ' ')]);
     }
 
     if (this.id) {

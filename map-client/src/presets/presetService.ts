@@ -30,11 +30,13 @@ import {
 } from './types';
 
 export class PresetParser {
+  readonly list: Preset[];
   readonly index: PresetIndex;
   readonly presetMap: PresetMap;
 
   constructor(json: PresetJsonMap) {
     const presets = this.parsePresetData(json);
+    this.list = presets;
     this.index = this.buildIndex(presets);
     this.presetMap = this.buildMap(presets);
   }
@@ -56,7 +58,8 @@ export class PresetParser {
         id,
         tags: pd.tags,
         fields: new Set(allFields),
-        originalScore: pd.originalScore ?? 1
+        originalScore: pd.originalScore ?? 1,
+        searchable: pd.searchable ?? true
       };
 
       if (pd.addTags) {
@@ -101,11 +104,14 @@ export class PresetParser {
         return true;
       }
 
-      // Ignore presets which have no fields
-      // For instance, "embankment", which is an attribute
-      if (!('fields' in preset)) {
-        return true;
-      }
+      //
+      // TODO: CHECK THIS !!!
+      //
+      // // Ignore presets which have no fields
+      // // For instance, "embankment", which is an attribute
+      // if (!('fields' in preset)) {
+      //   return true;
+      // }
 
       // Ignore the address presets (there seem to be just 2)
       if (/^addr:/.test(k)) {
