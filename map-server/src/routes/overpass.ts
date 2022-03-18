@@ -15,7 +15,7 @@ import express, { Request, Response } from 'express';
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { OverpassJson } from 'overpass-ts';
 
-const apiBaseUrl = 'https://overpass-api.de/api/interpreter';
+const apiBaseUrl = 'https://overpass.kumi.systems/api/interpreter';
 
 // TODO: Update the user agent string
 const config: AxiosRequestConfig = {
