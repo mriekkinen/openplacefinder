@@ -11,10 +11,11 @@ import presetNamesFi from '@openstreetmap/id-tagging-schema/dist/translations/fi
 export let presetSingleton: Presets;
 
 export const loadPresets = () => {
-  const parser = new PresetParser(presetData);
-  const matcher = new PresetMatcher(parser);
+  const parserSub = new PresetParser(presetData, false);
+  const parserAll = new PresetParser(presetData, true);
+  const matcher = new PresetMatcher(parserSub);
   const names = new PresetNames(presetNamesFi, 'fi');
-  const search = new PresetSearch(parser, names);
+  const search = new PresetSearch(parserAll, names);
 
-  presetSingleton = new Presets(parser, matcher, names, search);
+  presetSingleton = new Presets(parserAll, matcher, names, search);
 }
