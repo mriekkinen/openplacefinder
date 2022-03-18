@@ -5,15 +5,16 @@ import AsyncSelect from 'react-select/async';
 import { MdSearch } from 'react-icons/md';
 
 import { PresetOption } from '../state';
-import { presetSingleton } from '../presets';
+import { Preset, presetSingleton } from '../presets';
 
 interface Props {
   value: PresetOption | null;
   handleChange: (newValue: PresetOption | null) => void;
+  toPresetOption: (p: Preset) => PresetOption;
   isDisabled: boolean;
 }
 
-const SearchBox = ({ value, handleChange, isDisabled }: Props) => {
+const SearchBox = ({ value, handleChange, toPresetOption, isDisabled }: Props) => {
   const search = (
     inputValue: string,
     cb: (opt: PresetOption[]) => void
@@ -24,10 +25,7 @@ const SearchBox = ({ value, handleChange, isDisabled }: Props) => {
     }
 
     const presets = presetSingleton.search(inputValue);
-    const options = presets.map(p => ({
-      value: p,
-      label: presetSingleton.getName(p.id) ?? p.id
-    }));
+    const options = presets.map(toPresetOption);
     cb(options);
   };
 

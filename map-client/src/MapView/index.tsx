@@ -4,11 +4,7 @@ import { LatLng, LatLngBounds } from 'leaflet';
 import 'leaflet-contextmenu';
 
 import { Poi } from '../types';
-import {
-  PresetOption,
-  setArea,
-  useAppDispatch, useAppSelector
-} from '../state';
+import { setArea, useAppDispatch, useAppSelector } from '../state';
 import { filter } from '../search';
 import { Preset, presetSingleton } from '../presets';
 import SetMapRef, { MapHandle } from './SetMapRef';
@@ -31,7 +27,6 @@ const PREFER_CANVAS = false;
 
 interface Props {
   params: SearchParams;
-  findPreset: (q: string | undefined) => PresetOption | undefined;
   makeQuery: (
     preset: Preset,
     bounds: LatLngBounds,
@@ -40,7 +35,7 @@ interface Props {
 }
 
 const MapView = (
-  { params, findPreset, makeQuery }: Props,
+  { params, makeQuery }: Props,
   ref: React.Ref<MapHandle>
 ) => {
   const dispatch = useAppDispatch();
@@ -119,11 +114,9 @@ const MapView = (
         mapParam={params.map} />
       <QueryOverpass
         q={params.q}
-        findPreset={findPreset}
         makeQuery={makeQuery} />
       <SearchInArea
         q={params.q}
-        findPreset={findPreset}
         makeQuery={makeQuery} />
 
       <TileLayer {...tileProps} />

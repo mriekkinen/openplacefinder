@@ -12,7 +12,7 @@ import {
   useAppDispatch, useAppSelector
 } from './state';
 import { SearchParams, SearchParamDefaults } from './params';
-import { Preset, loadPresets, presetSingleton } from './presets';
+import { Preset, loadPresets } from './presets';
 import MapView from './MapView';
 import { MapState } from './MapView/types';
 import { MapHandle } from './MapView/SetMapRef';
@@ -72,18 +72,6 @@ const Main = () => {
 
   const mapRef = useRef<MapHandle>(null);
 
-  const findPreset = (q: string | undefined) => {
-    const preset = presetSingleton.getPreset(q);
-    if (!preset) {
-      return undefined;
-    }
-
-    return {
-      value: preset,
-      label: presetSingleton.getName(preset.id) ?? preset.id
-    };
-  };
-
   const toList = (tags: Tags) => {
     const tagList: string[] = [];
     for (const key in tags) {
@@ -119,7 +107,6 @@ const Main = () => {
     <>
       <SearchBar
         params={params}
-        findPreset={findPreset}
         makeQuery={makeQuery}
         mapRef={mapRef} />
       <Content>
@@ -139,7 +126,6 @@ const Main = () => {
         </SidebarBoxes>
         <MapView
           params={params}
-          findPreset={findPreset}
           makeQuery={makeQuery}
           ref={mapRef} />
         {filtersVisible &&

@@ -7,7 +7,7 @@ import {
   useAppDispatch, useAppSelector
 } from '../state';
 import { SearchParams } from '../params';
-import { Preset } from '../presets';
+import { Preset, presetSingleton } from '../presets';
 import { Container, Header, Item } from './styles';
 import SearchBox from './SearchBox';
 import Geocoder from './Geocoder';
@@ -16,7 +16,6 @@ import { MapHandle } from '../MapView/SetMapRef';
 
 interface Props {
   params: SearchParams;
-  findPreset: (q: string | undefined) => PresetOption | undefined;
   makeQuery: (
     preset: Preset,
     bounds: LatLngBounds,
@@ -25,13 +24,19 @@ interface Props {
   mapRef: React.RefObject<MapHandle>;
 }
 
-const SearchBar = ({ params, findPreset, makeQuery, mapRef }: Props) => {
+const SearchBar = ({ params, makeQuery, mapRef }: Props) => {
   const dispatch = useAppDispatch();
   const status = useAppSelector(state => state.poiList.status);
   const area = useAppSelector(state => state.ui.area);
 
-  const presetOption = findPreset(params.q);
-  const preset = presetOption?.value;
+  const toPresetOption = (p: Preset): PresetOption => {
+    return {
+      value: p,
+      label: presetSingleton.getName(p.id) ?? p.id
+    };
+  };
+
+  const presetOption = params.q ? toPresetOption(params.q) : null;
 
   const handlePresetChange = (newPreset: PresetOption | null) => {
     if (newPreset === null) {
@@ -43,7 +48,7 @@ const SearchBar = ({ params, findPreset, makeQuery, mapRef }: Props) => {
       return;
     }
 
-    params.q = newPreset.value.id;
+    params.q = newPreset.value;
     params.id = undefined;
     params.facets = {};
     params.commit();
@@ -70,9 +75,9 @@ const SearchBar = ({ params, findPreset, makeQuery, mapRef }: Props) => {
       params.commit();
 
       // Submit a new query using the current bounding box
-      if (preset) {
+      if (params.q) {
         makeQuery(
-          preset,
+          params.q,
           mapRef.current.getBounds(),
           mapRef.current.getZoom()
         );
@@ -85,8 +90,9 @@ const SearchBar = ({ params, findPreset, makeQuery, mapRef }: Props) => {
       <Header>Search</Header>
       <Item>
         <SearchBox
-          value={presetOption ?? null}
+          value={presetOption}
           handleChange={handlePresetChange}
+          toPresetOption={toPresetOption}
           isDisabled={status === 'loading'}
         />
       </Item>

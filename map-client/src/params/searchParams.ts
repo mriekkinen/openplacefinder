@@ -3,6 +3,7 @@ import { ParamKeyValuePair, URLSearchParamsInit } from "react-router-dom";
 
 import { MapState } from "../MapView/types";
 import { FacetState } from "../state";
+import { Preset, presetSingleton } from "../presets";
 
 export interface SearchParamDefaults {
   loc: LatLngLiteral;
@@ -12,7 +13,7 @@ export interface SearchParamDefaults {
 type SetSearchParams = (nextInit: URLSearchParamsInit) => void;
 
 export class SearchParams {
-  q?: string;
+  q?: Preset;
   id?: number;
   loc: LatLngLiteral;
   map: MapState;
@@ -37,8 +38,8 @@ export class SearchParams {
     this.setSearchParams = setSearchParams;
   }
 
-  private parseQueryParam = (queryStr: string | null): string | undefined => {
-    return queryStr?.replaceAll(' ', '/');
+  private parseQueryParam = (queryStr: string | null): Preset | undefined => {
+    return presetSingleton.getPreset(queryStr?.replaceAll(' ', '/'));
   }
 
   private parseIdParam = (idStr: string | null): number | undefined => {
@@ -106,7 +107,7 @@ export class SearchParams {
   public build(): ParamKeyValuePair[] {
     const list: [string, string][] = [];
     if (this.q) {
-      list.push(['q', this.q.replaceAll('/', ' ')]);
+      list.push(['q', this.q.id.replaceAll('/', ' ')]);
     }
 
     if (this.id) {

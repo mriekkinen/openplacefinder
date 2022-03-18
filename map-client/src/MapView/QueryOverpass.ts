@@ -2,12 +2,11 @@ import { useEffect } from 'react';
 import { LatLngBounds } from 'leaflet';
 import { useMap } from 'react-leaflet';
 
-import { PresetOption, clearPoiList, useAppDispatch } from '../state';
+import { clearPoiList, useAppDispatch } from '../state';
 import { Preset } from '../presets';
 
 interface Props {
-  q: string | undefined;
-  findPreset: (q: string | undefined) => PresetOption | undefined;
+  q: Preset | undefined;
   makeQuery: (
     preset: Preset,
     bounds: LatLngBounds,
@@ -15,20 +14,19 @@ interface Props {
   ) => void;
 }
 
-const QueryOverpass = ({ q, findPreset, makeQuery }: Props) => {
+const QueryOverpass = ({ q, makeQuery }: Props) => {
   const dispatch = useAppDispatch();
   const map = useMap();
 
   // Request data from Overpass, if the query has changed
   useEffect(() => {
-    const preset = findPreset(q)?.value;
-    if (!preset) {
+    if (!q) {
       dispatch(clearPoiList());
       return;
     }
 
     makeQuery(
-      preset,
+      q,
       map.getBounds(),
       map.getZoom()
     );
