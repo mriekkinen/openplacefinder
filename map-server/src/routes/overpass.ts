@@ -20,7 +20,7 @@ const apiBaseUrl = 'https://overpass.kumi.systems/api/interpreter';
 // TODO: Update the user agent string
 const config: AxiosRequestConfig = {
   headers: {
-    'User-Agent': 'POIGuru https://github.com/mriekkinen/poiguru',
+    'User-Agent': 'OpenPlaceFinder https://github.com/mriekkinen/openplacefinder',
     'Content-Type': 'text/plain'
   }
 };
