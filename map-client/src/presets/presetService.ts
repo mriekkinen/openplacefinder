@@ -113,9 +113,9 @@ export class PresetParser {
 
       // Ignore presets which have no fields
       // For instance, "embankment", which is an attribute
-      if (!('fields' in preset)) {
-        return true;
-      }
+      // if (!(('fields' in preset) || ('moreFields' in preset))) {
+      //   return true;
+      // }
 
       // Ignore the address presets (there seem to be just 2)
       if (/^addr:/.test(k)) {
