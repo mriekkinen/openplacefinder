@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@geocodeearth/core-js": "file:../packages/geocodeearth-core-js-0.0.8",
     "@openstreetmap/id-tagging-schema": "^3.0.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.1.3",
@@ -14,6 +13,7 @@
     "@types/react-dom": "^17.0.9",
     "axios": "^0.26.0",
     "clsx": "^1.1.1",
+    "geocodeearth-core-js": "github:mriekkinen/geocodeearth-core-js",
     "leaflet": "^1.7.1",
     "leaflet-contextmenu": "^1.4.0",
     "leaflet-defaulticon-compatibility": "^0.1.1",

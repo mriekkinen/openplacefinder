@@ -4,7 +4,7 @@ import { components, ControlProps } from 'react-select';
 import { GoLocation } from 'react-icons/go';
 import styled from 'styled-components';
 
-import { createAutocomplete } from '@geocodeearth/core-js';
+import { createAutocomplete } from 'geocodeearth-core-js/dist/geocode-earth-core';
 import throttle from 'lodash/throttle';
 import debounce from 'lodash/debounce';
 

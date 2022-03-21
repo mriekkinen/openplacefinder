@@ -1,4 +1,4 @@
-import { Feature as PeliasFeature } from '@geocodeearth/core-js/dist/geojson';
+import { Feature as PeliasFeature } from 'geocodeearth-core-js/dist/geojson';
 
 import { Poi } from '../types';
 import { Preset } from '../presets';
