@@ -21,6 +21,7 @@ import ListView from './ListView';
 import InfoView from './InfoView';
 import SearchBar from './SearchBar';
 import FacetsView from './FacetsView';
+import LoadingView from './LoadingView';
 import ModalRenderer from './modals/ModalRenderer';
 import { isZoomSufficient } from './conf';
 import { buildBBoxQuery } from './overpass';
@@ -52,6 +53,7 @@ const App = () => {
 const Main = () => {
   const dispatch = useAppDispatch();
   const filtersVisible = useAppSelector(state => state.ui.filtersVisible);
+  const status = useAppSelector(state => state.poiList.status);
   const n = useAppSelector(state => state.poiList.data.length);
 
   const DEFAULT_VIEW: MapState = {
@@ -136,6 +138,9 @@ const Main = () => {
             </Filters>
           </SidebarBoxes>
         }
+        {status === 'loading' &&
+          <LoadingView />
+        }
       </Content>
       <ModalRenderer />
     </>
@@ -157,6 +162,7 @@ const AppContainer = styled.div`
 const Content = styled.div`
   flex: 1 1 400px;
   display: flex;
+  position: relative;
   margin: 0;
   padding: 0;
 `;

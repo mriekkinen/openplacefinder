@@ -16,9 +16,10 @@ type FacetCounts = Required<{
 
 interface Props {
   facets: FacetState;
+  isDisabled: boolean;
 }
 
-const FiltersBtn = ({ facets }: Props) => {
+const FiltersBtn = ({ facets, isDisabled }: Props) => {
   const dispatch = useAppDispatch();
   const status = useAppSelector(state => state.ui.filtersVisible);
 
@@ -49,7 +50,9 @@ const FiltersBtn = ({ facets }: Props) => {
     : null;
 
   return (
-    <Button onClick={handleClick}>
+    <Button
+      onClick={handleClick}
+      disabled={isDisabled}>
       <Icon />
       <span>&nbsp;Filter{totalSpan}</span>
     </Button>

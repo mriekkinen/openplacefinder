@@ -85,6 +85,8 @@ const SearchBar = ({ params, makeQuery, mapRef }: Props) => {
     }
   };
 
+  const isLoading = status === 'loading';
+
   return (
     <Container>
       <Header>Search</Header>
@@ -93,18 +95,19 @@ const SearchBar = ({ params, makeQuery, mapRef }: Props) => {
           value={presetOption}
           handleChange={handlePresetChange}
           toPresetOption={toPresetOption}
-          isDisabled={status === 'loading'}
+          isDisabled={isLoading}
         />
       </Item>
       <Item>
         <Geocoder
           value={area}
           handleChange={handleAreaChange}
-          isDisabled={status === 'loading'} />
+          isDisabled={isLoading} />
       </Item>
       <Item>
         <FiltersBtn
-          facets={params.facets} />
+          facets={params.facets}
+          isDisabled={isLoading} />
       </Item>
     </Container>
   );
