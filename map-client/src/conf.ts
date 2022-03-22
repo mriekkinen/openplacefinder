@@ -14,14 +14,14 @@ export const isZoomSufficient = (zoom: number): boolean => {
   return zoom >= minZoom;
 };
 
-export const getGeocoderHost = (): string => {
-  const host = process.env.REACT_APP_GEOCODER_HOST;
+export const getGeocoderUrl = (): string => {
+  const url = process.env.REACT_APP_GEOCODER_URL;
 
-  if (!host) {
-    throw Error("Environment variable REACT_APP_GEOCODER_HOST not set");
+  if (!url) {
+    throw Error("Environment variable REACT_APP_GEOCODER_URL not set");
   }
 
-  return host;
+  return url;
 };
 
 export const getGeocoderWait = (): number => {

@@ -9,7 +9,7 @@ import throttle from 'lodash/throttle';
 import debounce from 'lodash/debounce';
 
 import { AreaOption } from '../state';
-import { getGeocoderHost, getGeocoderWait } from '../conf';
+import { getGeocoderUrl, getGeocoderWait } from '../conf';
 
 interface Props {
   value: AreaOption | null;
@@ -30,8 +30,8 @@ interface Props {
  */
 const Geocoder = ({ value, handleChange, isDisabled }: Props) => {
   const autocomplete = useMemo(() =>
-    createAutocomplete({}, {
-      host: getGeocoderHost()
+    createAutocomplete(undefined, {}, {
+      url: getGeocoderUrl()
     }), []);
 
   const wait = getGeocoderWait();
