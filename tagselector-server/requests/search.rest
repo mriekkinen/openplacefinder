@@ -1,5 +1,0 @@
-GET http://localhost:3001/api/search?q=amenity
-
-###
-
-GET http://localhost:3001/api/search?q=rest
