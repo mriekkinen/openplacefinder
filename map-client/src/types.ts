@@ -1,12 +1,14 @@
 export type Tags = { [key: string]: string | undefined };
 
-export interface OverpassPoi {
+export interface OverpassPoiOptionalLatLng {
   type: 'node' | 'way' | 'relation';
   id: number;
   lat?: number;
-  lon?: number;
+  lng?: number;
   tags: Tags;
 }
+
+export type OverpassPoi = Required<OverpassPoiOptionalLatLng>;
 
 export interface Poi extends OverpassPoi {
   presetId: string | undefined;

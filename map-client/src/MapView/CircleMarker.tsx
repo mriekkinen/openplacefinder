@@ -13,13 +13,9 @@ interface Props {
 }
 
 const CircleMarker = ({ e, isSelected, handleClick, preset }: Props) => {
-  if (e.lat === undefined || e.lon === undefined) {
-    return null;
-  }
-
   return (
     <LeafletCircleMarker
-      center={[e.lat, e.lon]}
+      center={[e.lat, e.lng]}
       eventHandlers={{
         click: handleClick
       }}

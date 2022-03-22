@@ -1,4 +1,5 @@
 import React from 'react';
+import { divIcon, DivIcon } from 'leaflet';
 import { Marker as LeafletMarker } from 'react-leaflet';
 import clsx from 'clsx';
 
@@ -15,10 +16,6 @@ interface Props {
 }
 
 const IconMarker = ({ e, isSelected, handleClick, preset }: Props) => {
-  if (e.lat === undefined || e.lon === undefined) {
-    return null;
-  }
-
   const icon = getDivIcon(preset, isSelected) ?? getDefaultDivIcon(isSelected);
 
   const zIndexOffset = isSelected ? 10000: 0;
@@ -29,7 +26,7 @@ const IconMarker = ({ e, isSelected, handleClick, preset }: Props) => {
 
   return (
     <LeafletMarker
-      position={[e.lat, e.lon]}
+      position={[e.lat, e.lng]}
       icon={icon}
       zIndexOffset={zIndexOffset}
       eventHandlers={eventHandlers}
@@ -43,7 +40,7 @@ const IconMarker = ({ e, isSelected, handleClick, preset }: Props) => {
 const getDivIcon = (
   preset: Preset | undefined,
   isSelected: boolean
-): L.DivIcon | null => {
+): DivIcon | null => {
   if (!preset || !preset.icon) {
     return null;
   }
@@ -59,14 +56,14 @@ const getDivIcon = (
   return createIcon(html, isSelected);
 };
 
-const getDefaultDivIcon = (isSelected: boolean): L.DivIcon => {
+const getDefaultDivIcon = (isSelected: boolean): DivIcon => {
   return createIcon('', isSelected);
 };
 
-const createIcon = (html: string, isSelected: boolean): L.DivIcon => {
+const createIcon = (html: string, isSelected: boolean): DivIcon => {
   const className = clsx('map-icon', isSelected && 'selected');
 
-  return L.divIcon({
+  return divIcon({
     html,
     className,
     iconSize: [24, 24],

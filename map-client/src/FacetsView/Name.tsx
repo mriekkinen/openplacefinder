@@ -1,14 +1,17 @@
 import React from 'react';
 
-import { useAppDispatch, useAppSelector, setName } from '../state';
-
 import { Facet } from './styles';
+import { useAppSelector } from '../state';
+import { SearchParams } from '../params';
 
-const Name = () => {
-  const dispatch = useAppDispatch();
-  const name = useAppSelector(state => state.facets.name);
+interface Props {
+  params: SearchParams;
+}
 
-  if (name === undefined) {
+const Name = ({ params }: Props) => {
+  const fields = useAppSelector(state => state.poiList.fields);
+
+  if (!params.facets.name && !fields.has('name')) {
     return null;
   }
 
@@ -17,8 +20,11 @@ const Name = () => {
       Name: {' '}
       <input
         type='text'
-        value={name}
-        onChange={e => dispatch(setName(e.target.value))} />
+        value={params.facets.name ?? ''}
+        onChange={e => {
+          params.facets.name = e.target.value;
+          params.commit();
+        }} />
     </Facet>
   )
 };

@@ -27,6 +27,11 @@ export const Button = styled.button`
   font-weight: 600;
   border: none;
   border-radius: 3px;
+
+  &:hover {
+    cursor: pointer;
+    background-color: #66BB6A;
+  }
 `;
 
 export const TextButton = styled.button`

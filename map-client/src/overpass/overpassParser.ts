@@ -1,11 +1,11 @@
 import { OverpassElement, OverpassJson, OverpassNode } from 'overpass-ts';
 
-import { OverpassPoi } from '../types';
+import { OverpassPoi, OverpassPoiOptionalLatLng } from '../types';
 import { Nwr } from './types';
 
 export const overpass2Poi = (data: OverpassJson | null): OverpassPoi[] => {
   if (!data) return [];
-  return data.elements
+  const opt: OverpassPoiOptionalLatLng[] = data.elements
     .filter(isNwr)
     .map(e => ({
       type: e.type,
@@ -13,11 +13,13 @@ export const overpass2Poi = (data: OverpassJson | null): OverpassPoi[] => {
       lat: isNode(e)
         ? e.lat
         : e.center?.lat,
-      lon: isNode(e)
+      lng: isNode(e)
         ? e.lon
         : e.center?.lon,
       tags: e.tags ? e.tags : {}
     }));
+
+    return opt.filter(hasLatLng);
 };
 
 const isNwr = (e: OverpassElement): e is Nwr => {
@@ -27,3 +29,7 @@ const isNwr = (e: OverpassElement): e is Nwr => {
 const isNode = (e: OverpassElement): e is OverpassNode => {
   return e.type === 'node';
 }
+
+const hasLatLng = (e: OverpassPoiOptionalLatLng): e is OverpassPoi => {
+  return e.lat !== undefined && e.lng !== undefined;
+};

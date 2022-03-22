@@ -28,22 +28,31 @@ import { Tags } from '../types';
 import {
   Preset, PresetIndex, PresetJson, PresetJsonMap, PresetMap
 } from './types';
+import PresetFieldsUtil from './presetFieldsUtil';
 
 export class PresetParser {
+  readonly list: Preset[];
   readonly index: PresetIndex;
   readonly presetMap: PresetMap;
 
-  constructor(json: PresetJsonMap) {
-    const presets = this.parsePresetData(json);
+  constructor(json: PresetJsonMap, includeAll: boolean) {
+    const presets = this.parsePresetData(json, includeAll);
+    this.list = presets;
     this.index = this.buildIndex(presets);
     this.presetMap = this.buildMap(presets);
+
+    // This should be done last
+    if (includeAll) {
+      const fieldsUtil = new PresetFieldsUtil(this);
+      fieldsUtil.doPostProcessing(presets);
+    }
   }
 
-  parsePresetData(data: PresetJsonMap): Preset[] {
+  parsePresetData(data: PresetJsonMap, includeAll: boolean): Preset[] {
     const presets: Preset[] = [];
     for (const id in data) {
       const pd: PresetJson = data[id];
-      if (this.canIgnore(pd)) {
+      if (!includeAll && this.canIgnore(pd)) {
         continue;
       }
 
@@ -56,7 +65,8 @@ export class PresetParser {
         id,
         tags: pd.tags,
         fields: new Set(allFields),
-        originalScore: pd.originalScore ?? 1
+        originalScore: pd.originalScore ?? 1,
+        searchable: pd.searchable ?? true
       };
 
       if (pd.addTags) {
@@ -103,9 +113,9 @@ export class PresetParser {
 
       // Ignore presets which have no fields
       // For instance, "embankment", which is an attribute
-      if (!('fields' in preset)) {
-        return true;
-      }
+      // if (!(('fields' in preset) || ('moreFields' in preset))) {
+      //   return true;
+      // }
 
       // Ignore the address presets (there seem to be just 2)
       if (/^addr:/.test(k)) {

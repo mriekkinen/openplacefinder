@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 
-import {
-  useAppDispatch,
-  checkCuisine, FacetState, Country
-} from '../state';
+import { FacetState, Country, useAppSelector } from '../state';
 import { filter, countCuisines, sortByCount } from '../search';
+import { SearchParams } from '../params';
 import { Poi } from '../types';
 
 import { Facet } from './styles';
@@ -16,24 +14,24 @@ const MORE_LESS_THRESHOLD = 10;
 interface Props {
   data: Poi[];
   country: Country | undefined;
-  facets: FacetState;
+  params: SearchParams;
 }
 
-const Cuisines = ({ data, country, facets }: Props) => {
-  const dispatch = useAppDispatch();
+const Cuisines = ({ data, country, params }: Props) => {
+  const fields = useAppSelector(state => state.poiList.fields);
 
   const [showAll, setShowAll] = useState<boolean>(false);
 
-  if (facets.cuisines === undefined) {
+  if (!params.facets.cuisines && !fields.has('cuisine')) {
     return null;
   }
 
-  const checkedCuisines = facets.cuisines;
+  const checkedCuisines = new Set(params.facets.cuisines);
 
   // Apply filters excluding cuisine, and
   // compute the number of appearances (in that list)
   const facetsExcludingCuisine: FacetState = {
-    ...facets,
+    ...params.facets,
     cuisines: new Set<string>()
   };
 
@@ -54,7 +52,14 @@ const Cuisines = ({ data, country, facets }: Props) => {
 
   const handleChange = (cuisine: string)
   : React.ChangeEventHandler<HTMLInputElement> => (e) => {
-    dispatch(checkCuisine(cuisine, e.target.checked));
+    if (e.target.checked) {
+      checkedCuisines.add(cuisine);
+    } else {
+      checkedCuisines.delete(cuisine);
+    }
+
+    params.facets.cuisines = checkedCuisines;
+    params.commit();
   };
 
   const isChecked = (cuisine: string) => {

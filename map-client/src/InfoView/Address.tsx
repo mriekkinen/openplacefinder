@@ -13,7 +13,7 @@ interface Props {
 const Address = ({ mapRef, e }: Props) => {
   const handleClick = () => {
     if (mapRef.current) {
-      mapRef.current.panTo(e.lat, e.lon);
+      mapRef.current.panTo(e.lat, e.lng);
     }
   };
 

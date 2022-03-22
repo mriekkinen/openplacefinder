@@ -1,18 +1,23 @@
 import React from 'react';
 
-import { useAppDispatch, clearFacets } from '../state';
+import { SearchParams } from '../params';
 
 import { Facet, Button } from './styles';
 
-const Clear = () => {
-  const dispatch = useAppDispatch();
+interface Props {
+  params: SearchParams
+}
 
+const Clear = ({ params }: Props) => {
   return (
     <Facet>
       <Button
         type='button'
-        onClick={() => dispatch(clearFacets())}>
-        Clear
+        onClick={() => {
+          params.facets = {};
+          params.commit();
+        }}>
+        Clear filters
       </Button>
     </Facet>
   );

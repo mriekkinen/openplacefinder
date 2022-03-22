@@ -1,39 +1,44 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { setSelected, useAppDispatch, useAppSelector } from '../state';
+import { useAppSelector } from '../state';
 import { MapHandle } from '../MapView/SetMapRef';
+import ListHeader from './ListHeader';
 import ListElement from './ListElement';
 import { filter, addDistance, sortByDistance } from '../search';
+import { SearchParams } from '../params';
 
 interface Props {
+  params: SearchParams;
   mapRef: React.RefObject<MapHandle>;
 }
 
-const ListView = ({ mapRef }: Props) => {
-  const dispatch = useAppDispatch();
+const ListView = ({ params, mapRef }: Props) => {
   const data = useAppSelector(state => state.poiList.data);
   const country = useAppSelector(state => state.poiList.country);
-  const facets = useAppSelector(state => state.facets);
-  const location = useAppSelector(state => state.location);
 
   // Apply filters
-  const filteredData = filter(data, country, facets);
+  const filteredData = filter(data, country, params.facets);
 
   // Sort by distance
-  const dataWithDistances = addDistance(filteredData, location.lat, location.lon);
+  const dataWithDistances = addDistance(filteredData, params.loc.lat, params.loc.lng);
   sortByDistance(dataWithDistances);
 
   return (
     <Container>
+      <ListHeader
+        params={params}
+        data={data}
+        filteredData={filteredData} />
       {dataWithDistances.map(e =>
         <ListElement
           key={`${e.type}-${e.id}`}
           e={e}
           country={country}
           handleClick={() => {
-            dispatch(setSelected(e.id));
-            //mapRef.current?.panTo(e.lat, e.lon);
+            params.id = e.id;
+            params.commit();
+            //mapRef.current?.panTo(e.lat, e.lng);
           }}
         />
       )}

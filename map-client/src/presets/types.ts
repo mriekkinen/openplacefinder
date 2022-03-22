@@ -7,6 +7,7 @@ export interface PresetJson {
   moreFields?: string[];
   originalScore?: number;
   icon?: string;
+  searchable?: boolean;
 }
 
 export interface PresetJsonMap {
@@ -20,6 +21,7 @@ export interface Preset {
   fields: Set<string>;
   originalScore: number;
   icon?: string;
+  searchable: boolean;
 }
 
 export interface PresetIndex {

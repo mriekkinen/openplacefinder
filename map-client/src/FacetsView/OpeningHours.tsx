@@ -1,21 +1,23 @@
 import React from 'react';
-import {
-  useAppDispatch, useAppSelector,
-  requireOpeningHours, requireOpenNow
-} from '../state';
 
+import { useAppSelector } from '../state';
+import { SearchParams } from '../params';
 import { Facet } from './styles';
 
-export const OpeningHours = () => {
-  const dispatch = useAppDispatch();
-  const openingHours = useAppSelector(state => state.facets.openingHours);
+interface OpeningHoursProps {
+  params: SearchParams;
+}
 
-  if (openingHours === undefined) {
+export const OpeningHours = ({ params }: OpeningHoursProps) => {
+  const fields = useAppSelector(state => state.poiList.fields);
+
+  if (!params.facets.openingHours && !fields.has('opening_hours')) {
     return null;
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(requireOpeningHours(e.target.checked));
+    params.facets.openingHours = e.target.checked;
+    params.commit();
   };
 
   return (
@@ -24,7 +26,7 @@ export const OpeningHours = () => {
         <input
           type='checkbox'
           name='requireOpeningHours'
-          checked={openingHours}
+          checked={params.facets.openingHours ?? false}
           onChange={handleChange} />
         Only places with opening hours
       </label>
@@ -32,16 +34,20 @@ export const OpeningHours = () => {
   );
 };
 
-export const OpenNow = () => {
-  const dispatch = useAppDispatch();
-  const openNow = useAppSelector(state => state.facets.openNow);
+interface OpenNowProps {
+  params: SearchParams;
+}
 
-  if (openNow === undefined) {
+export const OpenNow = ({ params }: OpenNowProps) => {
+  const fields = useAppSelector(state => state.poiList.fields);
+
+  if (!params.facets.openNow && !fields.has('opening_hours')) {
     return null;
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(requireOpenNow(e.target.checked));
+    params.facets.openNow = e.target.checked;
+    params.commit();
   };
 
   return (
@@ -50,7 +56,7 @@ export const OpenNow = () => {
         <input
           type='checkbox'
           name='requireOpenNow'
-          checked={openNow}
+          checked={params.facets.openNow ?? false}
           onChange={handleChange} />
         Only places which are now open
       </label>

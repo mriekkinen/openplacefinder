@@ -2,11 +2,10 @@ import { LatLng } from 'leaflet';
 
 import { Poi, PoiWithDistance } from '../types';
 
-// TODO: Make (lat, lon) mandatory in the definition of the Poi interface
 const getCoords = (poi: Poi) => {
   return {
-    lat: poi.lat ?? 0,
-    lng: poi.lon ?? 0
+    lat: poi.lat,
+    lng: poi.lng
   };
 };
 
@@ -15,9 +14,9 @@ const getCoords = (poi: Poi) => {
 export const addDistance = (
   data: Poi[],
   fromLat: number,
-  fromLon: number
+  fromLng: number
 ): PoiWithDistance[] => {
-  const fromCoords = new LatLng(fromLat, fromLon);
+  const fromCoords = new LatLng(fromLat, fromLng);
   return data.map(poi => ({
     ...poi,
     distance: fromCoords.distanceTo(getCoords(poi))

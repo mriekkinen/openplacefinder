@@ -1,157 +1,116 @@
 import React from 'react';
+import { LatLngBounds } from 'leaflet';
 
 import {
-  MapFeature, QueryStatus, SearchArea,
-  clearPoiList, queryOverpass, setBBox, setBoundary, setMapFeature, setSelected,
+  PresetOption, AreaOption,
+  clearPoiList, setArea,
   useAppDispatch, useAppSelector
 } from '../state';
-import { assertNever } from '../utils';
-import { buildAreaQuery, buildBBoxQuery } from '../overpass';
-import { MapHandle } from '../MapView/SetMapRef';
+import { SearchParams } from '../params';
+import { Preset, presetSingleton } from '../presets';
 import { Container, Header, Item } from './styles';
 import SearchBox from './SearchBox';
-import Area, { AREA_OPTION } from './Area';
+import Geocoder from './Geocoder';
 import FiltersBtn from './FiltersBtn';
+import { MapHandle } from '../MapView/SetMapRef';
 
 interface Props {
+  params: SearchParams;
+  makeQuery: (
+    preset: Preset,
+    bounds: LatLngBounds,
+    zoom: number
+  ) => void;
   mapRef: React.RefObject<MapHandle>;
 }
 
-const SearchBar = ({ mapRef }: Props) => {
+const SearchBar = ({ params, makeQuery, mapRef }: Props) => {
   const dispatch = useAppDispatch();
   const status = useAppSelector(state => state.poiList.status);
-  const feature = useAppSelector(state => state.search.feature);
-  const area = useAppSelector(state => state.search.area);
+  const area = useAppSelector(state => state.ui.area);
 
-  const handleFeatureChange = (newFeature: MapFeature | null) => {
-    if (newFeature === null) {
-      dispatch(setMapFeature(null));
-      dispatch(setSelected(null));
+  const toPresetOption = (p: Preset): PresetOption => {
+    return {
+      value: p,
+      label: presetSingleton.getName(p.id) ?? p.id
+    };
+  };
+
+  const presetOption = params.q ? toPresetOption(params.q) : null;
+
+  const handlePresetChange = (newPreset: PresetOption | null) => {
+    if (newPreset === null) {
+      params.q = undefined;
+      params.id = undefined;
+      params.facets = {};
+      params.commit();
       dispatch(clearPoiList());
       return;
     }
 
-    // Build the query (and update the bounding box)
-    let query;
-    if (area.type === 'boundary') {
-      query = buildAreaQuery(
-        [newFeature.value],
-        area.id
-      );
-    } else {
-      let newBounds = area.bbox;
-      if (mapRef.current !== null) {
-        newBounds = mapRef.current.getBounds();
-        dispatch(setBBox(newBounds));
-      }
-
-      query = buildBBoxQuery(
-        [newFeature.value],
-        newBounds
-      );
-    }
-
-    dispatch(setMapFeature(newFeature));
-    dispatch(queryOverpass(query));
+    params.q = newPreset.value;
+    params.id = undefined;
+    params.facets = {};
+    params.commit();
   };
 
-  const handleAreaChange = (newOption: AREA_OPTION | null) => {
-    if (newOption === null) {
-      //dispatch(setBoundary(null));
-      dispatch(setSelected(null));
-      dispatch(clearPoiList());
+  const handleAreaChange = (newArea: AreaOption | null) => {
+    console.log('handleAreaChange: newArea:', newArea);
+    dispatch(setArea(newArea));
+    if (newArea === null) {
       return;
     }
 
-    const newArea = newOption.value;
+    if (mapRef.current) {
+      const [lng, lat] = newArea.value.geometry.coordinates;
 
-    console.log('handleAreaChange');
-    console.log('newOption:', newOption);
-    console.log('newArea:', newArea);
+      // Pan the map to the new location
+      // Note: this is the only place where we need the 2 last parameters
+      // 1. Don't clear the area selection box (we want the value to stay)
+      // 2. Don't commit changes to search parameters (because we commit below)
+      mapRef.current.panTo(lat, lng, false, false);
 
-    let query;
-    if (newArea !== null) {
-      dispatch(setBoundary(newArea.name, newArea.id));
+      // Update the user's location
+      params.loc = { lat, lng };
+      params.commit();
 
-      if (feature !== null) {
-        query = buildAreaQuery(
-          [feature.value],
-          newArea.id
+      // Submit a new query using the current bounding box
+      if (params.q) {
+        makeQuery(
+          params.q,
+          mapRef.current.getBounds(),
+          mapRef.current.getZoom()
         );
       }
-    } else {
-      let newBounds = area.type === 'bbox' ? area.bbox : null;
-      if (mapRef.current !== null) {
-        console.log('newBounds:', newBounds);
-
-        newBounds = mapRef.current.getBounds();
-        dispatch(setBBox(newBounds));
-      }
-
-      if (newBounds !== null && feature !== null) {
-        query = buildBBoxQuery(
-          [feature.value],
-          newBounds
-        );
-      }
-    }
-
-    if (query !== undefined) {
-      dispatch(queryOverpass(query));
     }
   };
+
+  const isLoading = status === 'loading';
 
   return (
     <Container>
       <Header>Search</Header>
       <Item>
         <SearchBox
-          value={feature}
-          handleChange={handleFeatureChange}
-          isLoading={status === 'loading'}
+          value={presetOption}
+          handleChange={handlePresetChange}
+          toPresetOption={toPresetOption}
+          isDisabled={isLoading}
         />
       </Item>
       <Item>
-        <Area
-          value={toOption(area)}
+        <Geocoder
+          value={area}
           handleChange={handleAreaChange}
-          isLoading={status === 'loading'}
-        />
+          isDisabled={isLoading} />
       </Item>
       <Item>
-        <FiltersBtn />
+        <FiltersBtn
+          facets={params.facets}
+          isDisabled={isLoading} />
       </Item>
-      {status === 'failed' &&
-        <Item>{getErrorMsg(status)}</Item>
-      }
     </Container>
   );
-};
-
-const toOption = (area: SearchArea): AREA_OPTION => {
-  switch (area.type) {
-    case 'boundary':
-      return {
-        value: area,
-        label: area.name
-      };
-    case 'bbox':
-      return {
-        value: null,
-        label: 'Current map view' // TODO: Not good... string might change elsewhere
-      }
-    default:
-      return assertNever(area);
-  }
-};
-
-const getErrorMsg = (status: QueryStatus) => {
-  if (status !== 'failed') {
-    return null;
-  }
-
-  // TODO: Provide more info about the error
-  return <span>Query failed</span>;
 };
 
 export default SearchBar;

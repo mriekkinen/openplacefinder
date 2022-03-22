@@ -37,14 +37,11 @@ export const createOpeningHours = (
 
 export const getOpeningHours = (poi: Poi, country: Country | undefined) => {
   const openingHours = poi.tags['opening_hours'];
-  if (openingHours === undefined
-    || poi.lat === undefined
-    || poi.lon === undefined
-    || country === undefined) {
+  if (openingHours === undefined || country === undefined) {
     return undefined;
   }
 
-  const nom = createNominatimObject(poi.lat, poi.lon, country);
+  const nom = createNominatimObject(poi.lat, poi.lng, country);
   return createOpeningHours(openingHours, nom);
 };
 
