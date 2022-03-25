@@ -26,14 +26,29 @@ Once you open the site [openplacefinder.org](https://openplacefinder.org) in you
 
 ## Area selection
 
-When you open the app, at first, the map shows downtown Helsinki regardless of where you are. Since the app isn't able to detect your location, for instance by your IP address, you'll have to select your location manually.
+First, you should select your search area. This could be, for instance, an area surrounding your home or workplace, or it could be an area where you are headed. You start by typing a place name, such as a street address or the name of a municipality, into the box which says *Current map view*. As you type, the box presents suggestions, and once you see the one that fits you should select it. This will center the map to that location.
 
-...
+If you are typing the name of a municipality, you should try to enter it's name twice, for instance *Kuopio, Kuopio*. This helps to disambiguate your search from other places containing the word Kuopio, such as "Kuopiontie" or "Ikea Kuopio". In the image below, we can see that if we enter the name twice, the city of Kuopio is second from the top.
+
+<img width="313" src="img/kuopio-kuopio.png" />
+
+As you may have guessed, the search area is defined by the boundaries of the current viewport. In other words, the search is limited to the area you see on the screen (at the time of initiating the search). If you wish to repeat a search using the current viewport, you may click the *Search in this area* button, which is located on the top-right corner of the map. This initiates a new search using the current settings.
+
+<img width="70" src="img/search-in-this-area.png" />
 
 ## Feature type selection
 
+...
+
+For now, let's assume that we are back in Helsinki and looking for museums in the city centre.
 
 
-## Filtering
+
+
+## Sorting and filtering
+
+// Todo: My location (blue marker)
+
+...
 
 
