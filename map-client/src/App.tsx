@@ -78,8 +78,11 @@ const Main = () => {
     const tagList: string[] = [];
     for (const key in tags) {
       const value = tags[key];
-      if (key && value) {
-        tagList.push(`${key}=${value}`);
+      if (!(key && value)) continue;
+      if (value == '*') {
+        tagList.push(`"${key}"`);
+      } else {
+        tagList.push(`"${key}"="${value}"`);
       }
     }
 
