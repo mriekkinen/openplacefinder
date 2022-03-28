@@ -6,14 +6,14 @@ In this guide you'll learn how to use OpenPlaceFinder. Hopefully, you'll find mo
 
 OpenPlaceFinder is a web application, which can be used to locate places based on their type and geographical location. For instance, we could look for restaurants in the vicinity of our homes. If there are many such restaurants, we can narrow down the search using, for instance, the type of food they serve. This type of search is known as a *place search*, also known in mapping lingo as a point of interest (POI) search.
 
-With this tool it is, then, possible to answer questions like
+With this tool it is possible to answer questions like
 
 1. What pizza restaurants are there in this area?
 2. What is the closest supermarket relative to my location?
 
 These particular examples might be important, for instance, when travelling or comparing new apartments.
 
-OpenPlaceFinder is based on [OpenStreetMap](https://www.openstreetmap.org), which is an open geographic database powered by volunteers. In order to make queries to this data, we use the [Overpass API](https://overpass-api.de), which provides powerful filters for the OpenStreetMap dataset. You don't have to be familiar with these services, but it's nice to know that, while you use this site, it communicates with OpenStreetMap servers to download map tiles and query points of interest.
+OpenPlaceFinder is based on [OpenStreetMap](https://www.openstreetmap.org), which is an open geographic database powered by volunteers. In order to make queries to this data, we use the [Overpass API](https://overpass-api.de), which provides powerful filters for the OpenStreetMap dataset. You don't have to be familiar with these services, but it's nice to know that, while you use this site, it communicates with external servers to download map tiles and query points of interest.
 
 One feature inherited from OpenStreetMap is that we don't present reviews. For instance, in the case of restaurants, you can't search or sort based on a restaurant's average customer rating. This is based on OpenStreetMap's policy of not including subjective experiences into the database. Since this application is open source, we made the choice of not using data from separate review platforms which are mostly proprietary.
 
@@ -21,7 +21,7 @@ One feature inherited from OpenStreetMap is that we don't present reviews. For i
 
 This is a desktop app, so you should use a desktop browser. You might be able to use a tablet, but the layout doesn't scale well to smaller mobile screens.
 
-If you want to be safe, we recommend using Chrome. The site has been developed using Chrome, so you might see slight differences with other browsers. The primary concern is that other browsers haven't received much testing (if any), but that's something we hope to address in the near future.
+For the best user experience, we recommend using Chrome. The site has been developed using Chrome, so you might see slight differences with other browsers. The primary concern is that other browsers haven't received much testing (if any), but that's something we hope to address in the near future.
 
 We should warn you that, at this time, the app is Finn-centric. **Some of the data is presented in Finnish, and you are mostly limited to searching Finnish locations.** The former can be addressed, buth the latter is a consequence of the size of full planet builds. That simply makes it more expensive to host a service with a global coverage.
 
@@ -33,7 +33,7 @@ Once you open the site [openplacefinder.org](https://openplacefinder.org) in you
 
 ## Area selection
 
-First, you should select your search area. This could be, for instance, an area surrounding your home or workplace, or it could be an area where you are headed. You start by typing a place name, such as a street address or the name of a municipality, into the box which says *Current map view*. As you type, the box presents suggestions, and once you see the one that fits you should select it. This will center the map to that location.
+First, you should select your search area. This could be, for instance, an area surrounding your home or workplace, or it could be an area where you are headed. You start by typing a place name, such as a street address or the name of a municipality, into the box which says *Current map view*. You may also enter the name of a building, such as a shopping mall. As you type, the box presents suggestions, and once you see the one that fits you should select it. This will center the map to that location.
 
 If you are typing the name of a municipality, you should try to enter it's name twice, for instance *Kuopio, Kuopio*. This helps to disambiguate your search from other places containing the word Kuopio, such as "Kuopiontie" or "Ikea Kuopio". In the image below, we can see that if we enter the name twice, the city of Kuopio is second from the top.
 
@@ -45,15 +45,15 @@ As you may have guessed, the search area is defined by the boundaries of the cur
 
 In addition to the search area, we need to know your location, at least in general terms. If you enter a street address, we assume that's your location. On the other hand, if you enter the name of a wider area, such as a municipality, you may wish to update your location by right-clicking on the map and selecting *Set location*. Your location is indicated by a big blue marker.
 
-If you are concerned about the privacy implications of sharing your location, we would like to reassure you that your location will only be used locally, within your browser, to compute distances to points of interest. The author of this app has no way of knowing your precise location. However, the queries you make, including the boundaries of the search area, will appear in the server logs. These logs are not actively monitored, but they exist in case of abuse. Also, the autocomplete element (*Current map view*) is connected to an external API and they might log the street addresses you provide as input.
-
 <img width="85" src="img/location-marker.png" />
+
+If you are concerned about the privacy implications of sharing your location, we would like to reassure you that your location will only be used locally, within your browser, to compute distances to points of interest. The author of this app has no way of knowing your precise location. However, the queries you make, including the boundaries of the search area, will appear in the server logs. These logs are not actively monitored, but they exist in case of abuse. Also, the autocomplete element (*Current map view*) is connected to an external API and they might log the street addresses you provide as input.
 
 ## Feature type selection
 
 Map features represent physical objects on the ground. OpenPlaceFinder supports a wide variety of feature types, but it works best with point-like features, such as buildings and smaller natural features.
 
-Each feature type is known by one unique name. Admittedly, in some cases, guessing the name used by the system to describe a given feature type can be challenging. Usually there are good reasons for a choice but, to a degree, it is a matter of convention agreed upon by the OpenStreetMap community.
+Each feature type is known by one unique name. Admittedly, in some cases, guessing the name used by the system can be challenging. Usually there are good reasons for a choice but, to a degree, it is a matter of convention agreed upon by the OpenStreetMap community.
 
 A few examples of convention include
 
@@ -62,14 +62,20 @@ A few examples of convention include
 
 The page [Map features](http://wiki.openstreetmap.org/wiki/Map_features) in the OpenStreetMap wiki details these and many other conventions. However, be warned, that given the wide scope of OpenStreetMap, the list of map features is extensive.
 
-In order to search for features of a given type, we simply type the name into the search box labeled *What are you looking for?* For instance, if we are looking for museums, we type "museo" into the search box. While we type the systems displays suggestions which provide clues into the available options, as seen in the screenshot below.
+In order to search for features of a given type, we simply type its name into the search box labeled *What are you looking for?* For instance, if we are looking for museums, we type "museo" into the search box. While we type the systems displays suggestions which provide clues into the available options, as seen also in the screenshot below.
 
 <img width="316" src="img/feature-museum.png" />
 
-## Sorting and filtering
+## Filtering
 
-// Todo: My location (blue marker)
+When searching for common places in a densely populated area, the number of results may become overwhelming. To manage this, the app provides filters which allow us to focus our attention to the most relevant places.
 
-...
+Results can be filtered by name and opening hours. Additionally, places serving food can be filtered by cuisine.
 
+- **Name.** This is the name of a place, as displayed e.g. on signs on the ground. Since the name of a place often includes a brand name, the name field allows us to filter by brand, as well.
+- **Opening hours.** Allows us to view places which are open at the moment. However, please note that this filter excludes places for which the opening hours haven't been listed in the database. The listed opening hours might also become out-of-date.
+- **Cuisine.** Allows us to filter by the type of food served. This only applies to restaurants and other places serving food.
 
+In the process of filtering and inspecting the results, you may find that some information you need is missing or incomplete. This is unavoidable, but since OpenStreetMap is a collaborative effort, if you are interested, you may consider [contributing a fix](https://wiki.openstreetmap.org/wiki/Beginners%27_guide).
+
+The results are sorted by distance from the user's location. Hence, the first one is the closest, and so forth. If the top results seem surprising, you may wish to check your location setting. As we recall, user's location is indicated by a big blue marker and can be updated by right-clicking on the map.
