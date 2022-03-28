@@ -2,15 +2,22 @@
 
 ## Introduction
 
-In this guide you'll learn how to use OpenPlaceFinder. Hopefully, you'll find most of the functionality pretty intuitive, based on previous knowledge from similar systems. However, we'll start with the basics, while trying to present a bit of context and a few more advanced hints along the way.
+In this guide you'll learn how to use OpenPlaceFinder. Hopefully, you'll find most of the functionality pretty intuitive, based on previous knowledge from similar systems. However, we'll start with the basics, while trying to present a bit of context and a few useful hints along the way.
 
 OpenPlaceFinder is a web application, which can be used to locate places based on their type and geographical location. For instance, we could look for restaurants in the vicinity of our homes. If there are many such restaurants, we can narrow down the search using, for instance, the type of food they serve. This type of search is known as a *place search*, also known in mapping lingo as a point of interest (POI) search.
 
-OpenPlaceFinder is based on [OpenStreetMap](https://www.openstreetmap.org), which is an open geographic database powered by volunteers. In order to make queries to this data, we use the [Overpass API](https://overpass-api.de), which is a search engine for the OpenStreetMap dataset. You don't have to be familiar with these services, but it's nice to know that, while you use this site, it communicates with OpenStreetMap servers to download map tiles and query points of interest.
+With this tool it is, then, possible to answer questions like
+
+1. What pizza restaurants are there in this area?
+2. What is the closest supermarket relative to my location?
+
+These particular examples might be important, for instance, when travelling or comparing new apartments.
+
+OpenPlaceFinder is based on [OpenStreetMap](https://www.openstreetmap.org), which is an open geographic database powered by volunteers. In order to make queries to this data, we use the [Overpass API](https://overpass-api.de), which provides powerful filters for the OpenStreetMap dataset. You don't have to be familiar with these services, but it's nice to know that, while you use this site, it communicates with OpenStreetMap servers to download map tiles and query points of interest.
 
 One feature inherited from OpenStreetMap is that we don't present reviews. For instance, in the case of restaurants, you can't search or sort based on a restaurant's average customer rating. This is based on OpenStreetMap's policy of not including subjective experiences into the database. Since this application is open source, we made the choice of not using data from separate review platforms which are mostly proprietary.
 
-## Browser support (and other limitations)
+## Supported browsers and limitations
 
 This is a desktop app, so you should use a desktop browser. You might be able to use a tablet, but the layout doesn't scale well to smaller mobile screens.
 
@@ -36,14 +43,28 @@ As you may have guessed, the search area is defined by the boundaries of the cur
 
 <img width="70" src="img/search-in-this-area.png" />
 
+In addition to the search area, we need to know your location, at least in general terms. If you enter a street address, we assume that's your location. On the other hand, if you enter the name of a wider area, such as a municipality, you may wish to update your location by right-clicking on the map and selecting *Set location*. Your location is indicated by a big blue marker.
+
+If you are concerned about the privacy implications of sharing your location, we would like to reassure you that your location will only be used locally, within your browser, to compute distances to points of interest. The author of this app has no way of knowing your precise location. However, the queries you make, including the boundaries of the search area, will appear in the server logs. These logs are not actively monitored, but they exist in case of abuse. Also, the autocomplete element (*Current map view*) is connected to an external API and they might log the street addresses you provide as input.
+
+<img width="85" src="img/location-marker.png" />
+
 ## Feature type selection
 
-...
+Map features represent physical objects on the ground. OpenPlaceFinder supports a wide variety of feature types, but it works best with point-like features, such as buildings and smaller natural features.
 
-For now, let's assume that we are back in Helsinki and looking for museums in the city centre.
+Each feature type is known by one unique name. Admittedly, in some cases, guessing the name used by the system to describe a given feature type can be challenging. Usually there are good reasons for a choice but, to a degree, it is a matter of convention agreed upon by the OpenStreetMap community.
 
+A few examples of convention include
 
+- Small shops that sell mainly food items are tagged [convenience stores](https://wiki.openstreetmap.org/wiki/Tag:shop%3Dconvenience) while large shops are tagged as [supermarkets](https://wiki.openstreetmap.org/wiki/Tag:shop%3Dsupermarket). In Finnish these are called "lähikauppa" and "supermarketti".
+- Places selling [fast food](https://wiki.openstreetmap.org/wiki/Tag:amenity%3Dfast_food) are tagged as such, while [restaurants](https://wiki.openstreetmap.org/wiki/Tag:amenity%3Drestaurant) are more formal establishments. In Finnish these are called "pikaruokaravintola" and "ravintola".
 
+The page [Map features](http://wiki.openstreetmap.org/wiki/Map_features) in the OpenStreetMap wiki details these and many other conventions. However, be warned, that given the wide scope of OpenStreetMap, the list of map features is extensive.
+
+In order to search for features of a given type, we simply type the name into the search box labeled *What are you looking for?* For instance, if we are looking for museums, we type "museo" into the search box. While we type the systems displays suggestions which provide clues into the available options, as seen in the screenshot below.
+
+<img width="316" src="img/feature-museum.png" />
 
 ## Sorting and filtering
 
