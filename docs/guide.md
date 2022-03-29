@@ -53,7 +53,7 @@ If you are concerned about the privacy implications of sharing your location, we
 
 Map features represent physical objects on the ground. OpenPlaceFinder supports a wide variety of feature types, but it works best with point-like features, such as buildings and smaller natural features.
 
-Each feature type is known by one unique name. Admittedly, in some cases, guessing the name used by the system can be challenging. Usually there are good reasons for a choice but, to a degree, it is a matter of convention agreed upon by the OpenStreetMap community.
+Each feature type is known by one unique name. To make things a little easier, for many features the system recognizes a few alternative terms. Regardless, in some cases, guessing the name used by the system can be challenging. Usually there are good reasons for a choice but, to a degree, it is a matter of convention agreed upon by the OpenStreetMap community.
 
 A few examples of convention include
 
@@ -79,3 +79,8 @@ Results can be filtered by name and opening hours. Additionally, places serving 
 In the process of filtering and inspecting the results, you may find that some information you need is missing or incomplete. This is unavoidable, but since OpenStreetMap is a collaborative effort, if you are interested, you may consider [contributing a fix](https://wiki.openstreetmap.org/wiki/Beginners%27_guide).
 
 The results are sorted by distance from the user's location. Hence, the first one is the closest, and so forth. If the top results seem surprising, you may wish to check your location setting. As we recall, user's location is indicated by a big blue marker and can be updated by right-clicking on the map.
+
+## Examples
+
+* [Supermarkets in downtown Helsinki](https://openplacefinder.org/?q=shop+supermarket&loc=60.1706_24.9415&map=13_60.1667_24.9420) and, for comparison, [convenience stores in the same area](https://openplacefinder.org/?q=shop+convenience&loc=60.1706_24.9415&map=13_60.1667_24.9420)
+* [All shops in the Sello shopping centre](https://openplacefinder.org/?q=shop&loc=60.2181_24.8122&map=17_60.2181_24.8111)
