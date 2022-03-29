@@ -34,18 +34,26 @@ export interface PresetMap {
   [id: string]: Preset | undefined;
 }
 
+export interface PNamesJson {
+  name: string;
+  terms?: string;
+}
+
+export interface PNames {
+  name: string;
+  terms: string[];
+}
+
 export interface PresetNamesJson {
   [locale: string]: {
     presets: {
       presets: {
-        [id: string]: {
-          name: string
-        };
+        [id: string]: PNamesJson;
       }
     }
   } | undefined;
 }
 
 export interface PresetNamesMap {
-  [id: string]: string | undefined
+  [id: string]: PNames | undefined
 }

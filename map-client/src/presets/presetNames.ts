@@ -11,7 +11,10 @@ export class PresetNames {
     }
 
     for (const id in translations) {
-      this.names[id] = translations[id].name;
+      this.names[id] = {
+        name: translations[id].name,
+        terms: translations[id].terms?.split(',') ?? []
+      }
     }
   }
 
@@ -20,6 +23,14 @@ export class PresetNames {
       return undefined;
     }
 
-    return this.names[id] ?? id;
+    return this.names[id]?.name ?? id;
+  }
+
+  getTerms(id: string | undefined): string[] | undefined {
+    if (id === undefined) {
+      return undefined;
+    }
+
+    return this.names[id]?.terms;
   }
 }

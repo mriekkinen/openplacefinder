@@ -17,6 +17,7 @@ export class PresetSearch {
     value = value.trim().toLowerCase();
     return this.presets.filter(
       p => this.names.getName(p.id)?.toLowerCase().includes(value)
+        || this.names.getTerms(p.id)?.some(term => term.toLowerCase().includes(value))
     );
   }
 }
