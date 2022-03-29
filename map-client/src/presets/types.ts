@@ -8,6 +8,7 @@ export interface PresetJson {
   originalScore?: number;
   icon?: string;
   searchable?: boolean;
+  geometry: string[];
 }
 
 export interface PresetJsonMap {
@@ -22,6 +23,7 @@ export interface Preset {
   originalScore: number;
   icon?: string;
   searchable: boolean;
+  geometry: string[];
 }
 
 export interface PresetIndex {

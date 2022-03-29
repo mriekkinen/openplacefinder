@@ -66,7 +66,8 @@ export class PresetParser {
         tags: pd.tags,
         fields: new Set(allFields),
         originalScore: pd.originalScore ?? 1,
-        searchable: pd.searchable ?? true
+        searchable: pd.searchable ?? true,
+        geometry: pd.geometry
       };
 
       if (pd.addTags) {

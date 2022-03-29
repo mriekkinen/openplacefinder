@@ -7,7 +7,9 @@ export class PresetSearch {
   readonly names: PresetNames;
 
   constructor(parser: PresetParser, names: PresetNames) {
-    this.presets = parser.list.filter(p => p.searchable);
+    this.presets = parser.list
+      .filter(p => p.searchable)
+      .filter(p => p.geometry.includes('point') || p.geometry.includes('area'));
     this.names = names;
   }
 
