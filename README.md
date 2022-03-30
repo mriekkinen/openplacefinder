@@ -1,12 +1,20 @@
 # OpenPlaceFinder
 
-OpenPlaceFinder is a web application which helps users discover various points of interest in the OpenStreetMap database.
+OpenPlaceFinder is a web application which helps users discover various points of interest in the OpenStreetMap database. It supports a streamlined form of *place search*, also known as a point of interest (POI) search. It allows you to specify what you are looking for, and where, and quickly produces a map of matching places.
 
-Please note that this project is still *under development*.
+You can use this service online at [openplacefinder.org](https://openplacefinder.org/).
 
 <img width="600" src="docs/img/museums.png" />
 
-## Credits
+For the best user experience, we recommend Chrome, but you should be able to use the site with a recent version of any major browser. However, you need to use a **desktop computer** since mobile devices aren't supported.
+
+## Documentation
+
+We have a [user guide](docs/guide.md) which should help you get started. If you still run into problems, you can [open an issue](https://github.com/mriekkinen/openplacefinder/issues) on this repository.
+
+If you would like to contribute to development, you can follow the instructions at [installation and development](docs/development.md).
+
+## Acknowledgements
 
 Several remarkable projects enable this app and many others. The following software, data and services power this app:
 
@@ -20,7 +28,7 @@ Beyond these, we use [React](https://reactjs.org/) on the front-end and [Node.js
 
 ## Similar projects
 
-If you are not familiar with the OpenStreetMap ecosystem, we encourage you to try [Overpass turbo](https://overpass-turbo.eu). This project has similarities with Overpass turbo, but Overpass turbo provides an interface based on the Overpass Query Language and is hence directed towards more advanced use cases.
+If you are not familiar with the OpenStreetMap ecosystem, we encourage you to try [Overpass turbo](https://overpass-turbo.eu). This project has similarities with Overpass turbo, but is directed towards more casual users. Overpass turbo provides an interface based on the Overpass Query Language and is hence directed towards more advanced use cases.
 
 ## License
 
