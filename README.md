@@ -4,7 +4,7 @@ OpenPlaceFinder is a web application which helps users discover various points o
 
 Please note that this project is still *under development*.
 
-<img width="979" src="docs/img/museums.png" />
+<img width="600" src="docs/img/museums.png" />
 
 ## Credits
 

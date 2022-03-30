@@ -29,7 +29,7 @@ We should warn you that, at this time, the app is Finn-centric. **Some of the da
 
 Once you open the site [openplacefinder.org](https://openplacefinder.org) in your browser, you'll be greeted with a view similar to what you can see below. You should see a map display with some controls, and another set of controls above the map. We'll discuss the specifics of these in the following sections.
 
-<img width="980" src="img/getting-started.png" />
+<img width="600" src="img/getting-started.png" />
 
 ## Area selection
 
