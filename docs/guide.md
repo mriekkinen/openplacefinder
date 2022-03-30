@@ -29,15 +29,13 @@ We should warn you that, at this time, the app is Finn-centric. **Some of the da
 
 Once you open the site [openplacefinder.org](https://openplacefinder.org) in your browser, you'll be greeted with a view similar to what you can see below. You should see a map display with some controls, and another set of controls above the map. We'll discuss the specifics of these in the following sections.
 
-![A screenshot of the site](img/getting-started.png)
+<img width="980" src="img/getting-started.png" />
 
 ## Area selection
 
 First, you should select your search area. This could be, for instance, an area surrounding your home or workplace, or it could be an area where you are headed. You start by typing a place name, such as a street address or the name of a municipality, into the box which says *Current map view*. You may also enter the name of a building, such as a shopping mall. As you type, the box presents suggestions, and once you see the one that fits you should select it. This will center the map to that location.
 
-If you are typing the name of a municipality, you should try to enter it's name twice, for instance *Kuopio, Kuopio*. This helps to disambiguate your search from other places containing the word Kuopio, such as "Kuopiontie" or "Ikea Kuopio". In the image below, we can see that if we enter the name twice, the city of Kuopio is second from the top.
-
-<img width="313" src="img/kuopio-kuopio.png" />
+**If you are typing the name of a municipality, you should try to enter it's name twice**, for instance "Kuopio, Kuopio". This helps to disambiguate your search from other places containing the word Kuopio, such as "Kuopiontie" or "Ikea Kuopio". You can also enter a street address, such as "Tulliportinkatu 31, Kuopio", or the name of a place, such as "Kuopion tori".
 
 As you may have guessed, the search area is defined by the boundaries of the current viewport. In other words, the search is limited to the area you see on the screen (at the time of initiating the search). If you wish to repeat a search using the current viewport, you may click the *Search in this area* button, which is located on the top-right corner of the map. This initiates a new search using the current settings.
 
@@ -62,9 +60,7 @@ A few examples of convention include
 
 The page [Map features](http://wiki.openstreetmap.org/wiki/Map_features) in the OpenStreetMap wiki details these and many other conventions. However, be warned, that given the wide scope of OpenStreetMap, the list of map features is extensive.
 
-In order to search for features of a given type, we simply type its name into the search box labeled *What are you looking for?* For instance, if we are looking for museums, we type "museo" into the search box. While we type the systems displays suggestions which provide clues into the available options, as seen also in the screenshot below.
-
-<img width="316" src="img/feature-museum.png" />
+In order to search for features of a given type, we simply type its name into the search box labeled *What are you looking for?* For instance, if we are looking for museums, we type "museo" into the search box. While we type the systems displays suggestions which provide clues into the available options.
 
 ## Filtering
 
