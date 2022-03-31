@@ -15,7 +15,7 @@ Second, download the respective icon sets. Since we use the set of *presets* cre
 
 - [Maki](https://labs.mapbox.com/maki-icons/). Download and copy all the files in the `icons` directory.
 - [Temaki](https://ideditor.github.io/temaki). Download the latest [release](https://github.com/ideditor/temaki/releases) from GitHub and copy all the files in the `icon` directory.
-- [Font Awesome](). Download [version 5](https://fontawesome.com/v5/download) (or newer) and copy everything from the `svgs` directory (regular, solid and brands).
+- [Font Awesome](https://fontawesome.com/). Download [version 5](https://fontawesome.com/v5/download) (or newer) and copy everything from the `svgs` directory (regular, solid and brands).
 
 You should end up with a directory structure that looks like this
 
