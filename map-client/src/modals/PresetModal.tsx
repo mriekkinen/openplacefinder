@@ -5,6 +5,7 @@ import { PresetOption, toPresetOption } from '../state';
 import { getParentId, Preset, presetSingleton } from '../presets';
 import { notEmpty } from '../utils';
 import Modal, { MdHeader } from './Modal';
+import { PresetIcon } from '../icons';
 
 const TOP_LEVEL_PRESET_IDS = [
   'amenity', 'craft', 'emergency', 'healthcare', 'historic',
@@ -26,6 +27,28 @@ const PresetModal = ({ isOpen, handleClose, handleChange }: Props) => {
   return (
     <Modal isOpen={isOpen} handleClose={handleClose}>
       <MdHeader>{root ? root.label : 'Categories'}</MdHeader>
+      <Buttons
+        root={root}
+        parent={parent}
+        handleChange={handleChange}
+        setRoot={setRoot} />
+      <Presets
+        presets={presets}
+        setRoot={p => setRoot(p)} />
+    </Modal>
+  );
+};
+
+interface ButtonsProps {
+  root: PresetOption | null;
+  parent: PresetOption | null;
+  handleChange: ((newValue: PresetOption | null) => void) | null;
+  setRoot: (p: PresetOption | null) => void;
+}
+
+const Buttons = ({ root, parent, handleChange, setRoot }: ButtonsProps) => {
+  return (
+    <div>
       {root && handleChange &&
         <button onClick={() => handleChange(root)}>
           Select
@@ -38,17 +61,33 @@ const PresetModal = ({ isOpen, handleClose, handleChange }: Props) => {
           </button>
         </div>
       }
-      <PresetList>
-        {presets.map(p =>
-          <PresetItem
-            key={p.value.id}
-            onClick={() => setRoot(p)}
-          >
+    </div>
+  );
+};
+
+interface PresetsProps {
+  presets: PresetOption[];
+  setRoot: (p: PresetOption | null) => void;
+}
+
+const Presets = ({ presets, setRoot }: PresetsProps) => {
+  return (
+    <PresetList>
+      {presets.map(p =>
+        <PresetItem
+          key={p.value.id}
+          onClick={() => setRoot(p)}
+        >
+          <PresetIcon
+            presetId={p.value.id}
+            width={20}
+            height={20} />
+          <PresetName>
             {p.label}
-          </PresetItem>
-        )}
-      </PresetList>
-    </Modal>
+          </PresetName>
+        </PresetItem>
+      )}
+    </PresetList>
   );
 };
 
@@ -86,6 +125,12 @@ const PresetItem = styled.li`
   padding: 0.5em;
   margin: 0.5em;
   border: 1px solid gray;
+  display: flex;
+  align-items: center;
+`;
+
+const PresetName = styled.div`
+  margin-left: 0.5em;
 `;
 
 export default PresetModal;
