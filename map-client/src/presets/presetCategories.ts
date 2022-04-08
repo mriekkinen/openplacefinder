@@ -4,13 +4,11 @@ import { PresetParser } from "./presetService";
 
 export class PresetCategories {
   readonly presets: Preset[];
-  readonly searchablePresets: Preset[];
   readonly names: PresetNames;
 
   constructor(parser: PresetParser, names: PresetNames) {
     this.presets = parser.list
       .filter(p => p.geometry.includes('point') || p.geometry.includes('area'));
-    this.searchablePresets = this.presets.filter(p => p.searchable);
     this.names = names;
   }
 
@@ -19,7 +17,7 @@ export class PresetCategories {
       return this.presets.filter(p => !p.id.includes('/'));
     }
 
-    return this.searchablePresets.filter(p => this.isDirectChild(root.id, p.id));
+    return this.presets.filter(p => this.isDirectChild(root.id, p.id));
   }
 
   isDirectChild(rootId: string, candidateId: string): boolean {

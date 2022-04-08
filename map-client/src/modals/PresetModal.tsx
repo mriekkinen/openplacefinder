@@ -48,20 +48,20 @@ interface ButtonsProps {
 
 const Buttons = ({ root, parent, handleChange, setRoot }: ButtonsProps) => {
   return (
-    <div>
-      {root && handleChange &&
-        <button onClick={() => handleChange(root)}>
-          Select
-        </button>
-      }
+    <ButtonRow>
       {root &&
         <div>
-          <button onClick={() => setRoot(parent)}>
+          <BackButton onClick={() => setRoot(parent)}>
             Go back
-          </button>
+          </BackButton>
         </div>
       }
-    </div>
+      {root && handleChange &&
+        <Button onClick={() => handleChange(root)}>
+          Select
+        </Button>
+      }
+    </ButtonRow>
   );
 };
 
@@ -125,12 +125,43 @@ const PresetItem = styled.li`
   padding: 0.5em;
   margin: 0.5em;
   border: 1px solid gray;
+  cursor: pointer;
   display: flex;
   align-items: center;
 `;
 
 const PresetName = styled.div`
   margin-left: 0.5em;
+`;
+
+const ButtonRow = styled.div`
+  display: flex;
+  margin-top: 0.25em;
+`;
+
+const Button = styled.button`
+  width: 7rem;
+  padding: 0.5rem;
+  background-color: #4CAF50;
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 3px;
+
+  margin-right: 0.5rem;
+
+  &:hover {
+    cursor: pointer;
+    background-color: #66BB6A;
+  }
+`;
+
+const BackButton = styled(Button)`
+  background-color: #9E9E9E;
+
+  &:hover {
+    background-color: #BDBDBD;
+  }
 `;
 
 export default PresetModal;
