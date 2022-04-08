@@ -1,6 +1,7 @@
 import { Preset } from "./types";
 import { PresetNames } from "./presetNames";
 import { PresetParser } from "./presetService";
+import { isDirectChild } from './utils';
 
 export class PresetCategories {
   readonly presets: Preset[];
@@ -17,12 +18,6 @@ export class PresetCategories {
       return this.presets.filter(p => !p.id.includes('/'));
     }
 
-    return this.presets.filter(p => this.isDirectChild(root.id, p.id));
-  }
-
-  isDirectChild(rootId: string, candidateId: string): boolean {
-    const expectedStart = `${rootId}/`;
-    const end = candidateId.slice(expectedStart.length);
-    return candidateId.startsWith(expectedStart) && !end.includes('/');
+    return this.presets.filter(p => isDirectChild(root.id, p.id));
   }
 }
