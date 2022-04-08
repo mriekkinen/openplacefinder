@@ -1,6 +1,5 @@
 import { AreaOption, PresetOption, initialState, ModalData, UiState } from './state';
 import { Action } from './actions';
-import { Preset } from '../presets';
 
 export const setArea = (newArea: AreaOption | null): Action => {
   return {

@@ -6,7 +6,6 @@ import styled from 'styled-components';
 
 import { createAutocomplete } from 'geocodeearth-core-js/dist/geocode-earth-core';
 import throttle from 'lodash/throttle';
-import debounce from 'lodash/debounce';
 
 import { AreaOption } from '../state';
 import { getGeocoderUrl, getGeocoderWait } from '../conf';
@@ -80,8 +79,6 @@ const Geocoder = ({ value, handleChange, isDisabled }: Props) => {
   const throttledSearch = useCallback(throttle(
     search, wait, { leading: true, trailing: true }
   ), []);
-
-  const debouncedSearch = useCallback(debounce(search, wait), []);
 
   return (
     <AsyncSelect
