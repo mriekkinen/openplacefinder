@@ -3,11 +3,11 @@ import { LatLngBounds } from 'leaflet';
 
 import {
   PresetOption, AreaOption,
-  clearPoiList, setArea,
+  clearPoiList, setArea, toPresetOption,
   useAppDispatch, useAppSelector
 } from '../state';
 import { SearchParams } from '../params';
-import { Preset, presetSingleton } from '../presets';
+import { Preset } from '../presets';
 import { Container, Header, Item } from './styles';
 import SearchBox from './SearchBox';
 import Geocoder from './Geocoder';
@@ -28,13 +28,6 @@ const SearchBar = ({ params, makeQuery, mapRef }: Props) => {
   const dispatch = useAppDispatch();
   const status = useAppSelector(state => state.poiList.status);
   const area = useAppSelector(state => state.ui.area);
-
-  const toPresetOption = (p: Preset): PresetOption => {
-    return {
-      value: p,
-      label: presetSingleton.getName(p.id) ?? p.id
-    };
-  };
 
   const presetOption = params.q ? toPresetOption(params.q) : null;
 

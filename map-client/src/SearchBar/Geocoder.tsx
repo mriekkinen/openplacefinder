@@ -71,7 +71,7 @@ const Geocoder = ({ value, handleChange, isDisabled }: Props) => {
 
   const noOptionsMessage = ({ inputValue }: { inputValue: string}): string => {
     if (inputValue === '') {
-      return 'Type a place name...'
+      return 'Enter a location...';
     }
 
     return 'No results';

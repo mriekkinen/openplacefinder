@@ -17,7 +17,7 @@ interface Props {
 const Modal = ({
   isOpen,
   handleClose,
-  maxWidth = 300,
+  maxWidth = 500,
   maxHeight = '80%',
   contentLabel = 'There\'s an issue with your query',
   children

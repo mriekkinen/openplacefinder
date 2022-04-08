@@ -1,11 +1,13 @@
 import React from 'react';
 
 import {
+  PresetOption,
   hideModal,
   useAppDispatch, useAppSelector
 } from '../state';
 import ZoomInModal from './ZoomInModal';
 import OverpassErrorModal from './OverpassErrorModal';
+import PresetModal from './PresetModal';
 
 const ModalRenderer = () => {
   const dispatch = useAppDispatch();
@@ -25,6 +27,17 @@ const ModalRenderer = () => {
     return modal.error;
   };
 
+  const getChangeHandler = () => {
+    if (modal === null || modal.type !== 'PresetModal') {
+      return null;
+    }
+
+    return (p: PresetOption | null) => {
+      modal.handleChange(p);
+      dispatch(hideModal());
+    };
+  };
+
   return (
     <>
       <ZoomInModal
@@ -35,6 +48,11 @@ const ModalRenderer = () => {
         isOpen={isOpen('OverpassErrorModal')}
         handleClose={handleClose}
         error={getError()}
+      />
+      <PresetModal
+        isOpen={isOpen('PresetModal')}
+        handleClose={handleClose}
+        handleChange={getChangeHandler()}
       />
     </>
   );

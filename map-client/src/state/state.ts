@@ -27,9 +27,15 @@ export interface OverpassErrorModalData {
   error: unknown;
 }
 
+export interface PresetModalData {
+  type: 'PresetModal';
+  handleChange: (newValue: PresetOption | null) => void;
+}
+
 export type ModalData =
   | ZoomInModalData
-  | OverpassErrorModalData;
+  | OverpassErrorModalData
+  | PresetModalData;
 
 export interface PresetOption {
   readonly value: Preset;

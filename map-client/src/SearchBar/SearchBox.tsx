@@ -4,7 +4,7 @@ import { components, ControlProps } from 'react-select';
 import AsyncSelect from 'react-select/async';
 import { MdSearch } from 'react-icons/md';
 
-import { PresetOption } from '../state';
+import { PresetOption, showPresetModal, useAppDispatch } from '../state';
 import { Preset, presetSingleton } from '../presets';
 
 interface Props {
@@ -15,6 +15,8 @@ interface Props {
 }
 
 const SearchBox = ({ value, handleChange, toPresetOption, isDisabled }: Props) => {
+  const dispatch = useAppDispatch();
+
   const search = (
     inputValue: string,
     cb: (opt: PresetOption[]) => void
@@ -29,9 +31,18 @@ const SearchBox = ({ value, handleChange, toPresetOption, isDisabled }: Props) =
     cb(options);
   };
 
-  const noOptionsMessage = ({ inputValue }: { inputValue: string}): string => {
+  const noOptionsMessage = ({ inputValue }: { inputValue: string}): React.ReactNode => {
     if (inputValue === '') {
-      return 'Type a feature type...'
+      return (
+        <div>
+          <div>Enter a category...</div>
+          <div>Or{' '}
+            <button onClick={() => dispatch(showPresetModal(handleChange))}>
+              select from a list
+            </button>
+          </div>
+        </div>
+      );
     }
 
     return 'No results';
