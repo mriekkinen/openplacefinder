@@ -65,7 +65,7 @@ export class PresetParser {
         id,
         tags: pd.tags,
         fields: new Set(allFields),
-        originalScore: pd.originalScore ?? 1,
+        matchScore: pd.matchScore ?? 1,
         searchable: pd.searchable ?? true,
         geometry: pd.geometry
       };
@@ -163,9 +163,9 @@ export class PresetMatcher {
     for (const k in preset.tags) {
       seen.add(k);
       if (entityTags[k] === preset.tags[k]) {
-        score += preset.originalScore;
+        score += preset.matchScore;
       } else if (preset.tags[k] === '*' && k in entityTags) {
-        score += preset.originalScore / 2;
+        score += preset.matchScore / 2;
       } else {
         return -1;
       }
@@ -174,7 +174,7 @@ export class PresetMatcher {
     // boost score for additional matches in addTags - #6802
     for (const k in preset.addTags) {
       if (!seen.has(k) && entityTags[k] === preset.addTags[k]) {
-        score += preset.originalScore;
+        score += preset.matchScore;
       }
     }
 

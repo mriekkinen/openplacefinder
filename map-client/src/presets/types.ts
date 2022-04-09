@@ -5,7 +5,7 @@ export interface PresetJson {
   addTags?: Tags;
   fields?: string[];
   moreFields?: string[];
-  originalScore?: number;
+  matchScore?: number;
   icon?: string;
   searchable?: boolean;
   geometry: string[];
@@ -20,7 +20,7 @@ export interface Preset {
   tags: Tags;
   addTags?: Tags;
   fields: Set<string>;
-  originalScore: number;
+  matchScore: number;
   icon?: string;
   searchable: boolean;
   geometry: string[];
