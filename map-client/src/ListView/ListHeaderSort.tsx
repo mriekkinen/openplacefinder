@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { SortOption } from './types';
+import { parseSortOption, SortOption } from '../state';
 
 interface Props {
   sortBy: SortOption;
@@ -10,8 +10,7 @@ interface Props {
 
 const ListHeaderSort = ({ sortBy, setSortBy }: Props) => {
   const handleChange: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
-    // TODO: Typesafe version
-    setSortBy(e.target.value as SortOption);
+    setSortBy(parseSortOption(e.target.value));
   };
 
   const SelectSortCriterion = () => {

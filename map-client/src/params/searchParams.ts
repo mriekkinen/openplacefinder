@@ -2,7 +2,7 @@ import { LatLngLiteral } from "leaflet";
 import { ParamKeyValuePair, URLSearchParamsInit } from "react-router-dom";
 
 import { MapState } from "../MapView/types";
-import { FacetState } from "../state";
+import { FacetState, parseSortOption, SortOption } from "../state";
 import { Preset, presetSingleton } from "../presets";
 
 export interface SearchParamDefaults {
@@ -17,6 +17,7 @@ export class SearchParams {
   id?: number;
   loc: LatLngLiteral;
   map: MapState;
+  sortBy?: SortOption;
   facets: FacetState;
   private setSearchParams: SetSearchParams;
 
@@ -29,6 +30,7 @@ export class SearchParams {
     this.id = this.parseIdParam(searchParams.get('id'));
     this.loc = this.parseLocationParam(searchParams.get('loc')) ?? defaults.loc;
     this.map = this.parseMapParam(searchParams.get('map')) ?? defaults.map;
+    this.sortBy = this.parseSortByParam(searchParams.get('sortBy'));
     this.facets = this.parseFacetParams(
       searchParams.get('name'),
       searchParams.has('openingHours'),
@@ -86,6 +88,14 @@ export class SearchParams {
     };
   };
 
+  private parseSortByParam = (sortByStr: string | null): SortOption | undefined => {
+    try {
+      return parseSortOption(sortByStr);
+    } catch (e) {
+      return undefined;
+    }
+  };
+
   private parseFacetParams = (
     name: string | null,
     openingHours: boolean,
@@ -112,6 +122,10 @@ export class SearchParams {
 
     if (this.id) {
       list.push(['id', this.id.toString()]);
+    }
+
+    if (this.sortBy) {
+      list.push(['sortBy', this.sortBy]);
     }
 
     if (this.facets.name) {

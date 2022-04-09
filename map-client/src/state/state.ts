@@ -47,6 +47,12 @@ export interface AreaOption  {
   readonly label: string;
 }
 
+export enum SortOption {
+  Distance = 'distance',
+  Category = 'category',
+  Name = 'name'
+}
+
 export interface UiState {
   area: AreaOption | null;
   filtersVisible: boolean;

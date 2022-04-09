@@ -63,7 +63,7 @@ const Category = ({ id }: { id: string | undefined }) => {
   );
 };
 
-export const getFullLocalName = (id: string, sep: string): string => {
+export const getLocalCategoryPath = (id: string, sep: string): string => {
   const subcats = getSubcategories(id);
   const names = subcats.map(sid => presetSingleton.getName(sid));
   return names.join(sep);

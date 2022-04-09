@@ -35,6 +35,7 @@ const SearchBar = ({ params, makeQuery, mapRef }: Props) => {
     if (newPreset === null) {
       params.q = undefined;
       params.id = undefined;
+      params.sortBy = undefined;
       params.facets = {};
       params.commit();
       dispatch(clearPoiList());
@@ -43,6 +44,7 @@ const SearchBar = ({ params, makeQuery, mapRef }: Props) => {
 
     params.q = newPreset.value;
     params.id = undefined;
+    params.sortBy = undefined;
     params.facets = {};
     params.commit();
   };
