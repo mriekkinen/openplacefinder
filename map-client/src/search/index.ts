@@ -1,4 +1,4 @@
 export * from './filter';
 export * from './openingHours';
-export * from './cuisine';
+export * from './categories';
 export * from './sort';

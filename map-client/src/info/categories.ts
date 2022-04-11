@@ -7,8 +7,7 @@ export const getCuisines = (poi: Poi): string[] => {
 };
 
 export const getCategories = (poi: Poi): string[] => {
-  const categories = [poi.presetId ?? '(unknown)'];
-  return categories.map(trimLower2);
+  return [poi.presetId ?? '(unknown)'];
 };
 
 const trimLower2 = (s: string) => {

@@ -42,7 +42,7 @@ export class SearchParams {
   }
 
   private parseQueryParam = (queryStr: string | null): Preset | undefined => {
-    return presetSingleton.getPreset(queryStr?.replaceAll(' ', '/'));
+    return presetSingleton.getPreset(queryStr?.replaceAll('.', '/'));
   }
 
   private parseIdParam = (idStr: string | null): number | undefined => {
@@ -109,7 +109,9 @@ export class SearchParams {
       openingHours: openingHours || undefined,
       openNow: openNow || undefined,
       cuisines: cuisines ? new Set(cuisines.split(';')) : undefined,
-      categories: categories ? new Set(categories.split(';')) : undefined
+      categories: categories
+        ? new Set(categories.replaceAll('.', '/').split(' '))
+        : undefined
     };
   };
 
@@ -120,7 +122,7 @@ export class SearchParams {
   public build(): ParamKeyValuePair[] {
     const list: [string, string][] = [];
     if (this.q) {
-      list.push(['q', this.q.id.replaceAll('/', ' ')]);
+      list.push(['q', this.q.id.replaceAll('/', '.')]);
     }
 
     if (this.id) {
@@ -150,7 +152,7 @@ export class SearchParams {
 
     if (this.facets.categories?.size) {
       const categories = Array.from(this.facets.categories);
-      list.push(['categories', categories.join(';')])
+      list.push(['categories', categories.join(' ').replaceAll('/', '.')])
     }
 
     if (this.loc) {
