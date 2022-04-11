@@ -63,6 +63,7 @@ export interface FacetState {
   name?: string;
   openingHours?: boolean;
   openNow?: boolean;
+  lunch?: boolean;
   cuisines?: Set<string>;
   categories?: Set<string>;
 }
