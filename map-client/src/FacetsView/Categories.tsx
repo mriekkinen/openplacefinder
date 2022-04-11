@@ -1,13 +1,12 @@
 import React from 'react';
 
 import { Country, FacetState } from '../state';
-import { filter, countCategories, sortByCount } from '../search';
+import { filter, countCategories } from '../search';
 import { SearchParams } from '../params';
 import { Poi } from '../types';
 import { presetSingleton } from '../presets';
 
-import { Facet } from './styles';
-import Category from './Category';
+import CheckboxFieldSet from './CheckboxFieldSet';
 
 interface Props {
   data: Poi[];
@@ -31,7 +30,6 @@ const Categories = ({ data, country, params }: Props) => {
 
   const filtered = filter(data, country, facetsExcludingCategories);
   const counts = countCategories(filtered);
-  const categories = sortByCount(counts);
 
   const handleChange = (category: string)
   : React.ChangeEventHandler<HTMLInputElement> => (e) => {
@@ -49,22 +47,18 @@ const Categories = ({ data, country, params }: Props) => {
     return checkedCategories.has(category);
   };
 
+  const getLabel = (category: string) => {
+    return presetSingleton.getName(category) ?? category;
+  };
+
   return (
-    <Facet>
-      <fieldset>
-        <legend>Categories</legend>
-        {categories.map(category =>
-          <Category
-            key={category}
-            category={category}
-            label={presetSingleton.getName(category) ?? category}
-            count={counts.get(category)}
-            isChecked={isChecked(category)}
-            handleChange={handleChange(category)}
-          />
-        )}
-      </fieldset>
-    </Facet>
+    <CheckboxFieldSet
+      legend='Categories'
+      counts={counts}
+      getLabel={getLabel}
+      isChecked={isChecked}
+      handleChange={handleChange}
+    />
   );
 };
 

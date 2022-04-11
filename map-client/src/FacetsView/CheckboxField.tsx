@@ -3,20 +3,18 @@ import React from 'react';
 import { GraySpan } from './styles';
 
 interface Props {
-  category: string;
   label: string;
   count: number | undefined;
   isChecked: boolean;
   handleChange: React.ChangeEventHandler<HTMLInputElement>;
 }
 
-const Category = ({ category, label, count, isChecked, handleChange }: Props) => {
+const CheckboxField = ({ label, count, isChecked, handleChange }: Props) => {
   return (
     <div>
       <label>
         <input
           type='checkbox'
-          name={category}
           checked={isChecked}
           onChange={handleChange} />
         {label} <Count count={count} />
@@ -36,4 +34,4 @@ const Count = ({ count }: CountProps) => {
   );
 };
 
-export default Category;
+export default CheckboxField;
