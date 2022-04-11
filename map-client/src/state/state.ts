@@ -64,6 +64,7 @@ export interface FacetState {
   openingHours?: boolean;
   openNow?: boolean;
   cuisines?: Set<string>;
+  categories?: Set<string>;
 }
 
 export interface State {

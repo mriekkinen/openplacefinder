@@ -1,7 +1,7 @@
 import { Poi } from '../types';
 import { Country, FacetState } from '../state';
 import { isOpenNow } from './openingHours';
-import { getCuisines } from '../info';
+import { getCategories, getCuisines } from '../info';
 
 export const filter = (
   data: Poi[],
@@ -12,13 +12,15 @@ export const filter = (
   const facetOpeningHours = facets.openingHours;
   const facetOpenNow = facets.openNow;
   const facetCuisines = facets.cuisines;
+  const facetCategories = facets.categories;
 
   return data.filter(poi => {
     return true
       && (!facetName || matchName(facetName, poi))
       && (!facetOpeningHours || matchOpeningHours(poi))
       && (!facetOpenNow || matchOpenNow(poi, country))
-      && (!facetCuisines || facetCuisines.size === 0 || matchCuisine(facetCuisines, poi));
+      && (!facetCuisines || facetCuisines.size === 0 || matchCuisine(facetCuisines, poi))
+      && (!facetCategories || facetCategories.size === 0 || matchCategories(facetCategories, poi));
   });
 };
 
@@ -47,6 +49,11 @@ const matchOpenNow = (poi: Poi, country: Country | undefined): boolean => {
 const matchCuisine = (facetCuisines: Set<string>, poi: Poi): boolean => {
   const cuisines = getCuisines(poi);
   return cuisines.some(cuisine => facetCuisines.has(cuisine));
+};
+
+const matchCategories = (facetCategories: Set<string>, poi: Poi): boolean => {
+  const categories = getCategories(poi);
+  return categories.some(category => facetCategories.has(category));
 };
 
 const trimLower = (s: string | undefined) => {

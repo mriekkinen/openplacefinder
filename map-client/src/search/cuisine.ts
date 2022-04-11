@@ -1,5 +1,5 @@
 import { Poi } from '../types';
-import { getCuisines } from '../info';
+import { getCategories, getCuisines } from '../info';
 
 export const countCuisines = (data: Poi[]) => {
   const counts = new Map<string, number>();
@@ -8,6 +8,19 @@ export const countCuisines = (data: Poi[]) => {
     cuisines.forEach(cuisine => {
       const count = counts.get(cuisine) ?? 0;
       counts.set(cuisine, count + 1);
+    });
+  });
+
+  return counts;
+};
+
+export const countCategories = (data: Poi[]) => {
+  const counts = new Map<string, number>();
+  data.forEach(poi => {
+    const categories = getCategories(poi);
+    categories.forEach(category => {
+      const count = counts.get(category) ?? 0;
+      counts.set(category, count + 1);
     });
   });
 

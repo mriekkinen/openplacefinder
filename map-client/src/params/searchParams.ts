@@ -35,7 +35,8 @@ export class SearchParams {
       searchParams.get('name'),
       searchParams.has('openingHours'),
       searchParams.has('openNow'),
-      searchParams.get('cuisine')
+      searchParams.get('cuisine'),
+      searchParams.get('categories')
     );
     this.setSearchParams = setSearchParams;
   }
@@ -100,13 +101,15 @@ export class SearchParams {
     name: string | null,
     openingHours: boolean,
     openNow: boolean,
-    cuisines: string | null
+    cuisines: string | null,
+    categories: string | null
   ): FacetState => {
     return {
       name: name || undefined,
       openingHours: openingHours || undefined,
       openNow: openNow || undefined,
-      cuisines: cuisines ? new Set(cuisines.split(';')) : undefined
+      cuisines: cuisines ? new Set(cuisines.split(';')) : undefined,
+      categories: categories ? new Set(categories.split(';')) : undefined
     };
   };
 
@@ -143,6 +146,11 @@ export class SearchParams {
     if (this.facets.cuisines?.size) {
       const cuisines = Array.from(this.facets.cuisines);
       list.push(['cuisine', cuisines.join(';')])
+    }
+
+    if (this.facets.categories?.size) {
+      const categories = Array.from(this.facets.categories);
+      list.push(['categories', categories.join(';')])
     }
 
     if (this.loc) {

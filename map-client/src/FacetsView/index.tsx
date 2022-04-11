@@ -8,6 +8,7 @@ import { Container, Header } from './styles';
 import Name from './Name';
 import { OpeningHours, OpenNow } from './OpeningHours';
 import Cuisines from './Cuisines';
+import Categories from './Categories';
 import MatchCount from './MatchCount';
 import Clear from './Clear';
 
@@ -37,6 +38,10 @@ const Facets = ({ params }: Props) => {
       <OpenNow
         params={params} />
       <Cuisines
+        data={data}
+        country={country}
+        params={params} />
+      <Categories
         data={data}
         country={country}
         params={params} />
