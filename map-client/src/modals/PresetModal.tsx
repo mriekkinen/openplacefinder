@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { PresetOption, toPresetOption } from '../state';
 import { getParentId, Preset, presetSingleton } from '../presets';
 import { notEmpty } from '../utils';
-import Modal, { MdHeader } from './Modal';
+import Modal, { MdHeader, ModalWidth } from './Modal';
 import { PresetIcon } from '../icons';
 
 const TOP_LEVEL_PRESET_IDS = [
@@ -25,7 +25,11 @@ const PresetModal = ({ isOpen, handleClose, handleChange }: Props) => {
   const parent = getParent(root);
 
   return (
-    <Modal isOpen={isOpen} handleClose={handleClose}>
+    <Modal
+      isOpen={isOpen}
+      handleClose={handleClose}
+      maxWidth={ModalWidth.Large}
+    >
       <MdHeader>{root ? root.label : 'Categories'}</MdHeader>
       <Buttons
         root={root}

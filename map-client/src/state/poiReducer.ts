@@ -3,7 +3,8 @@ import { OverpassJson } from 'overpass-ts';
 import { Poi } from '../types';
 import { Country, initialState, PoiState, QueryStatus } from './state';
 import { Action, AppThunk } from './actions';
-import { showOverpassErrorModal } from './uiReducer';
+import { showOverpassErrorModal, showSizeWarningModal } from './uiReducer';
+import { getWarnOfResultSetSize } from '../conf';
 
 import { fetchOverpass, overpass2Poi } from '../overpass';
 import { presetSingleton } from '../presets';
@@ -27,9 +28,23 @@ export const queryOverpass = (query: string): AppThunk => {
     const newData1 = overpass2Poi(overpassJson);
     const newData2 = presetSingleton.extend(newData1);
     const newFields = presetSingleton.enumerateFields(newData2);
-    dispatch(setPoiList(newData2));
-    dispatch(setFields(newFields));
-    dispatch(setStatus('succeeded'));
+
+    const updateData = () => {
+      dispatch(setPoiList(newData2));
+      dispatch(setFields(newFields));
+      dispatch(setStatus('succeeded'));
+    };
+
+    if (newData2.length >= getWarnOfResultSetSize()) {
+      dispatch(setStatus('pending'));
+      dispatch(showSizeWarningModal(
+        newData2.length,
+        ok => ok ? updateData() : dispatch(clearPoiList())
+      ));
+      return;
+    }
+
+    updateData();
   };
 };
 

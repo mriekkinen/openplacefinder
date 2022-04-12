@@ -5,11 +5,22 @@ import { MdClose } from 'react-icons/md';
 
 import { Button } from '../FacetsView/styles';
 
+export enum ModalWidth {
+  Small = 300,
+  Large = 500
+}
+
+export enum ModalButton {
+  Ok = 'ok',
+  Cancel = 'cancel'
+}
+
 interface Props {
   isOpen: boolean;
-  handleClose: () => void;
+  handleClose: (b: ModalButton) => void;
   maxWidth?: string | number;
   maxHeight?: string | number;
+  buttons?: ModalButton[];
   contentLabel?: string;
   children: React.ReactNode;
 }
@@ -17,8 +28,9 @@ interface Props {
 const Modal = ({
   isOpen,
   handleClose,
-  maxWidth = 500,
+  maxWidth = ModalWidth.Small,
   maxHeight = '80%',
+  buttons = [ModalButton.Ok],
   contentLabel = 'There\'s an issue with your query',
   children
 }: Props) => {
@@ -40,18 +52,25 @@ const Modal = ({
     }
   };
 
+  const handler = (b: ModalButton) => () => handleClose(b);
+
   return (
     <ReactModal
       isOpen={isOpen}
       style={styles}
       contentLabel={contentLabel}
-      onRequestClose={handleClose}
+      onRequestClose={handler(ModalButton.Ok)}
       shouldCloseOnOverlayClick={true}
     >
-      <Close onClick={handleClose} />
+      <Close onClick={handler(ModalButton.Ok)} />
       {children}
       <Footer>
-        <OkBtn onClick={handleClose}>Ok</OkBtn>
+        {buttons.includes(ModalButton.Cancel) && (
+          <CancelBtn onClick={handler(ModalButton.Cancel)}>Cancel</CancelBtn>
+        )}
+        {buttons.includes(ModalButton.Ok) && (
+          <OkBtn onClick={handler(ModalButton.Ok)}>Ok</OkBtn>
+        )}
       </Footer>
     </ReactModal>
   );
@@ -86,6 +105,15 @@ const Footer = styled.div`
 
 const OkBtn = styled(Button)`
   flex: none;
+`;
+
+const CancelBtn = styled(OkBtn)`
+  background-color: #9E9E9E;
+  margin-right: 0.25em;
+
+  &:hover {
+    background-color: #BDBDBD;
+  }
 `;
 
 export default Modal;

@@ -23,6 +23,13 @@ export const showOverpassErrorModal = (error: unknown): Action => {
   return showModal({ type: 'OverpassErrorModal', error });
 };
 
+export const showSizeWarningModal = (
+  n: number,
+  handleResult: (ok: boolean) => void
+): Action => {
+  return showModal({ type: 'SizeWarningModal', n, handleResult });
+};
+
 export const showPresetModal = (
   handleChange: (newValue: PresetOption | null) => void
 ): Action => {

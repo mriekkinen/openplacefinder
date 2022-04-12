@@ -3,7 +3,7 @@ import { Feature as PeliasFeature } from 'geocodeearth-core-js/dist/geojson';
 import { Poi } from '../types';
 import { Preset } from '../presets';
 
-export type QueryStatus = 'idle' | 'loading' | 'succeeded' | 'failed';
+export type QueryStatus = 'idle' | 'loading' | 'pending' | 'succeeded' | 'failed';
 
 export interface Country {
   country: string,
@@ -27,6 +27,12 @@ export interface OverpassErrorModalData {
   error: unknown;
 }
 
+export interface SizeWarningModalData {
+  type: 'SizeWarningModal';
+  n: number;
+  handleResult: (ok: boolean) => void;
+}
+
 export interface PresetModalData {
   type: 'PresetModal';
   handleChange: (newValue: PresetOption | null) => void;
@@ -35,6 +41,7 @@ export interface PresetModalData {
 export type ModalData =
   | ZoomInModalData
   | OverpassErrorModalData
+  | SizeWarningModalData
   | PresetModalData;
 
 export interface PresetOption {

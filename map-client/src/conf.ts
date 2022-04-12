@@ -14,6 +14,16 @@ export const isZoomSufficient = (zoom: number): boolean => {
   return zoom >= minZoom;
 };
 
+export const getWarnOfResultSetSize = (): number => {
+  const threshold = Number(process.env.REACT_APP_WARN_OF_RESULT_SET_SIZE);
+
+  if (isNaN(threshold)) {
+    throw Error("Environment variable REACT_APP_WARN_OF_RESULT_SET_SIZE not set, or not a valid integer");
+  }
+
+  return threshold;
+};
+
 export const getGeocoderUrl = (): string => {
   const url = process.env.REACT_APP_GEOCODER_URL;
 
