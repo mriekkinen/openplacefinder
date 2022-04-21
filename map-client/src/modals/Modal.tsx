@@ -20,6 +20,7 @@ interface Props {
   handleClose: (b: ModalButton) => void;
   maxWidth?: string | number;
   maxHeight?: string | number;
+  fixedWidth?: boolean;
   buttons?: ModalButton[];
   contentLabel?: string;
   children: React.ReactNode;
@@ -30,6 +31,7 @@ const Modal = ({
   handleClose,
   maxWidth = ModalWidth.Small,
   maxHeight = '80%',
+  fixedWidth = false,
   buttons = [ModalButton.Ok],
   contentLabel = 'There\'s an issue with your query',
   children
@@ -51,6 +53,10 @@ const Modal = ({
       maxHeight: maxHeight,
     }
   };
+
+  if (fixedWidth && styles.content?.maxWidth) {
+    styles.content.width = styles.content.maxWidth;
+  }
 
   const handler = (b: ModalButton) => () => handleClose(b);
 

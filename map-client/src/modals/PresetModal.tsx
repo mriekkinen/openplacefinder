@@ -15,6 +15,8 @@ const TOP_LEVEL_PRESET_IDS = [
   'leisure', 'office', 'shop', 'tourism'
 ];
 
+const MAX_RESULTS = 100;
+
 interface Props {
   isOpen: boolean;
   handleClose: () => void;
@@ -27,8 +29,9 @@ const PresetModal = ({ isOpen, handleClose, handleChange }: Props) => {
       isOpen={isOpen}
       handleClose={handleClose}
       maxWidth={ModalWidth.Large}
+      fixedWidth={true}
     >
-      <Tabs>
+      <Tabs forceRenderTabPanel={true}>
         <TabList>
           <Tab>Search</Tab>
           <Tab>Browse</Tab>
@@ -55,7 +58,7 @@ const SearchTab = ({ handleChange }: SearchTabProps) => {
 
   const handleQueryChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const inputValue = e.target.value;
-    if (inputValue.length < 2) {
+    if (inputValue === '') {
       setQuery(inputValue);
       setResults([]);
       return;
@@ -73,11 +76,11 @@ const SearchTab = ({ handleChange }: SearchTabProps) => {
       <SearchBox
         query={query}
         handleQueryChange={handleQueryChange} />
-      <ResultCount>
-        <b>{results.length}</b> categories
-      </ResultCount>
+      <Count
+        n={results.length}
+        query={query} />
       <Presets
-        presets={results}
+        presets={results.slice(0, MAX_RESULTS)}
         setRoot={handleChange} />
     </div>
   );
@@ -98,6 +101,18 @@ const SearchBox = ({ query, handleQueryChange }: SearchBoxProps) => {
         placeholder='Search categories...'
         autoFocus />
     </SearchDiv>
+  );
+};
+
+const Count = ({ n, query }: { n: number, query: string }) => {
+  if (query === '') {
+    return <div style={{ height: 10 }}></div>;
+  }
+
+  return (
+    <ResultCount>
+      <b>{n <= MAX_RESULTS ? n : `${MAX_RESULTS}+`}</b> categories
+    </ResultCount>
   );
 };
 

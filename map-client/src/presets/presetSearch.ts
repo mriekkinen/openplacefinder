@@ -1,3 +1,26 @@
+/**
+ * Makes it possible to search for presets by name.
+ * 
+ * NOTE: THIS FILE HAS BEEN ADAPTED FROM THE SOURCE CODE OF THE iD EDITOR!
+ * 
+ * The code is similar, but has been simplified from to the original.
+ * You can view the original source at https://github.com/openstreetmap/iD
+ * 
+ * Copyright (c) 2017, iD Contributors
+ * 
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+ * REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+ * INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+ * LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+ * OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+ * PERFORMANCE OF THIS SOFTWARE.
+ */
+
 import { Preset } from "./types";
 import { PresetNames } from "./presetNames";
 import { PresetParser } from "./presetService";
@@ -14,10 +37,34 @@ export class PresetSearch {
   }
 
   search(value: string) {
-    value = value.trim().toLowerCase();
-    return this.presets.filter(
+    value = value.toLowerCase().trim();
+    const results = this.presets.filter(
       p => this.names.getName(p.id)?.toLowerCase().includes(value)
         || this.names.getTerms(p.id)?.some(term => term.toLowerCase().includes(value))
     );
+
+    const compare = (a: Preset, b: Preset): number => {
+      const aName = this.names.getName(a.id)?.toLowerCase() ?? '';
+      const bName = this.names.getName(b.id)?.toLowerCase() ?? '';
+
+      // Priority if search string matches name exactly
+      if (aName === value) return -1;
+      if (bName === value) return 1;
+
+      // Priority for higher matchScore
+      let i = b.matchScore - a.matchScore;
+      if (i !== 0) return i;
+
+      // Priority if search string appears earlier in the name
+      i = aName.indexOf(value) - bName.indexOf(value);
+      if (i !== 0) return i;
+
+      // Priority for shorter names
+      return aName.length - bName.length;
+    };
+
+    results.sort(compare);
+
+    return results;
   }
 }
