@@ -50,7 +50,8 @@ const SearchBox = ({ value, handleChange, toPresetOption, isDisabled }: Props) =
 
   return (
     <AsyncSelect
-      cacheOptions
+      onFocus={() => dispatch(showPresetModal(handleChange))}
+      onMenuOpen={() => dispatch(showPresetModal(handleChange))}
       defaultOptions={false}
       loadOptions={search}
       placeholder='What are you looking for?'

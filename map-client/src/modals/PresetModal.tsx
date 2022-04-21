@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
+import { MdSearch } from 'react-icons/md';
 
 import { PresetOption, toPresetOption } from '../state';
 import { getParentId, getSubcategories, Preset, presetSingleton } from '../presets';
@@ -17,15 +18,10 @@ const TOP_LEVEL_PRESET_IDS = [
 interface Props {
   isOpen: boolean;
   handleClose: () => void;
-  handleChange: ((newValue: PresetOption | null) => void) | null;
+  handleChange: ((newValue: PresetOption | null) => void);
 }
 
 const PresetModal = ({ isOpen, handleClose, handleChange }: Props) => {
-  const [root, setRoot] = useState<PresetOption | null>(null);
-
-  const presets = getPresets(root);
-  const parent = getParent(root);
-
   return (
     <Modal
       isOpen={isOpen}
@@ -34,27 +30,131 @@ const PresetModal = ({ isOpen, handleClose, handleChange }: Props) => {
     >
       <Tabs>
         <TabList>
-          <Tab>Browse</Tab>
           <Tab>Search</Tab>
+          <Tab>Browse</Tab>
         </TabList>
 
         <TabPanel>
-        <Path root={root} setRoot={setRoot} />
-          {/* <Buttons
-            root={root}
-            parent={parent}
-            handleChange={handleChange}
-            setRoot={setRoot} /> */}
-          <Presets
-            presets={presets}
-            setRoot={p => setRoot(p)} />
+          <SearchTab handleChange={handleChange} />
         </TabPanel>
-
         <TabPanel>
-          <input placeholder='Search categories...' />
+          <BrowseTab handleChange={handleChange} />
         </TabPanel>
       </Tabs>
     </Modal>
+  );
+};
+
+interface SearchTabProps {
+  handleChange: ((newValue: PresetOption | null) => void);
+}
+
+const SearchTab = ({ handleChange }: SearchTabProps) => {
+  const [query, setQuery] = useState<string>('');
+  const [results, setResults] = useState<PresetOption[]>([]);
+
+  const handleQueryChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    const inputValue = e.target.value;
+    if (inputValue.length < 2) {
+      setQuery(inputValue);
+      setResults([]);
+      return;
+    }
+
+    const presets = presetSingleton.search(inputValue);
+    const options = presets.map(toPresetOption);
+
+    setQuery(inputValue);
+    setResults(options);
+  };
+
+  return (
+    <div>
+      <SearchBox
+        query={query}
+        handleQueryChange={handleQueryChange} />
+      <ResultCount>
+        <b>{results.length}</b> categories
+      </ResultCount>
+      <Presets
+        presets={results}
+        setRoot={handleChange} />
+    </div>
+  );
+};
+
+interface SearchBoxProps {
+  query: string;
+  handleQueryChange: React.ChangeEventHandler<HTMLInputElement>;
+}
+
+const SearchBox = ({ query, handleQueryChange }: SearchBoxProps) => {
+  return (
+    <SearchDiv>
+      <SearchIcon />
+      <SearchInput
+        value={query}
+        onChange={handleQueryChange}
+        placeholder='Search categories...'
+        autoFocus />
+    </SearchDiv>
+  );
+};
+
+const SearchDiv = styled.div`
+  display: flex;
+  align-items: center;
+  border: 1px solid hsl(0, 0%, 50%);
+  border-radius: 30px;
+  padding: 5px 10px;
+
+  &:hover {
+    border: 1px solid #1976D2;
+    outline: #1976D2 solid 1px;
+  }
+`;
+
+const SearchIcon = styled(MdSearch)`
+  flex: none;
+  width: 1.5em;
+  height: 1.5em;
+  color: hsl(0, 0%, 50%);
+`;
+
+const SearchInput = styled.input`
+  flex: 1;
+  margin: 0 5px;
+  border: none;
+  outline: none;
+`;
+
+const ResultCount = styled.div`
+  margin: 5px 0;
+  color: #757575;
+`;
+
+interface BrowseTabProps {
+  handleChange: ((newValue: PresetOption | null) => void);
+}
+
+const BrowseTab = ({ handleChange }: BrowseTabProps) => {
+  const [root, setRoot] = useState<PresetOption | null>(null);
+
+  const presets = getPresets(root);
+  const parent = getParent(root);
+
+  return (
+    <div>
+      <Path root={root} setRoot={setRoot} />
+      {/* <Buttons
+        root={root}
+        parent={parent}
+        handleChange={handleChange}
+        setRoot={setRoot} /> */}
+      <Presets
+        presets={presets}
+        setRoot={p => setRoot(p)} />
+    </div>
   );
 };
 
