@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
 
 import { PresetOption, toPresetOption } from '../state';
-import { getParentId, Preset, presetSingleton } from '../presets';
+import { getParentId, getSubcategories, Preset, presetSingleton } from '../presets';
 import { notEmpty } from '../utils';
-import Modal, { MdHeader, ModalWidth } from './Modal';
+import Modal, { ModalWidth } from './Modal';
 import { PresetIcon } from '../icons';
 
 const TOP_LEVEL_PRESET_IDS = [
@@ -30,17 +32,89 @@ const PresetModal = ({ isOpen, handleClose, handleChange }: Props) => {
       handleClose={handleClose}
       maxWidth={ModalWidth.Large}
     >
-      <MdHeader>{root ? root.label : 'Categories'}</MdHeader>
-      <Buttons
-        root={root}
-        parent={parent}
-        handleChange={handleChange}
-        setRoot={setRoot} />
-      <Presets
-        presets={presets}
-        setRoot={p => setRoot(p)} />
+      <Tabs>
+        <TabList>
+          <Tab>Browse</Tab>
+          <Tab>Search</Tab>
+        </TabList>
+
+        <TabPanel>
+        <Path root={root} setRoot={setRoot} />
+          {/* <Buttons
+            root={root}
+            parent={parent}
+            handleChange={handleChange}
+            setRoot={setRoot} /> */}
+          <Presets
+            presets={presets}
+            setRoot={p => setRoot(p)} />
+        </TabPanel>
+
+        <TabPanel>
+          <input placeholder='Search categories...' />
+        </TabPanel>
+      </Tabs>
     </Modal>
   );
+};
+
+interface PathProps {
+  root: PresetOption | null;
+  setRoot: (p: PresetOption | null) => void;
+}
+
+const Path = ({ root, setRoot }: PathProps) => {
+  const path = getPath(root);
+
+  const previous = path.slice(0, -1);
+  const current = path[path.length-1];
+
+  return (
+    <BreadcrumbNav>
+      <BreadcrumbList>
+        {previous.map(p => 
+          <BreadcrumbItem key={p?.value.id ?? 'top'}>
+            <PathLink p={p} setRoot={setRoot} isActive={false} />
+          </BreadcrumbItem>
+        )}
+        <BreadcrumbItem>
+          <PathLink p={current} setRoot={setRoot} isActive={true} />
+        </BreadcrumbItem>
+      </BreadcrumbList>
+    </BreadcrumbNav>
+  );
+};
+
+interface PathLinkProps {
+  p: PresetOption | null;
+  setRoot: (p: PresetOption | null) => void;
+  isActive: boolean;
+}
+
+const PathLink = ({ p, setRoot, isActive }: PathLinkProps) => {
+  const label = p ? p.label : 'Categories';
+  return (
+    <BreadcrumbLink
+      href='#'
+      onClick={() => setRoot(p)}
+      isActive={isActive}
+    >
+      {label}
+    </BreadcrumbLink>
+  );
+};
+
+const getPath = (root: PresetOption | null) => {
+  const path: (string | undefined)[] = [undefined];
+
+  if (root) {
+    const subcats = getSubcategories(root.value.id);
+    path.push(...subcats);
+  }
+
+  return path
+    .map(id => presetSingleton.getPreset(id))
+    .map(preset => preset ? toPresetOption(preset) : null);
 };
 
 interface ButtonsProps {
@@ -117,6 +191,42 @@ const getParent = (root: PresetOption | null): PresetOption | null => {
   return parentPreset ? toPresetOption(parentPreset) : null;
 };
 
+const BreadcrumbNav = styled.nav``;
+
+const BreadcrumbList = styled.ul`
+  list-style-type: none;
+  margin: 0;
+  padding-left: 0;
+`;
+
+const BreadcrumbItem = styled.li`
+  display: inline-block;
+
+  &::before {
+    content: '»';
+    color: #757575;
+    padding-left: 0.25em;
+    padding-right: 0.25em;
+  }
+
+  &:first-child::before {
+    content: '';
+  }
+`;
+
+interface BreadcrumbLinkProps {
+  isActive: boolean;
+}
+
+const BreadcrumbLink = styled.a<BreadcrumbLinkProps>`
+  color: ${props => props.isActive ? 'inherit' : '#757575'};
+  text-decoration: none;
+
+  &:hover {
+    text-decoration-line: underline;
+  }
+`;
+
 const PresetList = styled.ul`
   list-style-type: none;
   display: flex;
@@ -132,6 +242,10 @@ const PresetItem = styled.li`
   cursor: pointer;
   display: flex;
   align-items: center;
+
+  &:hover {
+    background-color: #EEEEEE;
+  }
 `;
 
 const PresetName = styled.div`
