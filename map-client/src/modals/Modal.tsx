@@ -104,16 +104,21 @@ const Close = styled(MdClose)`
   }
 `;
 
-const Footer = styled.div`
+export const Footer = styled.div`
   display: flex;
   justify-content: flex-end;
 `;
 
-const OkBtn = styled(Button)`
+export const OkBtn = styled(Button)`
   flex: none;
+
+  &:disabled {
+    cursor: not-allowed;
+    background-color: #cccccc;
+  }
 `;
 
-const CancelBtn = styled(OkBtn)`
+export const CancelBtn = styled(OkBtn)`
   background-color: #9E9E9E;
   margin-right: 0.25em;
 

@@ -5,10 +5,10 @@ import 'react-tabs/style/react-tabs.css';
 import { MdSearch } from 'react-icons/md';
 
 import { PresetOption, toPresetOption } from '../state';
-import { getParentId, getSubcategories, Preset, presetSingleton } from '../presets';
+import { getSubcategories, Preset, presetSingleton } from '../presets';
 import { getPresetsMaxResults } from '../conf';
 import { notEmpty } from '../utils';
-import Modal, { ModalWidth } from './Modal';
+import Modal, { ModalWidth, Footer, OkBtn, CancelBtn } from './Modal';
 import { PresetIcon } from '../icons';
 
 const TOP_LEVEL_PRESET_IDS = [
@@ -29,6 +29,7 @@ const PresetModal = ({ isOpen, handleClose, handleChange }: Props) => {
       handleClose={handleClose}
       maxWidth={ModalWidth.Large}
       fixedWidth={true}
+      buttons={[]}
     >
       <Tabs forceRenderTabPanel={true}>
         <TabList>
@@ -37,10 +38,14 @@ const PresetModal = ({ isOpen, handleClose, handleChange }: Props) => {
         </TabList>
 
         <TabPanel>
-          <SearchTab handleChange={handleChange} />
+          <SearchTab
+            handleClose={handleClose}
+            handleChange={handleChange} />
         </TabPanel>
         <TabPanel>
-          <BrowseTab handleChange={handleChange} />
+          <BrowseTab
+            handleClose={handleClose}
+            handleChange={handleChange} />
         </TabPanel>
       </Tabs>
     </Modal>
@@ -48,10 +53,11 @@ const PresetModal = ({ isOpen, handleClose, handleChange }: Props) => {
 };
 
 interface SearchTabProps {
+  handleClose: () => void;
   handleChange: ((newValue: PresetOption | null) => void);
 }
 
-const SearchTab = ({ handleChange }: SearchTabProps) => {
+const SearchTab = ({ handleClose, handleChange }: SearchTabProps) => {
   const [query, setQuery] = useState<string>('');
   const [results, setResults] = useState<PresetOption[]>([]);
 
@@ -87,7 +93,12 @@ const SearchTab = ({ handleChange }: SearchTabProps) => {
         query={query} />
       <Presets
         presets={results.slice(0, maxResults)}
-        setRoot={handleChange} />
+        handleClick={handleChange} />
+      <Footer>
+        <CancelBtn onClick={() => handleClose()}>
+          Cancel
+        </CancelBtn>
+      </Footer>
     </div>
   );
 };
@@ -161,26 +172,40 @@ const ResultCount = styled.div`
 `;
 
 interface BrowseTabProps {
+  handleClose: () => void;
   handleChange: ((newValue: PresetOption | null) => void);
 }
 
-const BrowseTab = ({ handleChange }: BrowseTabProps) => {
+const BrowseTab = ({ handleClose, handleChange }: BrowseTabProps) => {
   const [root, setRoot] = useState<PresetOption | null>(null);
 
   const presets = getPresets(root);
-  const parent = getParent(root);
+
+  const handleCancel = () => {
+    handleClose();
+  };
+
+  const handleOk = () => {
+    handleChange(root);
+    handleClose();
+  };
 
   return (
     <div>
-      <Path root={root} setRoot={setRoot} />
-      {/* <Buttons
+      <Path
         root={root}
-        parent={parent}
-        handleChange={handleChange}
-        setRoot={setRoot} /> */}
+        setRoot={setRoot} />
       <Presets
         presets={presets}
-        setRoot={p => setRoot(p)} />
+        handleClick={setRoot} />
+      <Footer>
+        <CancelBtn onClick={handleCancel}>
+          Cancel
+        </CancelBtn>
+        <OkBtn onClick={handleOk} disabled={root === null}>
+          Ok
+        </OkBtn>
+      </Footer>
     </div>
   );
 };
@@ -244,44 +269,18 @@ const getPath = (root: PresetOption | null) => {
     .map(preset => preset ? toPresetOption(preset) : null);
 };
 
-interface ButtonsProps {
-  root: PresetOption | null;
-  parent: PresetOption | null;
-  handleChange: ((newValue: PresetOption | null) => void) | null;
-  setRoot: (p: PresetOption | null) => void;
-}
-
-const Buttons = ({ root, parent, handleChange, setRoot }: ButtonsProps) => {
-  return (
-    <ButtonRow>
-      {root &&
-        <div>
-          <BackButton onClick={() => setRoot(parent)}>
-            Go back
-          </BackButton>
-        </div>
-      }
-      {root && handleChange &&
-        <Button onClick={() => handleChange(root)}>
-          Select
-        </Button>
-      }
-    </ButtonRow>
-  );
-};
-
 interface PresetsProps {
   presets: PresetOption[];
-  setRoot: (p: PresetOption | null) => void;
+  handleClick: (p: PresetOption | null) => void;
 }
 
-const Presets = ({ presets, setRoot }: PresetsProps) => {
+const Presets = ({ presets, handleClick }: PresetsProps) => {
   return (
     <PresetList>
       {presets.map(p =>
         <PresetItem
           key={p.value.id}
-          onClick={() => setRoot(p)}
+          onClick={() => handleClick(p)}
         >
           <PresetIcon
             presetId={p.value.id}
@@ -309,13 +308,6 @@ const getTopLevelPresets = (): Preset[] => {
   return TOP_LEVEL_PRESET_IDS
     .map(id => presetSingleton.getPreset(id))
     .filter(notEmpty);
-};
-
-const getParent = (root: PresetOption | null): PresetOption | null => {
-  const parentPreset = root
-    ? (presetSingleton.getPreset(getParentId(root.value.id)) ?? null)
-    : null;
-  return parentPreset ? toPresetOption(parentPreset) : null;
 };
 
 const BreadcrumbNav = styled.nav``;
@@ -377,36 +369,6 @@ const PresetItem = styled.li`
 
 const PresetName = styled.div`
   margin-left: 0.5em;
-`;
-
-const ButtonRow = styled.div`
-  display: flex;
-  margin-top: 0.25em;
-`;
-
-const Button = styled.button`
-  width: 7rem;
-  padding: 0.5rem;
-  background-color: #4CAF50;
-  color: white;
-  font-weight: 600;
-  border: none;
-  border-radius: 3px;
-
-  margin-right: 0.5rem;
-
-  &:hover {
-    cursor: pointer;
-    background-color: #66BB6A;
-  }
-`;
-
-const BackButton = styled(Button)`
-  background-color: #9E9E9E;
-
-  &:hover {
-    background-color: #BDBDBD;
-  }
 `;
 
 export default PresetModal;
