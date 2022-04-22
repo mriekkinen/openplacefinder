@@ -6,6 +6,7 @@ import { MdSearch } from 'react-icons/md';
 
 import { PresetOption, toPresetOption } from '../state';
 import { getParentId, getSubcategories, Preset, presetSingleton } from '../presets';
+import { getPresetsMaxResults } from '../conf';
 import { notEmpty } from '../utils';
 import Modal, { ModalWidth } from './Modal';
 import { PresetIcon } from '../icons';
@@ -14,8 +15,6 @@ const TOP_LEVEL_PRESET_IDS = [
   'amenity', 'craft', 'emergency', 'healthcare', 'historic',
   'leisure', 'office', 'shop', 'tourism'
 ];
-
-const MAX_RESULTS = 100;
 
 interface Props {
   isOpen: boolean;
@@ -56,6 +55,15 @@ const SearchTab = ({ handleChange }: SearchTabProps) => {
   const [query, setQuery] = useState<string>('');
   const [results, setResults] = useState<PresetOption[]>([]);
 
+  const maxResults = getPresetsMaxResults();
+
+  const search = (inputValue: string) => {
+    const presets = presetSingleton.search(inputValue);
+    const options = presets.map(toPresetOption);
+
+    setResults(options);
+  };
+
   const handleQueryChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const inputValue = e.target.value;
     if (inputValue === '') {
@@ -64,11 +72,8 @@ const SearchTab = ({ handleChange }: SearchTabProps) => {
       return;
     }
 
-    const presets = presetSingleton.search(inputValue);
-    const options = presets.map(toPresetOption);
-
     setQuery(inputValue);
-    setResults(options);
+    search(inputValue);
   };
 
   return (
@@ -78,9 +83,10 @@ const SearchTab = ({ handleChange }: SearchTabProps) => {
         handleQueryChange={handleQueryChange} />
       <Count
         n={results.length}
+        maxResults={maxResults}
         query={query} />
       <Presets
-        presets={results.slice(0, MAX_RESULTS)}
+        presets={results.slice(0, maxResults)}
         setRoot={handleChange} />
     </div>
   );
@@ -104,14 +110,20 @@ const SearchBox = ({ query, handleQueryChange }: SearchBoxProps) => {
   );
 };
 
-const Count = ({ n, query }: { n: number, query: string }) => {
+interface CountProps {
+  n: number;
+  maxResults: number;
+  query: string;
+}
+
+const Count = ({ n, maxResults, query }: CountProps) => {
   if (query === '') {
     return <div style={{ height: 10 }}></div>;
   }
 
   return (
     <ResultCount>
-      <b>{n <= MAX_RESULTS ? n : `${MAX_RESULTS}+`}</b> categories
+      <b>{n <= maxResults ? n : `${maxResults}+`}</b> categories
     </ResultCount>
   );
 };

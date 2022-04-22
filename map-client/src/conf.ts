@@ -43,3 +43,13 @@ export const getGeocoderWait = (): number => {
 
   return wait;
 };
+
+export const getPresetsMaxResults = (): number => {
+  const maxRes = Number(process.env.REACT_APP_PRESETS_MAX_RESULTS);
+
+  if (isNaN(maxRes)) {
+    throw Error("Environment variable REACT_APP_PRESETS_MAX_RESULTS not set, or not a valid integer");
+  }
+
+  return maxRes;
+};
