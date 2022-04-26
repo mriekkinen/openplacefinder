@@ -59,6 +59,7 @@ const ModalRenderer = () => {
             modal.handleChange(p);
             dispatch(hideModal());
           }}
+          initialRoot={modal.initialRoot}
         />
       );
     default:

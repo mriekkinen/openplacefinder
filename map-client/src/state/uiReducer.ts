@@ -31,9 +31,10 @@ export const showSizeWarningModal = (
 };
 
 export const showPresetModal = (
-  handleChange: (newValue: PresetOption | null) => void
+  handleChange: (newValue: PresetOption | null) => void,
+  initialRoot?: PresetOption | null
 ): Action => {
-  return showModal({ type: 'PresetModal', handleChange });
+  return showModal({ type: 'PresetModal', handleChange, initialRoot });
 };
 
 export const hideModal = (): Action => {

@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { components, ControlProps } from 'react-select';
+import { components, ControlProps, OptionProps } from 'react-select';
 import AsyncSelect from 'react-select/async';
-import { MdSearch } from 'react-icons/md';
+import { MdInfoOutline, MdSearch } from 'react-icons/md';
 
 import { PresetOption, showPresetModal, useAppDispatch } from '../state';
 import { Preset, presetSingleton } from '../presets';
+import { getPresetsMaxResults } from '../conf';
 
 interface Props {
   value: PresetOption | null;
@@ -17,6 +18,8 @@ interface Props {
 const SearchBox = ({ value, handleChange, toPresetOption, isDisabled }: Props) => {
   const dispatch = useAppDispatch();
 
+  const maxResults = getPresetsMaxResults();
+
   const search = (
     inputValue: string,
     cb: (opt: PresetOption[]) => void
@@ -27,7 +30,8 @@ const SearchBox = ({ value, handleChange, toPresetOption, isDisabled }: Props) =
     }
 
     const presets = presetSingleton.search(inputValue);
-    const options = presets.map(toPresetOption);
+    const sliced = presets.slice(0, maxResults);
+    const options = sliced.map(toPresetOption);
     cb(options);
   };
 
@@ -48,10 +52,27 @@ const SearchBox = ({ value, handleChange, toPresetOption, isDisabled }: Props) =
     return 'No results';
   };
 
+  const Option = (props: OptionProps<PresetOption, false>) => {
+    const handleInfoClick: React.MouseEventHandler<SVGElement> = (e) => {
+      e.stopPropagation();
+      dispatch(showPresetModal(
+        handleChange,
+        toPresetOption(props.data.value)
+      ));
+    };
+
+    return (
+      <components.Option {...props}>
+        <OptionContainer>
+          <OptionLabel>{props.data.label}</OptionLabel>
+          <InfoIcon onClick={handleInfoClick} />
+        </OptionContainer>
+      </components.Option>
+    );
+  };
+
   return (
     <AsyncSelect
-      onFocus={() => dispatch(showPresetModal(handleChange))}
-      onMenuOpen={() => dispatch(showPresetModal(handleChange))}
       defaultOptions={false}
       loadOptions={search}
       placeholder='What are you looking for?'
@@ -60,7 +81,7 @@ const SearchBox = ({ value, handleChange, toPresetOption, isDisabled }: Props) =
       isClearable={true}
       isDisabled={isDisabled}
       noOptionsMessage={noOptionsMessage}
-      components={{ Control }}
+      components={{ Control, Option }}
       styles={{
         menu: css => ({ ...css, zIndex: 99999 }),
         valueContainer: css => ({ ...css, paddingLeft: 6, paddingRight: 6 })
@@ -71,15 +92,36 @@ const SearchBox = ({ value, handleChange, toPresetOption, isDisabled }: Props) =
 
 const Control = ({ children, ...props }: ControlProps<PresetOption, false>) => (
   <components.Control {...props}>
-    <Icon /> {children}
+    <SearchIcon /> {children}
   </components.Control>
 );
 
-const Icon = styled(MdSearch)`
+const SearchIcon = styled(MdSearch)`
   margin-left: 8px;
   width: 1.5em;
   height: 1.5em;
   color: hsl(0, 0%, 50%);
+`;
+
+const OptionContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const OptionLabel = styled.div`
+  flex: 1;
+`;
+
+const InfoIcon = styled(MdInfoOutline)`
+  flex: none;
+  margin: 0 0;
+  width: 1.25em;
+  height: 1.25em;
+  color: hsl(0, 0%, 50%);
+
+  &:hover {
+    color: hsl(0, 0%, 25%);
+  }
 `;
 
 export default SearchBox;

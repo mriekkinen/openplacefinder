@@ -36,6 +36,7 @@ export interface SizeWarningModalData {
 export interface PresetModalData {
   type: 'PresetModal';
   handleChange: (newValue: PresetOption | null) => void;
+  initialRoot?: PresetOption | null;
 }
 
 export type ModalData =

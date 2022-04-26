@@ -20,9 +20,10 @@ interface Props {
   isOpen: boolean;
   handleClose: () => void;
   handleChange: ((newValue: PresetOption | null) => void);
+  initialRoot?: PresetOption | null;
 }
 
-const PresetModal = ({ isOpen, handleClose, handleChange }: Props) => {
+const PresetModal = ({ isOpen, handleClose, handleChange, initialRoot = null }: Props) => {
   return (
     <Modal
       isOpen={isOpen}
@@ -31,7 +32,7 @@ const PresetModal = ({ isOpen, handleClose, handleChange }: Props) => {
       fixedWidth={true}
       buttons={[]}
     >
-      <Tabs forceRenderTabPanel={true}>
+      <Tabs forceRenderTabPanel={true} defaultIndex={1}>
         <TabList>
           <Tab>Search</Tab>
           <Tab>Browse</Tab>
@@ -45,7 +46,8 @@ const PresetModal = ({ isOpen, handleClose, handleChange }: Props) => {
         <TabPanel>
           <BrowseTab
             handleClose={handleClose}
-            handleChange={handleChange} />
+            handleChange={handleChange}
+            initialRoot={initialRoot} />
         </TabPanel>
       </Tabs>
     </Modal>
@@ -174,10 +176,11 @@ const ResultCount = styled.div`
 interface BrowseTabProps {
   handleClose: () => void;
   handleChange: ((newValue: PresetOption | null) => void);
+  initialRoot: PresetOption | null;
 }
 
-const BrowseTab = ({ handleClose, handleChange }: BrowseTabProps) => {
-  const [root, setRoot] = useState<PresetOption | null>(null);
+const BrowseTab = ({ handleClose, handleChange, initialRoot }: BrowseTabProps) => {
+  const [root, setRoot] = useState<PresetOption | null>(initialRoot);
 
   const presets = getPresets(root);
 

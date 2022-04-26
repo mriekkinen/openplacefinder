@@ -21,9 +21,9 @@
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-import { Preset } from "./types";
-import { PresetNames } from "./presetNames";
-import { PresetParser } from "./presetService";
+import { Preset } from './types';
+import { PresetNames } from './presetNames';
+import { PresetParser } from './presetService';
 
 export class PresetSearch {
   readonly presets: Preset[];
@@ -38,9 +38,13 @@ export class PresetSearch {
 
   search(value: string) {
     value = value.toLowerCase().trim();
-    const results = this.presets.filter(
+
+    const names = this.presets.filter(
       p => this.names.getName(p.id)?.toLowerCase().includes(value)
-        || this.names.getTerms(p.id)?.some(term => term.toLowerCase().includes(value))
+    );
+
+    const terms = this.presets.filter(
+      p => this.names.getTerms(p.id)?.some(term => term.toLowerCase().includes(value))
     );
 
     const compare = (a: Preset, b: Preset): number => {
@@ -63,8 +67,22 @@ export class PresetSearch {
       return aName.length - bName.length;
     };
 
-    results.sort(compare);
+    names.sort(compare);
 
-    return results;
+    return this.removeDuplicates([...names, ...terms]);
+  }
+
+  removeDuplicates(results: Preset[]) {
+    const ids = new Set<string>();
+    const unique: Preset[] = [];
+    results.forEach(p => {
+      if (!ids.has(p.id)) {
+        unique.push(p);
+      }
+
+      ids.add(p.id);
+    });
+
+    return unique;
   }
 }
