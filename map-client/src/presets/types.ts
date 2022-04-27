@@ -1,5 +1,10 @@
 import { Tags } from '../types';
 
+export interface Reference {
+  key: string;
+  value?: string;
+}
+
 export interface PresetJson {
   tags: Tags;
   addTags?: Tags;
@@ -9,6 +14,7 @@ export interface PresetJson {
   icon?: string;
   searchable?: boolean;
   geometry: string[];
+  reference?: Reference;
 }
 
 export interface PresetJsonMap {
@@ -24,6 +30,7 @@ export interface Preset {
   icon?: string;
   searchable: boolean;
   geometry: string[];
+  reference?: Reference;
 }
 
 export interface PresetIndex {

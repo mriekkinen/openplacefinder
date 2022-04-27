@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
-import { MdSearch } from 'react-icons/md';
+import { MdSearch, MdInfoOutline } from 'react-icons/md';
 
 import { PresetOption, toPresetOption } from '../state';
 import { getSubcategories, Preset, presetSingleton } from '../presets';
@@ -10,6 +10,7 @@ import { getPresetsMaxResults } from '../conf';
 import { notEmpty } from '../utils';
 import Modal, { ModalWidth, Footer, OkBtn, CancelBtn } from './Modal';
 import { PresetIcon } from '../icons';
+import { fetchDescription } from './PresetDescriptionService';
 
 const TOP_LEVEL_PRESET_IDS = [
   'amenity', 'craft', 'emergency', 'healthcare', 'historic',
@@ -198,6 +199,8 @@ const BrowseTab = ({ handleClose, handleChange, initialRoot }: BrowseTabProps) =
       <Path
         root={root}
         setRoot={setRoot} />
+      <PresetDescription
+        root={root} />
       <Presets
         presets={presets}
         handleClick={setRoot} />
@@ -270,6 +273,63 @@ const getPath = (root: PresetOption | null) => {
   return path
     .map(id => presetSingleton.getPreset(id))
     .map(preset => preset ? toPresetOption(preset) : null);
+};
+
+interface PresetDescriptionProps {
+  root: PresetOption | null;
+}
+
+const PresetDescription = ({ root }: PresetDescriptionProps) => {
+  const [description, setDescription] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (!root) {
+      return setDescription(undefined);
+    }
+
+    const tag = getTag(root.value);
+    if (!tag) {
+      return setDescription(undefined);
+    }
+
+    fetchDescription(tag.key, tag.value)
+      .then(d => setDescription(d.description))
+      .catch(err => {
+        console.log(err);
+        setDescription(undefined);
+      });
+  }, [root]);
+
+  if (!root || !description) {
+    return null;
+  }
+
+  return (
+    <DescriptionBox>
+      <DescriptionIcon />
+      <DescriptionText>{description}</DescriptionText>
+    </DescriptionBox>
+  );
+};
+
+const getTag = (p: Preset) => {
+  if (p.reference) {
+    return {
+      key: p.reference.key,
+      value: p.reference.value
+    };
+  }
+
+  // Return a single tag (there should be only one)
+  for (const key in p.tags) {
+    return {
+      key,
+      value: p.tags[key]
+    };
+  }
+
+  // No tags
+  return undefined;
 };
 
 interface PresetsProps {
@@ -347,6 +407,27 @@ const BreadcrumbLink = styled.a<BreadcrumbLinkProps>`
   &:hover {
     text-decoration-line: underline;
   }
+`;
+
+const DescriptionBox = styled.div`
+  display: flex;
+  margin: 0.25em;
+  padding: 0.5em;
+  border: 1px solid gray;
+  border-radius: 7px;
+`;
+
+const DescriptionIcon = styled(MdInfoOutline)`
+  flex: none;
+  margin-right: 0.25em;
+  width: 1.25em;
+  height: 1.25em;
+  color: hsl(0, 0%, 25%);
+`;
+
+const DescriptionText = styled.div`
+  flex: 1;
+  margin: 0;
 `;
 
 const PresetList = styled.ul`

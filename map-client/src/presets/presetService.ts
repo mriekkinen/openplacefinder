@@ -78,6 +78,10 @@ export class PresetParser {
         p.icon = pd.icon;
       }
 
+      if (pd.reference) {
+        p.reference = pd.reference;
+      }
+
       presets.push(p);
     }
 
