@@ -1,0 +1,9 @@
+GET http://localhost:3001/api/descriptions/amenity=restaurant
+
+###
+
+GET http://localhost:3001/api/descriptions/tourism=*
+
+###
+
+GET http://localhost:3001/api/descriptions/nonexistent=*
