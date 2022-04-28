@@ -21,9 +21,11 @@
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
+import { TOP_LEVEL_PRESETS } from '../conf';
 import { Preset } from './types';
 import { PresetNames } from './presetNames';
 import { PresetParser } from './presetService';
+import { getFirstAncestor } from './utils';
 
 export class PresetSearch {
   readonly presets: Preset[];
@@ -31,6 +33,7 @@ export class PresetSearch {
 
   constructor(parser: PresetParser, names: PresetNames) {
     this.presets = parser.list
+      .filter(p => TOP_LEVEL_PRESETS.includes(getFirstAncestor(p.id)))
       .filter(p => p.searchable)
       .filter(p => p.geometry.includes('point') || p.geometry.includes('area'));
     this.names = names;

@@ -38,6 +38,16 @@ const getGeocoderWait = (): number => {
   return wait;
 };
 
+const getTopLevelPresets = (): string[] => {
+  const ids = process.env.REACT_APP_TOP_LEVEL_PRESETS;
+
+  if (!ids) {
+    throw Error("Environment variable REACT_APP_TOP_LEVEL_PRESETS not set");
+  }
+
+  return ids.split(',').map(id => id.trim());
+};
+
 const getPresetsMaxResults = (): number => {
   const maxRes = Number(process.env.REACT_APP_PRESETS_MAX_RESULTS);
 
@@ -52,6 +62,7 @@ export const MIN_ZOOM = getMinZoomForQueries();
 export const RESULT_SET_WARNING_THRESHOLD = getWarnOfResultSetSize();
 export const GEOCODER_URL = getGeocoderUrl();
 export const GEOCODER_WAIT = getGeocoderWait();
+export const TOP_LEVEL_PRESETS = getTopLevelPresets();
 export const PRESETS_MAX_RESULTS = getPresetsMaxResults();
 
 export const isZoomSufficient = (zoom: number): boolean => {

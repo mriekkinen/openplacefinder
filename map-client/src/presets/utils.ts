@@ -30,7 +30,7 @@ export const isDirectChild = (rootId: string, candidateId: string): boolean => {
  * ['tourism', 'tourism/information', 'tourism/information/office'].
  * ```
  */
-export const getSubcategories = (id: string): string[] => {
+export const getAncestors = (id: string): string[] => {
   const ids = [];
   let next = -1;
   while ((next = id.indexOf('/', next + 1)) !== -1) {
@@ -39,4 +39,15 @@ export const getSubcategories = (id: string): string[] => {
 
   ids.push(id);
   return ids;
+};
+
+/**
+ * Returns the id of the given id's first ancestor.
+ * 
+ * For example, for `tourism/information/office` we return `tourism`.
+ */
+ export const getFirstAncestor = (id: string): string => {
+  const first = id.indexOf('/');
+  if (first === -1) return id;
+  return id.slice(0, first);
 };

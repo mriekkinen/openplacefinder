@@ -83,7 +83,7 @@ export class Presets {
     return this.searcher.search(value);
   }
 
-  getPresets(root: Preset | undefined): Preset[] {
-    return this.categories.getPresets(root);
+  getChildPresets(root: Preset | undefined): Preset[] {
+    return this.categories.getChildPresets(root);
   }
 }

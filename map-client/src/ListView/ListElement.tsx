@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { Poi, PoiWithDistance } from '../types';
 import { Country } from '../state';
-import { presetSingleton, getSubcategories } from '../presets';
+import { presetSingleton, getAncestors } from '../presets';
 import { getAddress, getCuisines, getDistance } from '../info';
 import { OpenStateWrapper } from '../InfoView/OpenState';
 import { PresetIcon } from '../icons';
@@ -47,8 +47,8 @@ const ListElement = (
 
 const Category = ({ id }: { id: string | undefined }) => {
   if (!id) return null;
-  const subcats = getSubcategories(id);
-  const names = subcats.map(sid => presetSingleton.getName(sid));
+  const ancestors = getAncestors(id);
+  const names = ancestors.map(sid => presetSingleton.getName(sid));
 
   // Format the category like this:
   //   category >> subcategory >>
@@ -64,8 +64,8 @@ const Category = ({ id }: { id: string | undefined }) => {
 };
 
 export const getLocalCategoryPath = (id: string, sep: string): string => {
-  const subcats = getSubcategories(id);
-  const names = subcats.map(sid => presetSingleton.getName(sid));
+  const ancestors = getAncestors(id);
+  const names = ancestors.map(sid => presetSingleton.getName(sid));
   return names.join(sep);
 };
 

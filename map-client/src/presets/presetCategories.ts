@@ -13,7 +13,7 @@ export class PresetCategories {
     this.names = names;
   }
 
-  getPresets(root: Preset | undefined) {
+  getChildPresets(root: Preset | undefined) {
     if (!root) {
       return this.presets.filter(p => !p.id.includes('/'));
     }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+import { TOP_LEVEL_PRESETS } from '../../conf';
 import { PresetOption, toPresetOption } from '../../state';
 import { Preset, presetSingleton } from '../../presets';
 import { notEmpty } from '../../utils';
@@ -8,11 +9,6 @@ import { Footer, OkBtn, CancelBtn } from '../Modal';
 import { Breadcrumb } from './Breadcrumb';
 import { PresetDescription } from './Description';
 import { Presets } from './Presets';
-
-const TOP_LEVEL_PRESET_IDS = [
-  'amenity', 'craft', 'emergency', 'healthcare', 'historic',
-  'leisure', 'office', 'shop', 'tourism'
-];
 
 interface BrowseTabProps {
   handleClose: () => void;
@@ -58,7 +54,7 @@ export const BrowseTab = ({ handleClose, handleChange, initialRoot }: BrowseTabP
 
 const getPresets = (root: PresetOption | null): PresetOption[] => {
   const presetList = root
-    ? presetSingleton.getPresets(root.value)
+    ? presetSingleton.getChildPresets(root.value)
     : getTopLevelPresets();
   return presetList
     .map(p => toPresetOption(p))
@@ -66,7 +62,7 @@ const getPresets = (root: PresetOption | null): PresetOption[] => {
 };
 
 const getTopLevelPresets = (): Preset[] => {
-  return TOP_LEVEL_PRESET_IDS
+  return TOP_LEVEL_PRESETS
     .map(id => presetSingleton.getPreset(id))
     .filter(notEmpty);
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { PresetOption, toPresetOption } from '../../state';
-import { getSubcategories, presetSingleton } from '../../presets';
+import { getAncestors, presetSingleton } from '../../presets';
 
 interface BreadcrumbProps {
   root: PresetOption | null;
@@ -35,8 +35,8 @@ const getPath = (root: PresetOption | null) => {
   const path: (string | undefined)[] = [undefined];
 
   if (root) {
-    const subcats = getSubcategories(root.value.id);
-    path.push(...subcats);
+    const ancestors = getAncestors(root.value.id);
+    path.push(...ancestors);
   }
 
   return path
