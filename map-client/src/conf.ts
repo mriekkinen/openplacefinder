@@ -1,4 +1,4 @@
-export const getMinZoomForQueries = (): number => {
+const getMinZoomForQueries = (): number => {
   const minZoom = Number(process.env.REACT_APP_MIN_ZOOM_FOR_QUERIES);
 
   if (isNaN(minZoom)) {
@@ -8,13 +8,7 @@ export const getMinZoomForQueries = (): number => {
   return minZoom;
 };
 
-export const isZoomSufficient = (zoom: number): boolean => {
-  const minZoom = getMinZoomForQueries();
-
-  return zoom >= minZoom;
-};
-
-export const getWarnOfResultSetSize = (): number => {
+const getWarnOfResultSetSize = (): number => {
   const threshold = Number(process.env.REACT_APP_WARN_OF_RESULT_SET_SIZE);
 
   if (isNaN(threshold)) {
@@ -24,7 +18,7 @@ export const getWarnOfResultSetSize = (): number => {
   return threshold;
 };
 
-export const getGeocoderUrl = (): string => {
+const getGeocoderUrl = (): string => {
   const url = process.env.REACT_APP_GEOCODER_URL;
 
   if (!url) {
@@ -34,7 +28,7 @@ export const getGeocoderUrl = (): string => {
   return url;
 };
 
-export const getGeocoderWait = (): number => {
+const getGeocoderWait = (): number => {
   const wait = Number(process.env.REACT_APP_GEOCODER_WAIT);
 
   if (isNaN(wait)) {
@@ -44,7 +38,7 @@ export const getGeocoderWait = (): number => {
   return wait;
 };
 
-export const getPresetsMaxResults = (): number => {
+const getPresetsMaxResults = (): number => {
   const maxRes = Number(process.env.REACT_APP_PRESETS_MAX_RESULTS);
 
   if (isNaN(maxRes)) {
@@ -52,4 +46,14 @@ export const getPresetsMaxResults = (): number => {
   }
 
   return maxRes;
+};
+
+export const MIN_ZOOM = getMinZoomForQueries();
+export const RESULT_SET_WARNING_THRESHOLD = getWarnOfResultSetSize();
+export const GEOCODER_URL = getGeocoderUrl();
+export const GEOCODER_WAIT = getGeocoderWait();
+export const PRESETS_MAX_RESULTS = getPresetsMaxResults();
+
+export const isZoomSufficient = (zoom: number): boolean => {
+  return zoom >= MIN_ZOOM;
 };

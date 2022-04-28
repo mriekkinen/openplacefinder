@@ -6,7 +6,7 @@ import { MdInfoOutline, MdSearch } from 'react-icons/md';
 
 import { PresetOption, showPresetModal, useAppDispatch } from '../state';
 import { Preset, presetSingleton } from '../presets';
-import { getPresetsMaxResults } from '../conf';
+import { PRESETS_MAX_RESULTS } from '../conf';
 
 interface Props {
   value: PresetOption | null;
@@ -18,8 +18,6 @@ interface Props {
 const SearchBox = ({ value, handleChange, toPresetOption, isDisabled }: Props) => {
   const dispatch = useAppDispatch();
 
-  const maxResults = getPresetsMaxResults();
-
   const search = (
     inputValue: string,
     cb: (opt: PresetOption[]) => void
@@ -30,7 +28,7 @@ const SearchBox = ({ value, handleChange, toPresetOption, isDisabled }: Props) =
     }
 
     const presets = presetSingleton.search(inputValue);
-    const sliced = presets.slice(0, maxResults);
+    const sliced = presets.slice(0, PRESETS_MAX_RESULTS);
     const options = sliced.map(toPresetOption);
     cb(options);
   };

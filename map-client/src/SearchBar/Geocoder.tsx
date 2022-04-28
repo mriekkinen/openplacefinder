@@ -8,7 +8,7 @@ import { createAutocomplete } from 'geocodeearth-core-js/dist/geocode-earth-core
 import throttle from 'lodash/throttle';
 
 import { AreaOption } from '../state';
-import { getGeocoderUrl, getGeocoderWait } from '../conf';
+import { GEOCODER_URL, GEOCODER_WAIT } from '../conf';
 
 interface Props {
   value: AreaOption | null;
@@ -30,10 +30,10 @@ interface Props {
 const Geocoder = ({ value, handleChange, isDisabled }: Props) => {
   const autocomplete = useMemo(() =>
     createAutocomplete(undefined, {}, {
-      url: getGeocoderUrl()
+      url: GEOCODER_URL
     }), []);
 
-  const wait = getGeocoderWait();
+  const wait = GEOCODER_WAIT;
 
   const search = (
     inputValue: string,

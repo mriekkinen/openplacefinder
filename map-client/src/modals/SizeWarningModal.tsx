@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { getWarnOfResultSetSize } from '../conf';
+import { RESULT_SET_WARNING_THRESHOLD } from '../conf';
 import Modal, { MdHeader, MdParagraph, ModalButton } from './Modal';
 
 interface Props {
@@ -27,7 +27,7 @@ const SizeWarningModal = ({ isOpen, handleClose, n }: Props) => {
       <MdParagraph>
         Displaying large result sets may slow down your browser.
         We show this warning if the result set contains more
-        than {getWarnOfResultSetSize()} elements.
+        than {RESULT_SET_WARNING_THRESHOLD} elements.
       </MdParagraph>
       <MdParagraph>
         You may be able to get around this by using filters to reduce

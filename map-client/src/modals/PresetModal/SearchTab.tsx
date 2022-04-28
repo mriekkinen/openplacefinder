@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { getPresetsMaxResults } from '../../conf';
+import { PRESETS_MAX_RESULTS } from '../../conf';
 import { PresetOption, toPresetOption } from '../../state';
 import { presetSingleton } from '../../presets';
 import { Footer, CancelBtn } from '../Modal';
@@ -17,8 +17,6 @@ interface SearchTabProps {
 export const SearchTab = ({ handleClose, handleChange }: SearchTabProps) => {
   const [query, setQuery] = useState<string>('');
   const [results, setResults] = useState<PresetOption[]>([]);
-
-  const maxResults = getPresetsMaxResults();
 
   const search = (inputValue: string) => {
     const presets = presetSingleton.search(inputValue);
@@ -46,10 +44,10 @@ export const SearchTab = ({ handleClose, handleChange }: SearchTabProps) => {
         handleQueryChange={handleQueryChange} />
       <ResultCount
         n={results.length}
-        maxResults={maxResults}
+        maxResults={PRESETS_MAX_RESULTS}
         query={query} />
       <Presets
-        presets={results.slice(0, maxResults)}
+        presets={results.slice(0, PRESETS_MAX_RESULTS)}
         handleClick={handleChange} />
       <Footer>
         <CancelBtn onClick={() => handleClose()}>

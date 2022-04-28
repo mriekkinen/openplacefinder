@@ -4,7 +4,7 @@ import { Poi } from '../types';
 import { Country, initialState, PoiState, QueryStatus } from './state';
 import { Action, AppThunk } from './actions';
 import { showOverpassErrorModal, showSizeWarningModal } from './uiReducer';
-import { getWarnOfResultSetSize } from '../conf';
+import { RESULT_SET_WARNING_THRESHOLD } from '../conf';
 
 import { fetchOverpass, overpass2Poi } from '../overpass';
 import { presetSingleton } from '../presets';
@@ -35,7 +35,7 @@ export const queryOverpass = (query: string): AppThunk => {
       dispatch(setStatus('succeeded'));
     };
 
-    if (newData2.length >= getWarnOfResultSetSize()) {
+    if (newData2.length >= RESULT_SET_WARNING_THRESHOLD) {
       dispatch(setStatus('pending'));
       dispatch(showSizeWarningModal(
         newData2.length,
