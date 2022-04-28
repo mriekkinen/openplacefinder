@@ -25,10 +25,7 @@ export const PresetDescription = ({ root }: PresetDescriptionProps) => {
 
     fetchDescription(tag.key, tag.value)
       .then(d => setDescription(d.description))
-      .catch(err => {
-        console.log(err);
-        setDescription(undefined);
-      });
+      .catch(() => setDescription(undefined));
   }, [root]);
 
   if (!root || !description) {
