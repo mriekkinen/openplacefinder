@@ -29,6 +29,8 @@ RUN npm ci --only=production
 
 COPY --from=build /build/map-server/build build/
 COPY --from=build /build/map-server/frontend frontend
+COPY --from=build /build/map-server/data data
+COPY --from=build /build/map-server/.env .
 
 EXPOSE 3001
 CMD [ "npm", "start" ]
