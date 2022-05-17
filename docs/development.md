@@ -24,7 +24,14 @@ npm start
 
 After a while, this should launch a browser window at [http://localhost:3000/](http://localhost:3000/).
 
-If everything runs smoothly, you'll be greeted with a working app, but the markers may look a little funny. This is because we haven't downloaded any icon sets, and hence you'll see blank boxes where icons are used. To fix this, please follow the instructions at [downloading and processing the icon sets](icons.md). Naturally, this needs to be done only once.
+If everything runs smoothly, you'll be greeted with a working app, but the markers may look a little funny. This is because we haven't downloaded any icon sets, and hence you'll see blank boxes where icons are used. We'll fix this in the next section.
+
+## Downloading the data files
+
+This app depends on a set of files to provide a complete feature set. These include a few icon sets, and a database containing information collected from the OpenStreetMap Wiki. Obtaining these files may take a bit of time, but needs to be done only once.
+
+* Follow the instructions at [downloading and processing the icon sets](icons.md).
+* Download the file [taginfo-wiki.db.bz2](https://taginfo.openstreetmap.org/download/taginfo-wiki.db.bz2) from [Taginfo](https://taginfo.openstreetmap.org/download). Then extract the compressed file and copy the unpacked file `taginfo-wiki.db` into the directory `map-server/data`.
 
 ## Setting up a production instance
 
