@@ -55,6 +55,8 @@ export const BrowseTab = ({ handleClose, handleChange, initialRoot }: BrowseTabP
 const getPresets = (root: PresetOption | null): PresetOption[] => {
   const presetList = root
     ? presetSingleton.getChildPresets(root.value)
+        .filter(p => p.searchable)
+        .filter(p => p.geometry.includes('point') || p.geometry.includes('area'))
     : getTopLevelPresets();
   return presetList
     .map(p => toPresetOption(p))
