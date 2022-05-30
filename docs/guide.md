@@ -4,6 +4,8 @@
 
 In this guide you'll learn how to use OpenPlaceFinder. Hopefully, you'll find most of the functionality pretty intuitive, based on previous knowledge from similar systems. However, we'll start with the basics, while trying to present a bit of context and a few useful hints along the way.
 
+**TLDR:** If you just want to get up to speed as quickly as possible, take a look at the [examples](#examples) at the end.
+
 OpenPlaceFinder is a web application, which can be used to locate places based on their type and geographical location. For instance, we could look for restaurants in the vicinity of our homes. If there are many such restaurants, we can narrow down the search using, for instance, the type of food they serve. This type of search is known as a *place search*, also known in mapping lingo as a point of interest (POI) search.
 
 With this tool it is possible to answer questions like
@@ -74,13 +76,40 @@ Results can be filtered by name, opening hours and category:
 
 - **Name.** This is the name of a place, as displayed e.g. on signs on the ground. Since the name of a place often includes a brand name, the name field allows us to filter by brand, as well.
 - **Opening hours.** Allows us to view places which are open at the moment. However, please note that this filter excludes places for which the opening hours haven't been listed in the database. The listed opening hours might also become out-of-date.
-- **(Sub)categories.** Allows us to narrow down the search to one or more categories. Usually these are subcategories of the principal category. For instance, we might search for restaurants, but then, upon inspecing the results, decide to narrow down the search to just pizzerias.
+- **(Sub)categories.** Allows us to narrow down the search to one or more categories. Usually these are subcategories of the principal category. For instance, we might search for restaurants, but then, upon inspecting the results, decide to narrow down the search to just pizzerias.
 
 By default, the results are sorted by distance from the user's location. If the top results seem surprising, you may wish to check your location setting. As we recall, user's location is indicated by a big blue marker and can be updated by right-clicking on the map.
 
-In the process of filtering and inspecting the results, you may find that some information you need is missing or incomplete. This is unavoidable, but since OpenStreetMap is a collaborative effort, if you are interested, you may consider [contributing a fix](https://wiki.openstreetmap.org/wiki/Beginners%27_guide).
+In the process of filtering and inspecting the results, you may find that some information you need is missing or incomplete. This is unavoidable, but since OpenStreetMap is a collaborative effort you may, if you are interested, consider [contributing a fix](https://wiki.openstreetmap.org/wiki/Beginners%27_guide).
 
 ## Examples
+
+### Example 1a. Pizzerias in downtown Helsinki
+
+Our first example involves finding a good place for dinner. In this case, we've decided on having a good pizza in the downtown area.
+
+As noted earlier, OpenStreetMap distinguishes between restaurants and fast-food restaurants. Hence, you can find pizza places under both categories (called "pitseria" and "pitseria-pikaruokaravintola"). In this case, we'll search only for the former.
+
+The basic workflow is as follows:
+
+* Enter your location. We typed "Helsingin päärautatieasema".
+* Choose a place category. We typed "pitseria".
+* Browse the results. Our search returned 29 restaurants.
+
+You can see the results for our search below.
+
+<img width="600" src="img/example-1a.png" />
+
+Next, we would like to dig a little deeper.
+
+Suppose we have identified a few promising chains. For the sake of argument, let's assume that they are Classic Pizza and Kotipizza. We would like to filter by brand to show only restaurants belonging to one of these chains. By opening the filter panel, we'll see that there's a name field, which can serve as a proxy for the brand filter. If we use "classic" and "kotipizza" as name filters (one at a time), we'll discover that both have 2 restaurants in our search area.
+
+It's time to decide. We observe that the closest Classic Pizza is only 216 meters away while the closest Kotipizza is around 600 meters away. Since both are open for business, depending on our preferences, we might choose either one.
+
+
+
+
+### ---
 
 * [Pizzerias in downtown Helsinki](https://openplacefinder.org/?q=amenity.restaurant.pizza&loc=60.1706_24.9415&map=13_60.1667_24.9420)
 * [Supermarkets in downtown Helsinki](https://openplacefinder.org/?q=shop.supermarket&loc=60.1706_24.9415&map=13_60.1667_24.9420) and, for comparison, [convenience stores in the same area](https://openplacefinder.org/?q=shop.convenience&loc=60.1706_24.9415&map=13_60.1667_24.9420)
