@@ -21,7 +21,7 @@ One feature inherited from OpenStreetMap is that we don't present reviews. For i
 
 ## Supported browsers and limitations
 
-This app has been designed for desktop browsers. You should use a desktop browser, since the layout doesn't scale well to smaller mobile screens. For the best user experience, we recommend using Chrome. The site has been developed using Chrome, so you might see slight differences with other browsers. The primary concern is that other browsers haven't received that much testing.
+For the best user experience, we recommend using the desktop version of Chrome. You should use a desktop browser, since the layout doesn't scale well to smaller mobile screens. Also, since the site has been developed with Chrome, you might see slight differences with other browsers. The primary concern is that other browsers haven't received that much testing.
 
 We should warn you that, at this time, the app is Finland-centric. **Some of the data is presented in Finnish, and you are mostly limited to searching Finnish locations.** The former can be addressed, buth the latter is a consequence of the size of full planet builds. That simply makes it more expensive to host a service with a global coverage.
 
@@ -51,7 +51,7 @@ If you wish to repeat a search using the current viewport, you may click the *Se
 
 ## Specifying the type of places to search for
 
-This app searches for places by their type. You specify a category, such as "restaurants" or "museums", and the app lists all places of that type in the search area.
+This app searches for places by their type. You specify a category, such as restaurants or museums, and the app lists all places of that type in the search area.
 
 In order to search for features of a given type, we simply type the name of that category into the search box labeled *What are you looking for?* For instance, if we are looking for museums, we type "museo" into the search box. While we type the systems displays suggestions which provide clues into the available options.
 
@@ -66,7 +66,7 @@ A few examples of convention include
 - Small shops that sell mainly food items are tagged [convenience stores](https://wiki.openstreetmap.org/wiki/Tag:shop%3Dconvenience) while large shops are tagged as [supermarkets](https://wiki.openstreetmap.org/wiki/Tag:shop%3Dsupermarket). In Finnish these are called "lähikauppa" and "supermarketti".
 - Places selling [fast food](https://wiki.openstreetmap.org/wiki/Tag:amenity%3Dfast_food) are tagged as such, while [restaurants](https://wiki.openstreetmap.org/wiki/Tag:amenity%3Drestaurant) are more formal establishments. In Finnish these are called "pikaruokaravintola" and "ravintola".
 
-The page [Map features](http://wiki.openstreetmap.org/wiki/Map_features) in the OpenStreetMap wiki details these and many other conventions. However, be warned, that given the wide scope of OpenStreetMap, the list of map features is extensive.
+The page [Map features](http://wiki.openstreetmap.org/wiki/Map_features) in the OpenStreetMap wiki details these and many other conventions. However, be warned, given the wide scope of OpenStreetMap, the list of map features is extensive.
 
 ## Filtering
 
