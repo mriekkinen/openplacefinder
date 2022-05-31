@@ -4,7 +4,7 @@ If you would like to contribute to the development of OpenPlaceFinder, you can f
 
 ## Local development
 
-We use React on the front-end and Node.js/Express on the back-end. Both are written in TypeScript, which is a strongly typed extension of JavaScript.
+We use React on the front-end and Node.js/Express on the back-end. Both are written in TypeScript.
 
 To start the back-end in development mode, navigate to the project's root directory (i.e. *openplacefinder*), and enter these commands
 

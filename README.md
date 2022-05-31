@@ -2,15 +2,16 @@
 
 OpenPlaceFinder is a web application which helps users discover various points of interest in the OpenStreetMap database. It supports a streamlined form of *place search*, also known as a point of interest (POI) search. It allows you to specify what you are looking for, and where, and quickly produces a map of matching places.
 
-You can use this service online at [openplacefinder.org](https://openplacefinder.org/). For the best user experience, we recommend Chrome, but you should be able to use the site with a recent version of any major browser. However, you need to use a **desktop browser** since mobile devices aren't supported.
+You can use this service online at [openplacefinder.org](https://openplacefinder.org/). For the best user experience, we recommend the desktop versio of Chrome, but you should be able to use the site with a recent desktop version of any major browser.
 
-<img width="600" src="docs/img/museums.png" />
+<img width="600" src="docs/img/example-1.png" />
 
 ## Documentation
 
-We have a [user guide](docs/guide.md) which should help you get started. If you still run into problems, you can [open an issue](https://github.com/mriekkinen/openplacefinder/issues) on this repository.
+We have prepared documentation to help you get up to speed:
 
-If you would like to contribute to development, you can follow the instructions at [installation and development](docs/development.md).
+* **User Guide.** We have a [user guide](docs/guide.md) which should help you get started. If you still run into problems, you can [open an issue](https://github.com/mriekkinen/openplacefinder/issues) on this repository.
+* **Installation and Development.** If you would like to contribute to development, you can follow the instructions at [installation and development](docs/development.md).
 
 ## Acknowledgements
 
