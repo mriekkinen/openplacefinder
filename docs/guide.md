@@ -84,21 +84,33 @@ In the process of filtering and inspecting the results, you may find that some i
 
 ## Examples
 
-### Example 1a. Pizzerias in downtown Helsinki
+### Example 1. Museums in downtown Helsinki
 
-Our first example involves finding a good place for dinner. In this case, we've decided on having a good pizza in the downtown area.
-
-As noted earlier, OpenStreetMap distinguishes between restaurants and fast-food restaurants. Hence, you can find pizza places under both categories (called "pitseria" and "pitseria-pikaruokaravintola"). In this case, we'll search only for the former.
+Our first example involves finding a museum to visit in the downtown area.
 
 The basic workflow is as follows:
 
 * Enter your location. We typed "Helsingin päärautatieasema".
-* Choose a place category. We typed "pitseria".
-* Browse the results. Our search returned 29 restaurants.
+* Choose a place category. We typed "museo".
+* Browse the results. Our search returned 33 museums.
 
-You can see the results for our search below.
+You can see the [results](https://openplacefinder.org/?q=tourism.museum&sortBy=distance&loc=60.1707_24.9414&map=13_60.1707_24.9414) for our search below.
 
-<img width="600" src="img/example-1a.png" />
+<img width="600" src="img/example-1.png" />
+
+By scrolling the list, we can see that there are 4 museums within 500 meters and 15 museums within 1 km from our location. Some of the most popular ones are nearby, and hence appear at the top when sorting by distance. Depending on our interests, we might choose one of them or decide to walk a bit further and try something new.
+
+This example is pretty simple, but a similar workflow will repeat in all the examples. In the following examples we'll dig a little deeper.
+
+### Example 2a. A pizza for dinner
+
+Our second example involves finding a good place for dinner. In this case, we've decided on having a good pizza in the downtown area.
+
+As noted earlier, OpenStreetMap distinguishes between restaurants and fast-food restaurants. Hence, you can find pizza places under both categories (called "pitseria" and "pitseria-pikaruokaravintola"). In this case, we'll search only for the former.
+
+First, we enter our search parameters. We use the same location ("Helsingin päärautatieasema") and enter "pitseria" as our place category. These are entered the same way as in the previous example. Our search returned 29 restaurants. You can see the [results](https://openplacefinder.org/?q=amenity.restaurant.pizza&sortBy=distance&loc=60.1707_24.9414&map=13_60.1706_24.9414) for our search below.
+
+<img width="600" src="img/example-2a.png" />
 
 Next, we would like to dig a little deeper.
 
@@ -106,11 +118,20 @@ Suppose we have identified a few promising chains. For the sake of argument, let
 
 It's time to decide. We observe that the closest Classic Pizza is only 216 meters away while the closest Kotipizza is around 600 meters away. Since both are open for business, depending on our preferences, we might choose either one.
 
+### Example 2b. Lunch sushi near me
 
+As a variation of the previous example, let's search for lunch restaurants near our location. Let's assume that we are leaning towards sushi, but would like keep our options open. Hence, we'll start with a more general search and then add criteria as needed.
 
+First, we'll specify the initial parameters of our search. Since we don't want to walk very far this time, we'll choose a search radius of a couple hundred meters (just zoom in). Also, we'll search for restaurants without specifying any subclass (type "ravintola"). In our case, this initial search returns around 70 results. This feels like a lot to digest, so we need to specify some further criteria.
 
-### ---
+Our first thought is to try the lunch filter. That sounds logical enough but leads a disappointing conclusion: the app recognizes only a few lunch restaurants among the 70+ places we discovered. While OpenStreetMap recognizes a [lunch key](https://wiki.openstreetmap.org/wiki/Key:lunch), that key suffers from relatively low coverage. Hence, we'll settle for ignoring the lunch filter and try adding other criteria.
 
-* [Pizzerias in downtown Helsinki](https://openplacefinder.org/?q=amenity.restaurant.pizza&loc=60.1706_24.9415&map=13_60.1667_24.9420)
-* [Supermarkets in downtown Helsinki](https://openplacefinder.org/?q=shop.supermarket&loc=60.1706_24.9415&map=13_60.1667_24.9420) and, for comparison, [convenience stores in the same area](https://openplacefinder.org/?q=shop.convenience&loc=60.1706_24.9415&map=13_60.1667_24.9420)
-* [All shops in the Sello shopping centre](https://openplacefinder.org/?q=shop&loc=60.2181_24.8122&map=17_60.2181_24.8111)
+Our next attempt is to filter by cuisine. The filter panel includes a section titled "Categories", which includes choices such sushi restaurants, Italian restaurants and pizzerias. By selecting one or more of these, we get subsets based on the cuisine served. Restaurants for which the cuisine is not listed are recorded under the generic category restaurants ("Ravintola"). This includes also restaurants which serve more than one type of cuisine.
+
+In this case, we'll see that there's a nice Italian restaurant close by, so one option would be to choose sushi and Italian as our categories. With these choices, we'll get 9 results which is a small enough set to digest. In a nutshell, it seems that the closest option serves Italian food, but if we are willing to walk a bit we can reach multiple sushi places. If we look at their websites, we'll see that they also serve lunch. You can see the [results](https://openplacefinder.org/?q=amenity.restaurant&sortBy=distance&categories=amenity.restaurant.sushi+amenity.restaurant.italian&loc=60.1706_24.9415&map=16_60.1700_24.9414) below.
+
+<img width="400" src="img/example-2b.png" />
+
+Regarding examples 2a and 2b, we recognize that including restaurant reviews would add value. As discussed earlier, the OpenStreetMap database intentionally excludes subjective information, so in this case it might make sense to rely on a third-party review platform.
+
+This was the last example in this series. We wish you all the best!
