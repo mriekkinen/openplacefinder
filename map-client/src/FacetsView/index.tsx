@@ -4,7 +4,7 @@ import { useAppSelector } from '../state';
 import { SearchParams } from '../params';
 import { filter } from '../search';
 
-import { Container, Header } from './styles';
+import { Container, Facet, GraySpan, Header } from './styles';
 import Name from './Name';
 import { OpeningHours, OpenNow } from './OpeningHours';
 import Lunch from './Lunch';
@@ -28,6 +28,15 @@ const Facets = ({ params }: Props) => {
     return filter(state.poiList.data, state.facets);
   }, shallowEqual);
   */
+
+  if (data.length === 0) {
+    return (
+      <Container>
+        <Header>Filter by</Header>
+        <Facet><GraySpan>No data has been loaded</GraySpan></Facet>
+      </Container>
+    );
+  }
 
   return (
     <Container>
