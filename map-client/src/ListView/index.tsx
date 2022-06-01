@@ -77,7 +77,7 @@ const ListView = ({ params, mapRef }: Props) => {
           handleClick={() => {
             params.id = e.id;
             params.commit();
-            //mapRef.current?.panTo(e.lat, e.lng);
+            mapRef.current?.panTo(e.lat, e.lng);
           }}
         />
       )}
