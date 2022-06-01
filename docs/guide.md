@@ -130,7 +130,7 @@ Our next attempt is to filter by cuisine. The filter panel includes a section ti
 
 In this case, we'll see that there's a nice Italian restaurant close by, so one option would be to choose sushi and Italian as our categories. With these choices, we'll get 9 results which is a small enough set to digest. In a nutshell, it seems that the closest option serves Italian food, but if we are willing to walk a bit we can reach multiple sushi places. If we look at their websites, we'll see that they also serve lunch. You can see the [results](https://openplacefinder.org/?q=amenity.restaurant&sortBy=distance&categories=amenity.restaurant.sushi+amenity.restaurant.italian&loc=60.1706_24.9415&map=16_60.1700_24.9414) below.
 
-<img width="400" src="img/example-2b.png" />
+<img width="600" src="img/example-2b.png" />
 
 Regarding examples 2a and 2b, we recognize that including restaurant reviews would add value. As discussed earlier, the OpenStreetMap database intentionally excludes subjective information, so in this case it might make sense to rely on a third-party review platform.
 
