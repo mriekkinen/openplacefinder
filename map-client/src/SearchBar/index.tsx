@@ -50,7 +50,7 @@ const SearchBar = ({ params, makeQuery, mapRef }: Props) => {
   };
 
   const handleAreaChange = (newArea: AreaOption | null) => {
-    console.log('handleAreaChange: newArea:', newArea);
+    // console.log('handleAreaChange: newArea:', newArea);
     dispatch(setArea(newArea));
     if (newArea === null) {
       return;
