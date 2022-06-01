@@ -6,7 +6,7 @@ const AddAttribution = () => {
 
   useEffect(() => {
     map.attributionControl.addAttribution(
-      `&copy; Helsinki Region Transport ${new Date().getFullYear()}`
+      `&copy; <a href="https://digitransit.fi/en/developers/apis/">Helsinki Region Transport</a> ${new Date().getFullYear()}`
     );
   }, []);
 
