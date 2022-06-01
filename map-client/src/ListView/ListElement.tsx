@@ -2,23 +2,18 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { Poi, PoiWithDistance } from '../types';
-import { Country } from '../state';
 import { presetSingleton, getAncestors } from '../presets';
 import { getAddress, getCuisines, getDistance } from '../info';
-import { OpenStateWrapper } from '../InfoView/OpenState';
 import { PresetIcon } from '../icons';
 
 interface Props {
   e: PoiWithDistance;
-  country: Country | undefined;
   handleClick: () => void;
 }
 
 const ListElement = (
-  { e, country, handleClick }: Props
+  { e, handleClick }: Props
 ) => {
-  const now = new Date();
-
   return (
     <Container onClick={handleClick}>
       <IconDiv>
@@ -34,12 +29,6 @@ const ListElement = (
             Cuisine: {getPrimaryCuisines(e)}<br/>
           </>
         }
-        {/*
-        <OpenStateWrapper
-          poi={e}
-          country={country}
-          now={now} />
-        */}
       </ContentDiv>
     </Container>
   );

@@ -73,7 +73,6 @@ const ListView = ({ params, mapRef }: Props) => {
         <ListElement
           key={`${e.type}-${e.id}`}
           e={e}
-          country={country}
           handleClick={() => {
             params.id = e.id;
             params.commit();
