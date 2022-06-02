@@ -32,7 +32,9 @@ const FiltersBtn = ({ facets, isDisabled }: Props) => {
       name: f.name ? 1 : 0,
       openingHours: f.openingHours? 1 : 0,
       openNow: f.openNow ? 1 : 0,
-      cuisines: f.cuisines ? f.cuisines.size : 0
+      lunch: f.lunch ? 1 : 0,
+      cuisines: f.cuisines ? f.cuisines.size : 0,
+      categories: f.categories ? f.categories.size : 0
     };
 
     const total = Object.values(counts).reduce((sum, x) => sum + x, 0);

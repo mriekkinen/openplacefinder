@@ -1,11 +1,15 @@
 import React from 'react';
 
 import {
+  PresetOption,
   hideModal,
   useAppDispatch, useAppSelector
 } from '../state';
+import { assertNever } from '../utils';
 import ZoomInModal from './ZoomInModal';
 import OverpassErrorModal from './OverpassErrorModal';
+import SizeWarningModal from './SizeWarningModal';
+import PresetModal from './PresetModal';
 
 const ModalRenderer = () => {
   const dispatch = useAppDispatch();
@@ -13,31 +17,55 @@ const ModalRenderer = () => {
 
   const handleClose = () => dispatch(hideModal());
 
-  const isOpen = (type: string): boolean => {
-    return modal !== null && modal.type === type;
-  };
+  if (modal === null) {
+    return null;
+  }
 
-  const getError = () => {
-    if (modal === null || modal.type !== 'OverpassErrorModal') {
+  const modalType = modal.type;
+
+  switch (modalType) {
+    case 'ZoomInModal':
+      return (
+        <ZoomInModal
+          isOpen={true}
+          handleClose={handleClose}
+        />
+      );
+    case 'OverpassErrorModal':
+      return (
+        <OverpassErrorModal
+          isOpen={true}
+          handleClose={handleClose}
+          error={modal.error}
+        />
+      );
+    case 'SizeWarningModal':
+      return (
+        <SizeWarningModal
+          isOpen={true}
+          handleClose={(ok: boolean) => {
+            modal.handleResult(ok);
+            dispatch(hideModal());
+          }}
+          n={modal.n}
+        />
+      );
+    case 'PresetModal':
+      return (
+        <PresetModal
+          isOpen={true}
+          handleClose={handleClose}
+          handleChange={(p: PresetOption | null) => {
+            modal.handleChange(p);
+            dispatch(hideModal());
+          }}
+          initialRoot={modal.initialRoot}
+        />
+      );
+    default:
+      assertNever(modalType);
       return null;
-    }
-
-    return modal.error;
-  };
-
-  return (
-    <>
-      <ZoomInModal
-        isOpen={isOpen('ZoomInModal')}
-        handleClose={handleClose}
-      />
-      <OverpassErrorModal
-        isOpen={isOpen('OverpassErrorModal')}
-        handleClose={handleClose}
-        error={getError()}
-      />
-    </>
-  );
+  }
 };
 
 export default ModalRenderer;

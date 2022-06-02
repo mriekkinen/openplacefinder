@@ -2,15 +2,20 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Logo from './Logo';
-import NavLink from './NavLink';
+import { NavLinkWeb } from './NavLink';
+
+//const docsUrl = 'https://github.com/mriekkinen/openplacefinder/blob/main/docs/guide.md#openplacefinder-user-guide';
+//const aboutUrl = 'https://github.com/mriekkinen/openplacefinder/blob/main/docs/about.md#about';
+const docsUrl = 'https://github.com/mriekkinen/openplacefinder/blob/docs/user-guide/docs/guide.md#openplacefinder-user-guide';
+const aboutUrl = 'https://github.com/mriekkinen/openplacefinder/blob/docs/user-guide/docs/about.md#about';
 
 const NavBar = () => {
   return (
     <Nav>
       <NavList>
         <NavItem><Logo /></NavItem>
-        <NavItem><NavLink href='#' activePage={false}>Docs</NavLink></NavItem>
-        <NavItem><NavLink href='#' activePage={false}>About</NavLink></NavItem>
+        <NavItem><NavLinkWeb href={docsUrl}>Docs</NavLinkWeb></NavItem>
+        <NavItem><NavLinkWeb href={aboutUrl}>About</NavLinkWeb></NavItem>
       </NavList>
     </Nav>
   );

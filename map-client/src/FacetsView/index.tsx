@@ -4,10 +4,12 @@ import { useAppSelector } from '../state';
 import { SearchParams } from '../params';
 import { filter } from '../search';
 
-import { Container, Header } from './styles';
+import { Container, Facet, GraySpan, Header } from './styles';
 import Name from './Name';
 import { OpeningHours, OpenNow } from './OpeningHours';
-import Cuisines from './Cuisines';
+import Lunch from './Lunch';
+// import Cuisines from './Cuisines';
+import Categories from './Categories';
 import MatchCount from './MatchCount';
 import Clear from './Clear';
 
@@ -27,6 +29,15 @@ const Facets = ({ params }: Props) => {
   }, shallowEqual);
   */
 
+  if (data.length === 0) {
+    return (
+      <Container>
+        <Header>Filter by</Header>
+        <Facet><GraySpan>No data has been loaded</GraySpan></Facet>
+      </Container>
+    );
+  }
+
   return (
     <Container>
       <Header>Filter by</Header>
@@ -36,7 +47,15 @@ const Facets = ({ params }: Props) => {
         params={params} />
       <OpenNow
         params={params} />
+      <Lunch
+        params={params} />
+      {/*
       <Cuisines
+        data={data}
+        country={country}
+        params={params} />
+      */}
+      <Categories
         data={data}
         country={country}
         params={params} />

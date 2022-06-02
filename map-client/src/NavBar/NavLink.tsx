@@ -1,23 +1,24 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 interface Props {
   href: string;
-  activePage: boolean;
   children: React.ReactNode;
 }
 
-const NavLink = ({ href, activePage, children }: Props) => {
+export const NavLinkWeb = ({ href, children }: Props) => {
   return (
-    <Link
+    <WebLink
       href={href}
-      activePage={activePage}>
+      target='_blank'
+      rel='noopener noreferrer'
+    >
       {children}
-    </Link>
+    </WebLink>
   );
 };
 
-const Link = styled.a<Props>`
+const WebLink = styled.a`
   margin-right: 20px;
   color: #BDBDBD;
   text-decoration: none;
@@ -25,10 +26,4 @@ const Link = styled.a<Props>`
   &:hover {
     color: inherit;
   }
-
-  ${props => props.activePage && css`
-    color: inherit;
-  `}
 `;
-
-export default NavLink;

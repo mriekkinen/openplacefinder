@@ -3,11 +3,11 @@ import { LatLngBounds } from 'leaflet';
 
 import {
   PresetOption, AreaOption,
-  clearPoiList, setArea,
+  clearPoiList, setArea, toPresetOption,
   useAppDispatch, useAppSelector
 } from '../state';
 import { SearchParams } from '../params';
-import { Preset, presetSingleton } from '../presets';
+import { Preset } from '../presets';
 import { Container, Header, Item } from './styles';
 import SearchBox from './SearchBox';
 import Geocoder from './Geocoder';
@@ -29,19 +29,13 @@ const SearchBar = ({ params, makeQuery, mapRef }: Props) => {
   const status = useAppSelector(state => state.poiList.status);
   const area = useAppSelector(state => state.ui.area);
 
-  const toPresetOption = (p: Preset): PresetOption => {
-    return {
-      value: p,
-      label: presetSingleton.getName(p.id) ?? p.id
-    };
-  };
-
   const presetOption = params.q ? toPresetOption(params.q) : null;
 
   const handlePresetChange = (newPreset: PresetOption | null) => {
     if (newPreset === null) {
       params.q = undefined;
       params.id = undefined;
+      params.sortBy = undefined;
       params.facets = {};
       params.commit();
       dispatch(clearPoiList());
@@ -50,12 +44,13 @@ const SearchBar = ({ params, makeQuery, mapRef }: Props) => {
 
     params.q = newPreset.value;
     params.id = undefined;
+    params.sortBy = undefined;
     params.facets = {};
     params.commit();
   };
 
   const handleAreaChange = (newArea: AreaOption | null) => {
-    console.log('handleAreaChange: newArea:', newArea);
+    // console.log('handleAreaChange: newArea:', newArea);
     dispatch(setArea(newArea));
     if (newArea === null) {
       return;

@@ -20,7 +20,7 @@ const apiBaseUrl = 'https://overpass.kumi.systems/api/interpreter';
 // TODO: Update the user agent string
 const config: AxiosRequestConfig = {
   headers: {
-    'User-Agent': 'OpenPlaceFinder https://github.com/mriekkinen/openplacefinder',
+    'User-Agent': 'OpenPlaceFinder https://openplacefinder.org',
     'Content-Type': 'text/plain'
   }
 };

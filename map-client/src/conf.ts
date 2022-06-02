@@ -1,4 +1,4 @@
-export const getMinZoomForQueries = (): number => {
+const getMinZoomForQueries = (): number => {
   const minZoom = Number(process.env.REACT_APP_MIN_ZOOM_FOR_QUERIES);
 
   if (isNaN(minZoom)) {
@@ -8,13 +8,17 @@ export const getMinZoomForQueries = (): number => {
   return minZoom;
 };
 
-export const isZoomSufficient = (zoom: number): boolean => {
-  const minZoom = getMinZoomForQueries();
+const getWarnOfResultSetSize = (): number => {
+  const threshold = Number(process.env.REACT_APP_WARN_OF_RESULT_SET_SIZE);
 
-  return zoom >= minZoom;
+  if (isNaN(threshold)) {
+    throw Error("Environment variable REACT_APP_WARN_OF_RESULT_SET_SIZE not set, or not a valid integer");
+  }
+
+  return threshold;
 };
 
-export const getGeocoderUrl = (): string => {
+const getGeocoderUrl = (): string => {
   const url = process.env.REACT_APP_GEOCODER_URL;
 
   if (!url) {
@@ -24,7 +28,7 @@ export const getGeocoderUrl = (): string => {
   return url;
 };
 
-export const getGeocoderWait = (): number => {
+const getGeocoderWait = (): number => {
   const wait = Number(process.env.REACT_APP_GEOCODER_WAIT);
 
   if (isNaN(wait)) {
@@ -32,4 +36,35 @@ export const getGeocoderWait = (): number => {
   }
 
   return wait;
+};
+
+const getTopLevelPresets = (): string[] => {
+  const ids = process.env.REACT_APP_TOP_LEVEL_PRESETS;
+
+  if (!ids) {
+    throw Error("Environment variable REACT_APP_TOP_LEVEL_PRESETS not set");
+  }
+
+  return ids.split(',').map(id => id.trim());
+};
+
+const getPresetsMaxResults = (): number => {
+  const maxRes = Number(process.env.REACT_APP_PRESETS_MAX_RESULTS);
+
+  if (isNaN(maxRes)) {
+    throw Error("Environment variable REACT_APP_PRESETS_MAX_RESULTS not set, or not a valid integer");
+  }
+
+  return maxRes;
+};
+
+export const MIN_ZOOM = getMinZoomForQueries();
+export const RESULT_SET_WARNING_THRESHOLD = getWarnOfResultSetSize();
+export const GEOCODER_URL = getGeocoderUrl();
+export const GEOCODER_WAIT = getGeocoderWait();
+export const TOP_LEVEL_PRESETS = getTopLevelPresets();
+export const PRESETS_MAX_RESULTS = getPresetsMaxResults();
+
+export const isZoomSufficient = (zoom: number): boolean => {
+  return zoom >= MIN_ZOOM;
 };

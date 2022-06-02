@@ -2,23 +2,18 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { Poi, PoiWithDistance } from '../types';
-import { Country } from '../state';
-import { presetSingleton } from '../presets';
+import { presetSingleton, getAncestors } from '../presets';
 import { getAddress, getCuisines, getDistance } from '../info';
-import { OpenStateWrapper } from '../InfoView/OpenState';
 import { PresetIcon } from '../icons';
 
 interface Props {
   e: PoiWithDistance;
-  country: Country | undefined;
   handleClick: () => void;
 }
 
 const ListElement = (
-  { e, country, handleClick }: Props
+  { e, handleClick }: Props
 ) => {
-  const now = new Date();
-
   return (
     <Container onClick={handleClick}>
       <IconDiv>
@@ -26,7 +21,7 @@ const ListElement = (
       </IconDiv>
       <ContentDiv>
         <b>{e.tags['name']}</b><br/>
-        {presetSingleton.getName(e.presetId)}<br/>
+        <Category id={e.presetId} /><br/>
         {getAddress(e, 'long')}<br/>
         Distance: {getDistance(e)}<br/>
         {presetSingleton.hasField(e, 'cuisine') &&
@@ -34,15 +29,33 @@ const ListElement = (
             Cuisine: {getPrimaryCuisines(e)}<br/>
           </>
         }
-        {/*
-        <OpenStateWrapper
-          poi={e}
-          country={country}
-          now={now} />
-        */}
       </ContentDiv>
     </Container>
   );
+};
+
+const Category = ({ id }: { id: string | undefined }) => {
+  if (!id) return null;
+  const ancestors = getAncestors(id);
+  const names = ancestors.map(sid => presetSingleton.getName(sid));
+
+  // Format the category like this:
+  //   category >> subcategory >>
+  //   subsubcategory
+  return (
+    <span>
+      <span style={{ color: 'gray' }}>
+        {names.slice(0, -1).join('»')}&raquo;<br />
+      </span>
+      <span>{names[names.length-1]}</span>
+    </span>
+  );
+};
+
+export const getLocalCategoryPath = (id: string, sep: string): string => {
+  const ancestors = getAncestors(id);
+  const names = ancestors.map(sid => presetSingleton.getName(sid));
+  return names.join(sep);
 };
 
 const Container = styled.div`

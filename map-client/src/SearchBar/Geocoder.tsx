@@ -6,10 +6,9 @@ import styled from 'styled-components';
 
 import { createAutocomplete } from 'geocodeearth-core-js/dist/geocode-earth-core';
 import throttle from 'lodash/throttle';
-import debounce from 'lodash/debounce';
 
 import { AreaOption } from '../state';
-import { getGeocoderUrl, getGeocoderWait } from '../conf';
+import { GEOCODER_URL, GEOCODER_WAIT } from '../conf';
 
 interface Props {
   value: AreaOption | null;
@@ -31,10 +30,10 @@ interface Props {
 const Geocoder = ({ value, handleChange, isDisabled }: Props) => {
   const autocomplete = useMemo(() =>
     createAutocomplete(undefined, {}, {
-      url: getGeocoderUrl()
+      url: GEOCODER_URL
     }), []);
 
-  const wait = getGeocoderWait();
+  const wait = GEOCODER_WAIT;
 
   const search = (
     inputValue: string,
@@ -71,7 +70,7 @@ const Geocoder = ({ value, handleChange, isDisabled }: Props) => {
 
   const noOptionsMessage = ({ inputValue }: { inputValue: string}): string => {
     if (inputValue === '') {
-      return 'Type a place name...'
+      return 'Enter a location...';
     }
 
     return 'No results';
@@ -80,8 +79,6 @@ const Geocoder = ({ value, handleChange, isDisabled }: Props) => {
   const throttledSearch = useCallback(throttle(
     search, wait, { leading: true, trailing: true }
   ), []);
-
-  const debouncedSearch = useCallback(debounce(search, wait), []);
 
   return (
     <AsyncSelect

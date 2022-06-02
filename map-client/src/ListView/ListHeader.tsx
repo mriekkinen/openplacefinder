@@ -17,9 +17,10 @@ const ListHeader = ({ params, data, filteredData }: Props) => {
   };
 
   if (filteredData.length === data.length) {
+    const res = data.length === 1 ? 'result' : 'results';
     return (
       <Header>
-        Showing {data.length} results
+        Found {data.length} {res}
       </Header>
     );
   }

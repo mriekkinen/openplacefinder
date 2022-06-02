@@ -1,13 +1,20 @@
 import { Tags } from '../types';
 
+export interface Reference {
+  key: string;
+  value?: string;
+}
+
 export interface PresetJson {
   tags: Tags;
   addTags?: Tags;
   fields?: string[];
   moreFields?: string[];
-  originalScore?: number;
+  matchScore?: number;
   icon?: string;
   searchable?: boolean;
+  geometry: string[];
+  reference?: Reference;
 }
 
 export interface PresetJsonMap {
@@ -19,9 +26,11 @@ export interface Preset {
   tags: Tags;
   addTags?: Tags;
   fields: Set<string>;
-  originalScore: number;
+  matchScore: number;
   icon?: string;
   searchable: boolean;
+  geometry: string[];
+  reference?: Reference;
 }
 
 export interface PresetIndex {
@@ -32,18 +41,26 @@ export interface PresetMap {
   [id: string]: Preset | undefined;
 }
 
+export interface PNamesJson {
+  name: string;
+  terms?: string;
+}
+
+export interface PNames {
+  name: string;
+  terms: string[];
+}
+
 export interface PresetNamesJson {
   [locale: string]: {
     presets: {
       presets: {
-        [id: string]: {
-          name: string
-        };
+        [id: string]: PNamesJson;
       }
     }
   } | undefined;
 }
 
 export interface PresetNamesMap {
-  [id: string]: string | undefined
+  [id: string]: PNames | undefined
 }

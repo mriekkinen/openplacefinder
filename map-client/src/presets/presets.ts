@@ -4,23 +4,27 @@ import { PresetParser } from './presetService';
 import { PresetMatcher } from './presetService';
 import { PresetNames } from './presetNames';
 import { PresetSearch } from './presetSearch';
+import { PresetCategories } from './presetCategories';
 
 export class Presets {
   readonly parser: PresetParser;
   readonly matcher: PresetMatcher;
   readonly names: PresetNames;
   readonly searcher: PresetSearch;
+  readonly categories: PresetCategories;
 
   constructor(
     parser: PresetParser,
     matcher: PresetMatcher,
     names: PresetNames,
-    search: PresetSearch
+    search: PresetSearch,
+    categories: PresetCategories
   ) {
     this.parser = parser;
     this.matcher = matcher;
     this.names = names;
     this.searcher = search;
+    this.categories = categories;
   }
 
   extend(pois: OverpassPoi[]): Poi[] {
@@ -77,5 +81,9 @@ export class Presets {
 
   search(value: string): Preset[] {
     return this.searcher.search(value);
+  }
+
+  getChildPresets(root: Preset | undefined): Preset[] {
+    return this.categories.getChildPresets(root);
   }
 }

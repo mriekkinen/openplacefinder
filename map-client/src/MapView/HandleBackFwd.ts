@@ -15,12 +15,12 @@ const HandleBackFwd = ({ mapParam }: Props) => {
     if (map.getZoom() !== mapParam.zoom
         || map.getCenter().lat.toFixed(4) !== mapParam.center.lat.toFixed(4)
         || map.getCenter().lng.toFixed(4) !== mapParam.center.lng.toFixed(4)) {
-      console.log(
-        'HandleBackFwd.setView: map:',
-        `${map.getZoom()}/${map.getCenter().lat.toFixed(4)}/${map.getCenter().lng.toFixed(4)}`,
-        '--> mapParam:',
-        `${mapParam.zoom}/${mapParam.center.lat.toFixed(4)}/${mapParam.center.lng.toFixed(4)}`
-      );
+      // console.log(
+      //   'HandleBackFwd.setView: map:',
+      //   `${map.getZoom()}/${map.getCenter().lat.toFixed(4)}/${map.getCenter().lng.toFixed(4)}`,
+      //   '--> mapParam:',
+      //   `${mapParam.zoom}/${mapParam.center.lat.toFixed(4)}/${mapParam.center.lng.toFixed(4)}`
+      // );
 
       // Update map view to match the current URL
       // This happens when the user clicks the browser's back/fwd button

@@ -1,5 +1,6 @@
 import { Preset } from './types';
 import { PresetParser } from './presetService';
+import { getParentId } from './utils';
 
 export class PresetFieldsUtil {
   readonly parser: PresetParser;
@@ -77,7 +78,7 @@ export class PresetFieldsUtil {
     }
 
     // Look up the parent
-    const parentId = this.getParentId(preset.id);
+    const parentId = getParentId(preset.id);
     const parent = parentId ? this.parser.presetMap[parentId] : undefined;
     if (!parent) {
       return;
@@ -87,12 +88,6 @@ export class PresetFieldsUtil {
     parent.fields.forEach(field => {
       preset.fields.add(field);
     });
-  }
-
-  private getParentId(id: string): string | undefined {
-    const last = id.lastIndexOf('/');
-    if (last === -1) return undefined;
-    return id.slice(0, last);
   }
 }
 

@@ -1,4 +1,4 @@
-import { AreaOption, initialState, ModalData, UiState } from './state';
+import { AreaOption, PresetOption, initialState, ModalData, UiState } from './state';
 import { Action } from './actions';
 
 export const setArea = (newArea: AreaOption | null): Action => {
@@ -21,6 +21,20 @@ export const showZoomInModal = (): Action => {
 
 export const showOverpassErrorModal = (error: unknown): Action => {
   return showModal({ type: 'OverpassErrorModal', error });
+};
+
+export const showSizeWarningModal = (
+  n: number,
+  handleResult: (ok: boolean) => void
+): Action => {
+  return showModal({ type: 'SizeWarningModal', n, handleResult });
+};
+
+export const showPresetModal = (
+  handleChange: (newValue: PresetOption | null) => void,
+  initialRoot?: PresetOption | null
+): Action => {
+  return showModal({ type: 'PresetModal', handleChange, initialRoot });
 };
 
 export const hideModal = (): Action => {

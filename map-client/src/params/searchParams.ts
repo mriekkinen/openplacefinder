@@ -2,7 +2,7 @@ import { LatLngLiteral } from "leaflet";
 import { ParamKeyValuePair, URLSearchParamsInit } from "react-router-dom";
 
 import { MapState } from "../MapView/types";
-import { FacetState } from "../state";
+import { FacetState, parseSortOption, SortOption } from "../state";
 import { Preset, presetSingleton } from "../presets";
 
 export interface SearchParamDefaults {
@@ -17,6 +17,7 @@ export class SearchParams {
   id?: number;
   loc: LatLngLiteral;
   map: MapState;
+  sortBy?: SortOption;
   facets: FacetState;
   private setSearchParams: SetSearchParams;
 
@@ -29,17 +30,20 @@ export class SearchParams {
     this.id = this.parseIdParam(searchParams.get('id'));
     this.loc = this.parseLocationParam(searchParams.get('loc')) ?? defaults.loc;
     this.map = this.parseMapParam(searchParams.get('map')) ?? defaults.map;
+    this.sortBy = this.parseSortByParam(searchParams.get('sortBy'));
     this.facets = this.parseFacetParams(
       searchParams.get('name'),
       searchParams.has('openingHours'),
       searchParams.has('openNow'),
-      searchParams.get('cuisine')
+      searchParams.has('lunch'),
+      searchParams.get('cuisine'),
+      searchParams.get('categories')
     );
     this.setSearchParams = setSearchParams;
   }
 
   private parseQueryParam = (queryStr: string | null): Preset | undefined => {
-    return presetSingleton.getPreset(queryStr?.replaceAll(' ', '/'));
+    return presetSingleton.getPreset(queryStr?.replaceAll('.', '/'));
   }
 
   private parseIdParam = (idStr: string | null): number | undefined => {
@@ -86,17 +90,31 @@ export class SearchParams {
     };
   };
 
+  private parseSortByParam = (sortByStr: string | null): SortOption | undefined => {
+    try {
+      return parseSortOption(sortByStr);
+    } catch (e) {
+      return undefined;
+    }
+  };
+
   private parseFacetParams = (
     name: string | null,
     openingHours: boolean,
     openNow: boolean,
-    cuisines: string | null
+    lunch: boolean,
+    cuisines: string | null,
+    categories: string | null
   ): FacetState => {
     return {
       name: name || undefined,
       openingHours: openingHours || undefined,
       openNow: openNow || undefined,
-      cuisines: cuisines ? new Set(cuisines.split(';')) : undefined
+      lunch: lunch || undefined,
+      cuisines: cuisines ? new Set(cuisines.split(';')) : undefined,
+      categories: categories
+        ? new Set(categories.replaceAll('.', '/').split(' '))
+        : undefined
     };
   };
 
@@ -107,11 +125,15 @@ export class SearchParams {
   public build(): ParamKeyValuePair[] {
     const list: [string, string][] = [];
     if (this.q) {
-      list.push(['q', this.q.id.replaceAll('/', ' ')]);
+      list.push(['q', this.q.id.replaceAll('/', '.')]);
     }
 
     if (this.id) {
       list.push(['id', this.id.toString()]);
+    }
+
+    if (this.sortBy) {
+      list.push(['sortBy', this.sortBy]);
     }
 
     if (this.facets.name) {
@@ -126,9 +148,18 @@ export class SearchParams {
       list.push(['openNow', '']);
     }
 
+    if (this.facets.lunch) {
+      list.push(['lunch', '']);
+    }
+
     if (this.facets.cuisines?.size) {
       const cuisines = Array.from(this.facets.cuisines);
       list.push(['cuisine', cuisines.join(';')])
+    }
+
+    if (this.facets.categories?.size) {
+      const categories = Array.from(this.facets.categories);
+      list.push(['categories', categories.join(' ').replaceAll('/', '.')])
     }
 
     if (this.loc) {
