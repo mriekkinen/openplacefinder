@@ -4,10 +4,8 @@ import styled from 'styled-components';
 import Logo from './Logo';
 import { NavLinkWeb } from './NavLink';
 
-//const docsUrl = 'https://github.com/mriekkinen/openplacefinder/blob/main/docs/guide.md#openplacefinder-user-guide';
-//const aboutUrl = 'https://github.com/mriekkinen/openplacefinder/blob/main/docs/about.md#about';
-const docsUrl = 'https://github.com/mriekkinen/openplacefinder/blob/docs/user-guide/docs/guide.md#openplacefinder-user-guide';
-const aboutUrl = 'https://github.com/mriekkinen/openplacefinder/blob/docs/user-guide/docs/about.md#about';
+const docsUrl = 'https://github.com/mriekkinen/openplacefinder/blob/main/docs/guide.md#openplacefinder-user-guide';
+const aboutUrl = 'https://github.com/mriekkinen/openplacefinder/blob/main/docs/about.md#about';
 
 const NavBar = () => {
   return (
