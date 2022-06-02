@@ -20,6 +20,7 @@ Information for grading:
 * Note: The following files contain code adapted from another project:
   * [map-client/src/presets/presetService.ts](https://github.com/mriekkinen/openplacefinder/blob/main/map-client/src/presets/presetService.ts)
   * [map-client/src/presets/presetSearch.ts](https://github.com/mriekkinen/openplacefinder/blob/main/map-client/src/presets/presetSearch.ts)
+* In addition to the hour and commit logs, [pull requests](https://github.com/mriekkinen/openplacefinder/pulls?q=is%3Apr+is%3Aclosed) may contain useful information
 
 ## Acknowledgements
 
